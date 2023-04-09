@@ -1,4 +1,3 @@
-const { doesNotMatch } = require("assert");
 const path = require("path");
 
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
       static: './dist',
   },
   output: {
-    filename: "./dist/bundle.js",
+    filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
   },
   module: {
