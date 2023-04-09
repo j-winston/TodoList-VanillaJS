@@ -21,7 +21,7 @@ ol {
 }
 
 body {
-    min-height: 100vh;
+    height: 100vh;
     line-height: 1.5;
 }
 
@@ -33,11 +33,85 @@ picture {
 }
 
 body {
+    background-color: #262626;
+}
+
+.mytodo-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    height: 5%;
     background-color: #303030;
+}
+
+.header .icon-container {
+    font-size: 30px;
+    color: white;
+    margin: 4px 10px;
+
+    display: flex;
+    align-items: center;
+}
+
+.content-container {
+    display: flex;
+    height: 100%;
+}
+
+.left-nav{
+    background-color: #575757;
+    min-width: 30%;
+    padding: 20px;
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
 }
 
 
 
+
+.project-container{
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 20px;
+}
+
+.project-list-container {
+    display:flex;
+    flex-direction: column;
+    
+}
+
+.project {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-left: 10px;
+}
+
+
+.project-viewer {
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+}
+
+.project-title {
+    color: white;
+}
+
+.add-task-btn {
+    color: red;
+}
 
 
 
