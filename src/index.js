@@ -1,3 +1,2 @@
-// this is wah
-
+import './assets/css/style.css'
 
