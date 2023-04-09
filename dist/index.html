@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>myTodo Task Organizer</title>
-</head>
-<body>
-    
-    <script src="bundle.js"></script>
-</body>
-</html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myTodo</title>
+  </head>
+  <body>
+    <div class="mytodo-app">
+      <header class="header">
+        <div class="icon-container">Orin</div>
+      </header>
+      <nav class="left-nav">
+        <div class="nav-link-container">
+          <div class="nav-link">Inbox</div>
+        </div>
+        <div class="project-container">
+          <h3 class="project-container-title">Project</h3>
+          <div class="project-list-container">
+            <div class="project">
+              <div class="project-title">Wash Tahoe</div>
+              <div class="project-delete-btn">X</div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="project-viewer">
+        <div class="project-tasks">
+          <h1 class="project-title">Inbox</h1>
+          <div class="task-container">
+            <p class="task-title"></p>
+            <p class="task-description"></p>
+          </div>
+          <div class="add-task-btn">+ Add Task</div>
+        </div>
+      </div>
+    </div>
 
+    <script src="bundle.js"></script>
+  </body>
+</html>
