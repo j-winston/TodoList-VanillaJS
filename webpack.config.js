@@ -4,7 +4,7 @@ module.exports = {
   mode: "development",
   entry: "./src/index.js",
   devServer: {
-      static: './dist',
+    static: "./dist",
   },
   output: {
     filename: "bundle.js",
