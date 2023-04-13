@@ -23,8 +23,28 @@
                 <div class="project-title">Wash Tahoe</div>
                 <div class="project-delete-btn">X</div>
               </div>
+
+              <template id="newProjectTemplate">
+                <form action="#" class="new-project-form" method="get">
+                  <div class="form-inputs">
+                    <input
+                      type="text"
+                      placeholder="Project Name"
+                      required="required"
+                      id="project-name"
+                    />
+                  </div>
+                  <div class="form-confirm">
+                    <button class="confirm-project-btn" type="submit">
+                      Add Project
+                    </button>
+                    <button class="cancel-project-btn">Cancel</button>
+                  </div>
+                </form>
+              </template>
             </div>
           </div>
+          <div class="add-project-btn">+</div>
         </div>
         <div class="project-viewer">
           <h1 class="project-title">Inbox</h1>

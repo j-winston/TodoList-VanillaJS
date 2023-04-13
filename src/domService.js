@@ -4,6 +4,76 @@
 import pubSub from "./pubsub";
 
 const domService = (() => {
+
+    const hideElement = (el) => {
+        el.remove(); 
+    }
+
+  const removeProject = (id) => {
+    const projectElement = document.querySelector('[data-id-project="' + id + '"]');
+      hideElement(projectElement);
+  };
+
+  const createProjectElement = (name) => {
+    const projectElement = document.createElement("div");
+    const projectTitleElement = document.createElement("div");
+    const deleteBtn = document.createElement("div");
+
+    projectElement.className = "project";
+    projectElement.setAttribute("data-id-project", name);
+
+    projectTitleElement.className = "project-title";
+    projectTitleElement.textContent = name;
+
+    deleteBtn.className = "project-delete-btn";
+    deleteBtn.textContent = "X";
+    deleteBtn.addEventListener("click", () => {
+      removeProject(projectElement.getAttribute("data-id-project"));
+    });
+
+    projectElement.appendChild(projectTitleElement);
+    projectElement.appendChild(deleteBtn);
+
+    return projectElement;
+  };
+
+  const updateProjectList = (name) => {
+    const projectElement = createProjectElement(name);
+    const container = document.querySelector(".project-container");
+
+    container.appendChild(projectElement);
+  };
+
+  const getFormData = (ev) => {
+    ev.preventDefault();
+
+    const input = document.querySelector(".new-project-form input");
+    const name = input.value;
+    input.value = "";
+
+    const form = document.querySelector(".new-project-form");
+    form.remove();
+
+    updateProjectList(name);
+  };
+
+  const showNewProjectForm = () => {
+    // Show template
+    const template = document.getElementById("newProjectTemplate");
+    const form = template.content.cloneNode(true);
+
+    const projectContainer = document.querySelector(".project-container");
+    projectContainer.appendChild(form);
+
+    const confirmBtn = document.querySelector(".confirm-project-btn");
+    confirmBtn.addEventListener("click", getFormData);
+
+    const cancelBtn = document.querySelector(".cancel-project-btn");
+    cancelBtn.addEventListener("click", () => {
+      hideElement(form);
+    });
+  };
+
   const displayAllTasks = (tasks) => {
     tasks.forEach((task) => {
       _renderToScreen(task);
@@ -45,6 +115,16 @@ const domService = (() => {
   };
 
   pubSub.subscribe("tasksRetrieved", displayAllTasks);
+
+  const startListeners = () => {
+    const addProjectBtn = document.querySelector(".add-project-btn");
+    addProjectBtn.addEventListener("click", showNewProjectForm);
+
+  };
+
+  return {
+    startListeners,
+  };
 })();
 
 export default domService;
