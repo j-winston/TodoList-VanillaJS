@@ -60,17 +60,18 @@ const domService = (() => {
   const showNewProjectForm = () => {
     // Show template
     const template = document.getElementById("newProjectTemplate");
-    const form = template.content.cloneNode(true);
+    const formNode = template.content.cloneNode(true);
 
     const projectContainer = document.querySelector(".project-container");
-    projectContainer.appendChild(form);
+    projectContainer.appendChild(formNode);
 
     const confirmBtn = document.querySelector(".confirm-project-btn");
     confirmBtn.addEventListener("click", getFormData);
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
     cancelBtn.addEventListener("click", () => {
-      hideElement(form);
+       const formEl = document.querySelector('.new-project-form');
+        formEl.remove();
     });
   };
 
