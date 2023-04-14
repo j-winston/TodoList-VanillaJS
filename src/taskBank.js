@@ -41,7 +41,15 @@ const taskBank = (() => {
     pubSub.publish("tasksRetrieved", tasks);
   };
 
+  const getProjectTasks = (dataIdProject) => {
+    pubSub.publish(
+      "projectRetrieved",
+      tasks.filter((task) => task.projectName === dataIdProject)
+    );
+  };
+
   pubSub.subscribe("inboxClicked", getAllTasks);
+  pubSub.subscribe("projectClicked", getProjectTasks);
 
   return {
     addTask,

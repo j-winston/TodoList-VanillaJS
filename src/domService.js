@@ -4,26 +4,31 @@
 import pubSub from "./pubsub";
 
 const domService = (() => {
-
-    const hideElement = (el) => {
-        el.remove(); 
-    }
+  const hideElement = (el) => {
+    el.remove();
+  };
 
   const removeProject = (id) => {
-    const projectElement = document.querySelector('[data-id-project="' + id + '"]');
-      hideElement(projectElement);
+    const projectElement = document.querySelector(
+      '[data-id-project="' + id + '"]'
+    );
+    hideElement(projectElement);
   };
 
   const createProjectElement = (name) => {
     const projectElement = document.createElement("div");
     const projectTitleElement = document.createElement("div");
     const deleteBtn = document.createElement("div");
+    const dataIdProject = name;
 
     projectElement.className = "project";
-    projectElement.setAttribute("data-id-project", name);
+    projectElement.setAttribute("data-id-project", dataIdProject);
 
     projectTitleElement.className = "project-title";
     projectTitleElement.textContent = name;
+    projectElement.addEventListener("click", () => {
+      pubSub.publish("projectClicked", dataIdProject);
+    });
 
     deleteBtn.className = "project-delete-btn";
     deleteBtn.textContent = "X";
@@ -70,8 +75,8 @@ const domService = (() => {
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
     cancelBtn.addEventListener("click", () => {
-       const formEl = document.querySelector('.new-project-form');
-        formEl.remove();
+      const formEl = document.querySelector(".new-project-form");
+      formEl.remove();
     });
   };
 
@@ -115,12 +120,15 @@ const domService = (() => {
     el.textContent = task;
   };
 
-  pubSub.subscribe("tasksRetrieved", displayAllTasks);
+  const displayProjectTasks = (tasks) => {
+    tasks.forEach((task) => _renderToScreen(task));
+  };
+
+  pubSub.subscribe("projectRetrieved", displayProjectTasks);
 
   const startListeners = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", showNewProjectForm);
-
   };
 
   return {

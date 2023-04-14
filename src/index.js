@@ -9,11 +9,4 @@ import pubSub from "./pubsub";
 
 domService.startListeners();
 
-const showAllTasks = () => {
-  pubSub.publish("inboxClicked");
-};
-
-const inbox = document.querySelector(".nav-link");
-inbox.addEventListener("click", showAllTasks);
-
-taskBank.addTask("brush teeth", "do some hygiene", "today");
+taskBank.addTask("brush teeth", "do some hygiene", "today", "call orin");
