@@ -7,6 +7,4 @@ import taskBank from "./taskBank";
 import domService from "./domService";
 import pubSub from "./pubsub";
 
-domService.startListeners();
-
-taskBank.addTask("brush teeth", "do some hygiene", "today", "call orin");
+domService.startEventListeners();

@@ -4,7 +4,7 @@
 import pubSub from "./pubsub";
 
 const domService = (() => {
-  const hideElement = (el) => {
+  const removeElement = (el) => {
     el.remove();
   };
 
@@ -12,7 +12,7 @@ const domService = (() => {
     const projectElement = document.querySelector(
       '[data-id-project="' + id + '"]'
     );
-    hideElement(projectElement);
+    removeElement(projectElement);
   };
 
   const createProjectElement = (name) => {
@@ -27,6 +27,10 @@ const domService = (() => {
     projectTitleElement.className = "project-title";
     projectTitleElement.textContent = name;
     projectElement.addEventListener("click", () => {
+      const projectViewerTitle = document.querySelector(
+        ".project-viewer-title"
+      );
+      projectViewerTitle.textContent = name;
       pubSub.publish("projectClicked", dataIdProject);
     });
 
@@ -63,7 +67,6 @@ const domService = (() => {
   };
 
   const showNewProjectForm = () => {
-    // Show template
     const template = document.getElementById("newProjectTemplate");
     const formNode = template.content.cloneNode(true);
 
@@ -86,33 +89,41 @@ const domService = (() => {
     });
   };
 
-  const _renderToScreen = (task) => {
-    const taskViewerWindow = document.querySelector(".project-tasks");
+  const renderToProjectViewer = (task) => {
+    const mainContainer = document.querySelector(".project-tasks");
     const taskHtmlElement = _createNewTaskNode(task);
 
-    taskViewerWindow.appendChild(taskHtmlElement);
+    mainContainer.appendChild(taskHtmlElement);
   };
 
   const _createNewTaskNode = (task) => {
-    const container = document.createElement("div");
-    const title = document.createElement("p");
-    const description = document.createElement("p");
-    const deleteBtn = document.createElement("div");
+    const newTaskContainer = document.createElement("div");
 
-    title.textContent = task.title;
-    description.textContent = task.description;
+    const nameEl = document.createElement("p");
+    const descriptionEl = document.createElement("p");
+    const dueDateEl = document.createElement("p");
+    const deleteBtnEl = document.createElement("div");
+
+    newTaskContainer.classList.add("task-container");
+
+    nameEl.classList.add("task-title");
+    nameEl.textContent = task.name;
+
+    descriptionEl.classList.add("task-description");
+    descriptionEl.textContent = task.description;
+
+    dueDateEl.classList.add("task-due-date");
+    dueDateEl.textContent = task.duedate;
 
     const dataId = task.id;
 
-    container.classList.add("task-container");
-    title.classList.add("task-title");
-    description.classList.add("task-description");
+    newTaskContainer.appendChild(nameEl);
+    newTaskContainer.appendChild(descriptionEl);
+    newTaskContainer.appendChild(dueDateEl);
 
-    container.appendChild(description);
-    container.appendChild(title);
-    container.setAttribute("data-id", dataId);
+    newTaskContainer.setAttribute("data-id", dataId);
 
-    return container;
+    return newTaskContainer; 
   };
 
   const refresh = (task) => {
@@ -124,15 +135,66 @@ const domService = (() => {
     tasks.forEach((task) => _renderToScreen(task));
   };
 
-  pubSub.subscribe("projectRetrieved", displayProjectTasks);
+  const getTaskFormData = (ev) => {
+    // dont forget about completed status
+    ev.preventDefault();
+    const task = {};
 
-  const startListeners = () => {
-    const addProjectBtn = document.querySelector(".add-project-btn");
-    addProjectBtn.addEventListener("click", showNewProjectForm);
+    const inputElements = document.querySelectorAll(
+      ".new-task-form .form-inputs input"
+    );
+    inputElements.forEach((el) => {
+      task[el.id] = el.value;
+    });
+    const form = document.querySelector(".new-task-form");
+    removeElement(form);
+
+    pubSub.publish("taskSubmitted", task);
   };
 
+  const hideElement = (el) => {
+    el.style.display = "hidden";
+  };
+
+  const showElement = (el) => {
+    el.style.display = "visible";
+  };
+  const showNewTaskForm = () => {
+    const addTaskBtn = document.querySelector(".add-task-btn");
+    hideElement(addTaskBtn);
+
+    const template = document.getElementById("newTaskTemplate");
+    const formNode = template.content.cloneNode(true);
+
+    const taskContainer = document.querySelector(".project-viewer");
+    taskContainer.appendChild(formNode);
+
+    const confirmBtn = document.querySelector(".confirm-task-btn");
+    confirmBtn.addEventListener("click", (e) => {
+      getTaskFormData(e);
+      showElement(addTaskBtn);
+    });
+
+    const cancelBtn = document.querySelector(".cancel-task-btn");
+    cancelBtn.addEventListener("click", () => {
+      const formEl = document.querySelector(".new-task-form");
+      formEl.remove();
+    });
+  };
+
+  const startEventListeners = () => {
+    const addProjectBtn = document.querySelector(".add-project-btn");
+    addProjectBtn.addEventListener("click", showNewProjectForm);
+
+    const addTaskBtn = document.querySelector(".add-task-btn");
+    addTaskBtn.addEventListener("click", showNewTaskForm);
+  };
+
+  pubSub.subscribe("projectRetrieved", displayProjectTasks);
+  pubSub.subscribe("taskAdded", renderToProjectViewer);
+
   return {
-    startListeners,
+    startEventListeners,
   };
 })();
 

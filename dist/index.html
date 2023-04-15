@@ -47,14 +47,37 @@
           <div class="add-project-btn">+</div>
         </div>
         <div class="project-viewer">
-          <h1 class="project-title">Inbox</h1>
+          <h1 class="project-viewer-title">Inbox</h1>
           <div class="project-tasks">
             <div class="task-container">
-              <p class="task-title">Brush Hair</p>
-              <p class="task-description">Get all pretty</p>
+              <p class="task-title"></p>
+              <p class="task-description"></p>
             </div>
           </div>
-          <div class="add-task-btn">+ Add Task</div>
+          <template id="newTaskTemplate">
+            <form action="#" class="new-task-form" method="get">
+              <div class="form-inputs">
+                <input
+                  type="text"
+                  placeholder="Pickup Julie @ 3pm"
+                  required="required"
+                  id="name"
+                />
+                <input
+                  type="text"
+                  placeholder="Ballet class ends 2 hours early today"
+                  required="required"
+                  id="description"
+                />
+                <input type="text" placeholder="Due today" id="duedate" />
+              </div>
+              <div class="form-confirm">
+                <button class="confirm-task-btn" type="submit">Add Task</button>
+                <button class="cancel-task-btn">Cancel</button>
+              </div>
+            </form>
+          </template>
+          <div class="add-task-btn">+</div>
         </div>
       </div>
     </div>

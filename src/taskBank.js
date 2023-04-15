@@ -12,17 +12,16 @@ const taskBank = (() => {
     return index;
   };
 
-  const addTask = (title, description, dueDate, projectName = "inbox") => {
-    const task = {
-      projectName: projectName,
-      title: title,
-      description: description,
-      dueDate: dueDate,
-      completed: false,
-      id: tasks.length,
-    };
+  const setTaskId = (task) => {
+    task.id = tasks.length;
+    return task;
+  };
+
+  const addTask = (taskData) => {
+    const task = setTaskId(taskData);
     tasks.push(task);
-    //pubSub.publish('task-added', taskBank.task)
+
+    pubSub.publish("taskAdded", task);
   };
 
   const deleteTask = (id) => {
@@ -50,6 +49,7 @@ const taskBank = (() => {
 
   pubSub.subscribe("inboxClicked", getAllTasks);
   pubSub.subscribe("projectClicked", getProjectTasks);
+  pubSub.subscribe("taskSubmitted", addTask);
 
   return {
     addTask,
