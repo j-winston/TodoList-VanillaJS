@@ -136,12 +136,10 @@ const domService = (() => {
     return newTaskContainer;
   };
 
-  const showTask = (tasks) => {
-    tasks.forEach((task) => {
+  const showTask = (task) => {
+      const taskContainer = document.querySelector('.task-container');
       const taskHtmlElement = _createNewTaskNode(task);
-
-      taskViewer.appendChild(taskHtmlElement);
-    });
+      taskContainer.appendChild(taskHtmlElement);
   };
 
   const getTaskFormData = (event) => {
@@ -193,9 +191,11 @@ const domService = (() => {
     showNewTaskForm();
   };
 
-  const updateTaskViewer = (tasks) => {
-    tasks.forEach((task) => alert(task.name));
-  };
+  const showProject = (tasks) => {
+
+  }
+
+
   const startEventListeners = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", addNewProject);
@@ -205,7 +205,7 @@ const domService = (() => {
   };
 
   pubSub.subscribe("taskAdded", showTask);
-  pubSub.subscribe("projectTasksRetrieved", updateTaskViewer);
+  pubSub.subscribe("projectTasksRetrieved", showProject);
   return {
     startEventListeners,
   };
