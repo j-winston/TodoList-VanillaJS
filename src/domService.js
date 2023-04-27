@@ -29,6 +29,24 @@ const domService = (() => {
     pubSub.publish("projectDeleted", id);
   };
 
+
+  const updateProjectList = (projectEl) => {
+    const projectListContainer = document.querySelector(".project-container");
+    projectListContainer.appendChild(projectEl);
+  };
+
+
+    const getProjectFormData = () => {
+      const input = document.querySelector(".new-project-form input");
+      const projName = input.value;
+      input.value = "";
+
+      const form = document.querySelector(".new-project-form");
+      form.remove();
+        return projName;
+
+    }
+
   const createProjectElement = (name) => {
     const projectElement = document.createElement("div");
     const projectTitleElement = document.createElement("div");
@@ -58,27 +76,6 @@ const domService = (() => {
     return projectElement;
   };
 
-  // make this more self apparant
-  const updateProjectList = (projectEl) => {
-    const projectListContainer = document.querySelector(".project-container");
-
-    projectListContainer.appendChild(projectEl);
-    // update current project
-    const taskViewerProjectTitle = document.querySelector(
-      ".project-viewer-title"
-    );
-  };
-
-  const getProjectFormData = (ev) => {
-    const input = document.querySelector(".new-project-form input");
-    const projName = input.value;
-    input.value = "";
-
-    const form = document.querySelector(".new-project-form");
-    form.remove();
-    return projName;
-  };
-
   const showNewProjectForm = () => {
     const template = document.getElementById("newProjectTemplate");
     const formNode = template.content.cloneNode(true);
@@ -86,18 +83,17 @@ const domService = (() => {
     const projectContainer = document.querySelector(".project-container");
     projectContainer.appendChild(formNode);
 
-    const confirmBtn = document.querySelector(".confirm-project-btn");
+    const submitBtn = document.querySelector(".confirm-project-btn");
 
-    confirmBtn.addEventListener("click", () => {
-      const input = document.querySelector(".new-project-form input");
-      const projName = input.value;
-      input.value = "";
+    submitBtn.addEventListener("click", () => {
+        const projName = getProjectFormData();
 
-      const form = document.querySelector(".new-project-form");
-      form.remove();
+        const projEl = createProjectElement(projName);
 
-      const projectEl = createProjectElement(projName);
-      updateProjectList(projectEl);
+        updateProjectList(projEl);
+        updateTaskViewerTitle(projName);
+
+      updateProjectList(projEl);
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
@@ -107,10 +103,9 @@ const domService = (() => {
     });
   };
 
-  // project title needs to get passed
-  const updateTaskViewerTitle = (projTitle) => {
+  const updateTaskViewerTitle = (projName) => {
     const title = document.querySelector(".project-viewer-title");
-    title.textContent = projTitle;
+    title.textContent = projName; 
   };
 
   const addNewProject = () => {
@@ -147,11 +142,12 @@ const domService = (() => {
     return newTaskContainer;
   };
 
-  const showTask = (task) => {
-    const taskViewer = document.querySelector(".project-tasks");
-    const taskHtmlElement = _createNewTaskNode(task);
+  const showTask = (tasks) => {
+    tasks.forEach((task) => {
+      const taskHtmlElement = _createNewTaskNode(task);
 
-    taskViewer.appendChild(taskHtmlElement);
+      taskViewer.appendChild(taskHtmlElement);
+    });
   };
 
   const getTaskFormData = (event) => {
@@ -211,11 +207,9 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", addNewTask);
   };
 
-  const updateTaskViewer = (tasks) => {
-    tasks.forEach((task) => alert("poop"));
-  };
 
   pubSub.subscribe("taskAdded", showTask);
+  pubSub.subscribe("projectTasksRetrieved", showTask);
   return {
     startEventListeners,
   };
