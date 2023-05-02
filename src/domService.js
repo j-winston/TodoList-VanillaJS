@@ -21,7 +21,7 @@ const domService = (() => {
   };
 
   const removeProject = (projId) => {
-      // projId is = project name j
+    // projId is = project name j
     const projectElement = document.querySelector(
       '[data-id-project="' + projId + '"]'
     );
@@ -88,6 +88,7 @@ const domService = (() => {
       const projEl = createProjectElement(projName);
       updateProjectList(projEl);
       updateTaskViewerTitle(projName);
+        clearTaskViewer();
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
@@ -103,7 +104,12 @@ const domService = (() => {
   };
 
   const addNewProject = () => {
+      // TODO adding a new project should
+      // clear project tasks etc
+    
     showNewProjectForm();
+
+    
   };
 
   const _createNewTaskNode = (task) => {
@@ -137,9 +143,12 @@ const domService = (() => {
   };
 
   const showTask = (task) => {
-      const taskContainer = document.querySelector('.task-container');
-      const taskHtmlElement = _createNewTaskNode(task);
-      taskContainer.appendChild(taskHtmlElement);
+    clearTaskViewer();
+    const taskViewer = document.querySelector(".project-tasks");
+    const newTaskContainer = document.createElement("div");
+    newTaskContainer.classList.add("task-container");
+    const taskHtmlElement = _createNewTaskNode(task);
+    taskViewer.appendChild(taskHtmlElement);
   };
 
   const getTaskFormData = (event) => {
@@ -191,10 +200,18 @@ const domService = (() => {
     showNewTaskForm();
   };
 
+  const clearTaskViewer = () => {
+    document
+      .querySelectorAll(".task-container")
+      .forEach((task) => removeElement(task));
+  };
+
   const showProject = (tasks) => {
-
-  }
-
+    clearTaskViewer();
+    for (const task of tasks) {
+      showTask(task);
+    }
+  };
 
   const startEventListeners = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
