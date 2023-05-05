@@ -5,6 +5,8 @@ import pubSub from "./pubsub";
 
 const taskBank = (() => {
   const tasks = [];
+    const projects = [];
+    
 
   const _getTaskIndex = (id) => {
     const index = tasks.findIndex((task) => task.id === id);
@@ -46,12 +48,33 @@ const taskBank = (() => {
   };
 
   const deleteTasks = (projectId) => {
-    tasks.filter((task) => task.id);
+    tasks.forEach(task => {
+        if(task.projectName === projectId){
+            deleteTask(task.id);
+        }
+    });
+      pubSub.publish('projectDeleted');
   };
-  pubSub.subscribe("projectDeleted", deleteTasks);
-  pubSub.subscribe("inboxClicked", getAllTasks);
+
+    const deleteProject = (projName) => {
+        deleteTasks(projName);
+        const markedIndex = projects.indexOf(projName);
+        projects.splice(markedIndex, 1); 
+
+        pubSub.publish('projectDeleted', projName);
+
+        
+    }
+
+    const addProject = (projName) => {
+        projects.push(projName);
+
+    }
   pubSub.subscribe("projectClicked", getProjectTasks);
+    pubSub.subscribe('newProjectAdded', addProject);
+  pubSub.subscribe("inboxClicked", getAllTasks);
   pubSub.subscribe("taskSubmitted", addTask);
+
 
   return {
     addTask,

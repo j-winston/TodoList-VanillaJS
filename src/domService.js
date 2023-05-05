@@ -20,14 +20,15 @@ const domService = (() => {
     return name;
   };
 
-  const removeProject = (projId) => {
-    // projId is = project name j
+  const removeProject = (projName) => {
+      alert(projName);
     const projectElement = document.querySelector(
-      '[data-id-project="' + projId + '"]'
+      '[data-id-project="' + projName + '"]'
     );
 
     removeElement(projectElement);
-    pubSub.publish("projectDeleted", id);
+
+    pubSub.publish("projectDeleteClicked", projId);
   };
 
   const updateProjectList = (projectEl) => {
@@ -66,7 +67,9 @@ const domService = (() => {
     deleteBtn.textContent = "X";
 
     deleteBtn.addEventListener("click", () => {
-      removeProject(projectElement.getAttribute("data-id-project"));
+        // TODO project name is 'undefined' getting lost somewhere
+        //TODO start a new feature branch 
+        pubSub.publish('projectDeleteClicked', dataIdProject);
     });
 
     projectElement.appendChild(projectTitleElement);
@@ -88,7 +91,8 @@ const domService = (() => {
       const projEl = createProjectElement(projName);
       updateProjectList(projEl);
       updateTaskViewerTitle(projName);
-        clearTaskViewer();
+      clearTaskViewer();
+      pubSub.publish("newProjectAdded", projName);
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
@@ -104,12 +108,7 @@ const domService = (() => {
   };
 
   const addNewProject = () => {
-      // TODO adding a new project should
-      // clear project tasks etc
-    
     showNewProjectForm();
-
-    
   };
 
   const _createNewTaskNode = (task) => {
@@ -221,8 +220,12 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", addNewTask);
   };
 
+  const updateViewer = () => {
+    // refresh the screen
+  };
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("projectTasksRetrieved", showProject);
+
   return {
     startEventListeners,
   };
