@@ -4,9 +4,7 @@
 import pubSub from "./pubsub";
 
 const taskBank = (() => {
-  const tasks = [];
-    const projects = [];
-    
+  const projects = [];
 
   const _getTaskIndex = (id) => {
     const index = tasks.findIndex((task) => task.id === id);
@@ -14,14 +12,14 @@ const taskBank = (() => {
     return index;
   };
 
-  const setTaskId = (task) => {
-    task.id = tasks.length;
-    return task;
-  };
 
-  const addTask = (taskData) => {
-    const task = setTaskId(taskData);
-    tasks.push(task);
+  const addTask = (task) => {
+      for(const project of projects){
+          if(project.name === task.projectName){
+              project.tasks.push(task);
+          }
+      }
+
     pubSub.publish("taskAdded", task);
   };
 
@@ -41,40 +39,46 @@ const taskBank = (() => {
     pubSub.publish("tasksRetrieved", tasks);
   };
 
-  const getProjectTasks = (projName) => {
-    const projTasks = tasks.filter((task) => task.projectName === projName);
+// this should retrieve then entire project 
+  const getProject = (name) => {
+      for(const project of projects){
+          if(project.name === name){
+              pubSub.publish('projectTasksRetrieved', project);
+          }
+      }
 
-    pubSub.publish("projectTasksRetrieved", projTasks);
   };
 
   const deleteTasks = (projectId) => {
-    tasks.forEach(task => {
-        if(task.projectName === projectId){
-            deleteTask(task.id);
-        }
+    tasks.forEach((task) => {
+      if (task.projectName === projectId) {
+        deleteTask(task.id);
+      }
     });
-      pubSub.publish('projectDeleted');
+    pubSub.publish("projectDeleted");
   };
 
-    const deleteProject = (projName) => {
-        deleteTasks(projName);
-        const markedIndex = projects.indexOf(projName);
-        projects.splice(markedIndex, 1); 
+  const deleteProject = (projName) => {
+    deleteTasks(projName);
+    const markedIndex = projects.indexOf(projName);
+    projects.splice(markedIndex, 1);
 
-        pubSub.publish('projectDeleted', projName);
+    pubSub.publish("projectDeleted", projName);
+  };
 
-        
-    }
+  const addProject = (projName) => {
+    const project = {
+      name: projName,
+      tasks: [{}],
+    };
 
-    const addProject = (projName) => {
-        projects.push(projName);
+    projects.push(project);
+  };
 
-    }
-  pubSub.subscribe("projectClicked", getProjectTasks);
-    pubSub.subscribe('newProjectAdded', addProject);
+  pubSub.subscribe("projectClicked", getProject);
+  pubSub.subscribe("newProjectAdded", addProject);
   pubSub.subscribe("inboxClicked", getAllTasks);
   pubSub.subscribe("taskSubmitted", addTask);
-
 
   return {
     addTask,

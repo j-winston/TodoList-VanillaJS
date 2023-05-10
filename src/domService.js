@@ -21,7 +21,7 @@ const domService = (() => {
   };
 
   const removeProject = (projName) => {
-      alert(projName);
+    alert(projName);
     const projectElement = document.querySelector(
       '[data-id-project="' + projName + '"]'
     );
@@ -67,9 +67,9 @@ const domService = (() => {
     deleteBtn.textContent = "X";
 
     deleteBtn.addEventListener("click", () => {
-        // TODO project name is 'undefined' getting lost somewhere
-        //TODO start a new feature branch 
-        pubSub.publish('projectDeleteClicked', dataIdProject);
+      // TODO project name is 'undefined' getting lost somewhere
+      //TODO start a new feature branch
+      pubSub.publish("projectDeleteClicked", dataIdProject);
     });
 
     projectElement.appendChild(projectTitleElement);
@@ -142,7 +142,6 @@ const domService = (() => {
   };
 
   const showTask = (task) => {
-    clearTaskViewer();
     const taskViewer = document.querySelector(".project-tasks");
     const newTaskContainer = document.createElement("div");
     newTaskContainer.classList.add("task-container");
@@ -205,9 +204,9 @@ const domService = (() => {
       .forEach((task) => removeElement(task));
   };
 
-  const showProject = (tasks) => {
+  const showProject = (project) => {
     clearTaskViewer();
-    for (const task of tasks) {
+    for (const task of project.tasks) {
       showTask(task);
     }
   };
@@ -220,9 +219,6 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", addNewTask);
   };
 
-  const updateViewer = () => {
-    // refresh the screen
-  };
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("projectTasksRetrieved", showProject);
 
