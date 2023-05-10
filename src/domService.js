@@ -211,7 +211,7 @@ const domService = (() => {
     }
   };
 
-  const startEventListeners = () => {
+  const startTaskEvents = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", addNewProject);
 
@@ -219,11 +219,29 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", addNewTask);
   };
 
+  const showInbox = () => {
+    updateTaskViewerTitle("Inbox");
+
+    const inboxBtn = document.querySelector(".inbox-nav-link");
+    inboxBtn.textContent = "Inbox";
+    inboxBtn.addEventListener("click", () => {
+      updateTaskViewerTitle("Inbox");
+      pubSub.publish("projectClicked", "Inbox");
+    });
+
+    pubSub.publish("newProjectAdded", "Inbox");
+  };
+
+  const initializeUi = () => {
+    startTaskEvents();
+    showInbox();
+  };
+
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("projectTasksRetrieved", showProject);
 
   return {
-    startEventListeners,
+    initializeUi,
   };
 })();
 

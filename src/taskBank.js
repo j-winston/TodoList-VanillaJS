@@ -12,13 +12,12 @@ const taskBank = (() => {
     return index;
   };
 
-
   const addTask = (task) => {
-      for(const project of projects){
-          if(project.name === task.projectName){
-              project.tasks.push(task);
-          }
+    for (const project of projects) {
+      if (project.name === task.projectName) {
+        project.tasks.push(task);
       }
+    }
 
     pubSub.publish("taskAdded", task);
   };
@@ -39,14 +38,13 @@ const taskBank = (() => {
     pubSub.publish("tasksRetrieved", tasks);
   };
 
-// this should retrieve then entire project 
+  // this should retrieve then entire project
   const getProject = (name) => {
-      for(const project of projects){
-          if(project.name === name){
-              pubSub.publish('projectTasksRetrieved', project);
-          }
+    for (const project of projects) {
+      if (project.name === name) {
+        pubSub.publish("projectTasksRetrieved", project);
       }
-
+    }
   };
 
   const deleteTasks = (projectId) => {
