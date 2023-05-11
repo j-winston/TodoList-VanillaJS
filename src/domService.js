@@ -20,20 +20,42 @@ const domService = (() => {
     return name;
   };
 
-  const removeProject = (projName) => {
-    alert(projName);
-    const projectElement = document.querySelector(
-      '[data-id-project="' + projName + '"]'
-    );
-
-    removeElement(projectElement);
-
-    pubSub.publish("projectDeleteClicked", projId);
-  };
-
   const updateProjectList = (projectEl) => {
     const projectListContainer = document.querySelector(".project-container");
     projectListContainer.appendChild(projectEl);
+  };
+
+  const clearTaskViewer = () => {
+    document
+      .querySelectorAll(".task-container")
+      .forEach((task) => removeElement(task));
+  };
+
+  const showTask = (task) => {
+    const taskViewer = document.querySelector(".project-tasks");
+    const newTaskContainer = document.createElement("div");
+    newTaskContainer.classList.add("task-container");
+    const taskHtmlElement = _createNewTaskNode(task);
+    taskViewer.appendChild(taskHtmlElement);
+  };
+
+  const showProject = (project) => {
+    clearTaskViewer();
+    updateTaskViewerTitle(project.name);
+
+    for (const task of project.tasks) {
+      showTask(task);
+    }
+  };
+
+  const removeProject = (projName) => {
+    const projectElement = document.querySelector(
+      '[data-id-project-name="' + projName + '"]'
+    );
+
+    removeElement(projectElement);
+    clearTaskViewer();
+    pubSub.publish("projectRemoved", projName);
   };
 
   const getProjectFormData = () => {
@@ -46,30 +68,27 @@ const domService = (() => {
     return projName;
   };
 
-  const createProjectElement = (name) => {
+  const createProjectElement = (projectName) => {
     const projectElement = document.createElement("div");
     const projectTitleElement = document.createElement("div");
     const deleteBtn = document.createElement("div");
-    const dataIdProject = name;
 
     projectElement.className = "project";
-    projectElement.setAttribute("data-id-project", dataIdProject);
+    projectElement.setAttribute("data-id-project-name", projectName);
 
     projectTitleElement.className = "project-title";
 
     projectTitleElement.addEventListener("click", () => {
-      pubSub.publish("projectClicked", name);
-      updateTaskViewerTitle(name);
+      pubSub.publish("projectClicked", projectName);
+      updateTaskViewerTitle(projectName);
     });
-    projectTitleElement.textContent = name;
+    projectTitleElement.textContent = projectName;
 
     deleteBtn.className = "project-delete-btn";
     deleteBtn.textContent = "X";
 
     deleteBtn.addEventListener("click", () => {
-      // TODO project name is 'undefined' getting lost somewhere
-      //TODO start a new feature branch
-      pubSub.publish("projectDeleteClicked", dataIdProject);
+      removeProject(projectName);
     });
 
     projectElement.appendChild(projectTitleElement);
@@ -92,7 +111,7 @@ const domService = (() => {
       updateProjectList(projEl);
       updateTaskViewerTitle(projName);
       clearTaskViewer();
-      pubSub.publish("newProjectAdded", projName);
+      pubSub.publish("newProjectSubmitted", projName);
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
@@ -141,13 +160,6 @@ const domService = (() => {
     return newTaskContainer;
   };
 
-  const showTask = (task) => {
-    const taskViewer = document.querySelector(".project-tasks");
-    const newTaskContainer = document.createElement("div");
-    newTaskContainer.classList.add("task-container");
-    const taskHtmlElement = _createNewTaskNode(task);
-    taskViewer.appendChild(taskHtmlElement);
-  };
 
   const getTaskFormData = (event) => {
     // START HERE Get all task form data and publish it
@@ -198,19 +210,6 @@ const domService = (() => {
     showNewTaskForm();
   };
 
-  const clearTaskViewer = () => {
-    document
-      .querySelectorAll(".task-container")
-      .forEach((task) => removeElement(task));
-  };
-
-  const showProject = (project) => {
-    clearTaskViewer();
-    for (const task of project.tasks) {
-      showTask(task);
-    }
-  };
-
   const startTaskEvents = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", addNewProject);
@@ -219,26 +218,33 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", addNewTask);
   };
 
-  const showInbox = () => {
+  const createInbox = () => {
     updateTaskViewerTitle("Inbox");
 
     const inboxBtn = document.querySelector(".inbox-nav-link");
     inboxBtn.textContent = "Inbox";
     inboxBtn.addEventListener("click", () => {
       updateTaskViewerTitle("Inbox");
-      pubSub.publish("projectClicked", "Inbox");
     });
 
-    pubSub.publish("newProjectAdded", "Inbox");
+    pubSub.publish("newProjectSubmitted", "Inbox");
+  };
+
+  const showInbox = () => {
+    updateTaskViewerTitle('Inbox');
+
+    pubSub.publish("projectClicked", 'Inbox');
   };
 
   const initializeUi = () => {
     startTaskEvents();
-    showInbox();
+    createInbox();
   };
 
   pubSub.subscribe("taskAdded", showTask);
-  pubSub.subscribe("projectTasksRetrieved", showProject);
+
+  pubSub.subscribe("projectRetrieved", showProject);
+  pubSub.subscribe("projectDeleted", showInbox);
 
   return {
     initializeUi,

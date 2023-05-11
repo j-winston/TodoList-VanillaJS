@@ -99,6 +99,10 @@ body {
   padding: 20px;
 }
 
+.project-viewer-title {
+    color: white;
+}
+
 .project-title {
   color: white;
 }

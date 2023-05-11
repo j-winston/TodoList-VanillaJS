@@ -6,6 +6,14 @@ import pubSub from "./pubsub";
 const taskBank = (() => {
   const projects = [];
 
+  const findProject = (name) => {
+    for (const project of projects) {
+      if (project.name === name) {
+        return project;
+      }
+    }
+  };
+
   const _getTaskIndex = (id) => {
     const index = tasks.findIndex((task) => task.id === id);
 
@@ -13,11 +21,8 @@ const taskBank = (() => {
   };
 
   const addTask = (task) => {
-    for (const project of projects) {
-      if (project.name === task.projectName) {
-        project.tasks.push(task);
-      }
-    }
+    const project = findProject(task.projectName);
+    project.tasks.push(task);
 
     pubSub.publish("taskAdded", task);
   };
@@ -40,42 +45,33 @@ const taskBank = (() => {
 
   // this should retrieve then entire project
   const getProject = (name) => {
-    for (const project of projects) {
-      if (project.name === name) {
-        pubSub.publish("projectTasksRetrieved", project);
-      }
-    }
-  };
-
-  const deleteTasks = (projectId) => {
-    tasks.forEach((task) => {
-      if (task.projectName === projectId) {
-        deleteTask(task.id);
-      }
-    });
-    pubSub.publish("projectDeleted");
+    const proj = findProject(name);
+    pubSub.publish("projectRetrieved", proj);
   };
 
   const deleteProject = (projName) => {
-    deleteTasks(projName);
-    const markedIndex = projects.indexOf(projName);
-    projects.splice(markedIndex, 1);
+    const proj = findProject(projName);
+    const index = projects.indexOf(proj);
 
-    pubSub.publish("projectDeleted", projName);
+    projects.splice(index, 1);
+      pubSub.publish('projectDeleted', projName); 
   };
 
   const addProject = (projName) => {
     const project = {
       name: projName,
-      tasks: [{}],
+      tasks: [],
     };
 
     projects.push(project);
   };
 
-  pubSub.subscribe("projectClicked", getProject);
-  pubSub.subscribe("newProjectAdded", addProject);
   pubSub.subscribe("inboxClicked", getAllTasks);
+
+  pubSub.subscribe("newProjectSubmitted", addProject);
+  pubSub.subscribe("projectClicked", getProject);
+  pubSub.subscribe("projectRemoved", deleteProject);
+
   pubSub.subscribe("taskSubmitted", addTask);
 
   return {
