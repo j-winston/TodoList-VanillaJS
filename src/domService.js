@@ -81,6 +81,7 @@ const domService = (() => {
     projectTitleElement.addEventListener("click", () => {
       pubSub.publish("projectClicked", projectName);
       updateTaskViewerTitle(projectName);
+
     });
     projectTitleElement.textContent = projectName;
 
@@ -223,11 +224,14 @@ const domService = (() => {
 
     const inboxBtn = document.querySelector(".inbox-nav-link");
     inboxBtn.textContent = "Inbox";
+
     inboxBtn.addEventListener("click", () => {
       updateTaskViewerTitle("Inbox");
+        pubSub.publish('projectClicked', 'Inbox'); 
     });
 
-    pubSub.publish("newProjectSubmitted", "Inbox");
+      pubSub.publish('newProjectSubmitted', 'Inbox'); 
+
   };
 
   const showInbox = () => {
@@ -239,6 +243,7 @@ const domService = (() => {
   const initializeUi = () => {
     startTaskEvents();
     createInbox();
+
   };
 
   pubSub.subscribe("taskAdded", showTask);
