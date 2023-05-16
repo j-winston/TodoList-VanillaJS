@@ -27,7 +27,6 @@ const taskBank = (() => {
     pubSub.publish("projectRetrieved", project);
   };
 
-
   const setCompleted = (id) => {
     const index = _getTaskIndex(id);
     tasks[index].completed = true;
@@ -66,7 +65,7 @@ const taskBank = (() => {
     const taskIndex = proj.tasks.indexOf(task);
 
     proj.tasks.splice(taskIndex, 1);
-      alert('task deleted')
+    alert("task deleted");
   };
 
   pubSub.subscribe("inboxClicked", getAllTasks);
@@ -77,7 +76,6 @@ const taskBank = (() => {
 
   pubSub.subscribe("taskSubmitted", addTask);
   pubSub.subscribe("taskDeleted", delTask);
-
 })();
 
 export default taskBank;

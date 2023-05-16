@@ -31,6 +31,40 @@ const domService = (() => {
       .forEach((task) => removeElement(task));
   };
 
+  const expandTask = (taskContainer) => {
+    const title = taskContainer.querySelector(".task-title");
+    const description = taskContainer.querySelector(".task-description");
+
+    const template = document.getElementById("editTaskTemplate");
+    const form = template.content.cloneNode(true);
+
+    const cancelBtn = form.querySelector(".cancel-btn");
+    const saveBtn = form.querySelector(".save-btn");
+
+    form.getElementById("title").value = title.textContent;
+    form.getElementById("description").value = description.textContent;
+
+    cancelBtn.addEventListener("click", () => {
+      const formEl = document.querySelector(".edit-task-form");
+      removeElement(formEl);
+    });
+
+    saveBtn.addEventListener("click", () => {
+      // get current project
+    const curProjectName = getCurrentProjectName();
+      // Get field data
+      const formEl = document.querySelector(".edit-task-form");
+      const taskTitle = formEl.querySelector(".title");
+      const taskDescription = formEl.querySelector(".description");
+
+        // clear form 
+        // publish changes 
+
+    });
+
+    taskContainer.appendChild(form);
+  };
+
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
 
@@ -43,16 +77,16 @@ const domService = (() => {
     const editBtnEL = document.createElement("div");
 
     taskMenuContainer.classList.add("task-menu-container");
-    deleteBtnEl.classList.add("delete-btn");
-    editBtnEL.classList.add("edit-btn");
 
+    editBtnEL.classList.add("edit-btn");
+    editBtnEL.textContent = "Edit";
+
+    deleteBtnEl.classList.add("delete-btn");
     deleteBtnEl.textContent = "Del";
     deleteBtnEl.addEventListener("click", () => {
       removeElement(newTaskContainer);
       pubSub.publish("taskDeleted", task);
     });
-
-    editBtnEL.textContent = "Edit";
 
     taskMenuContainer.appendChild(editBtnEL);
     taskMenuContainer.appendChild(deleteBtnEl);
@@ -76,6 +110,17 @@ const domService = (() => {
     newTaskContainer.appendChild(taskMenuContainer);
 
     newTaskContainer.setAttribute("data-id", dataId);
+
+    editBtnEL.addEventListener("click", () => {
+      //expand task interface
+      expandTask(newTaskContainer);
+
+      // show edit fields
+      // allow user input
+      // save to submit
+      // overwrite task in dom
+      // publish the update
+    });
 
     return newTaskContainer;
   };

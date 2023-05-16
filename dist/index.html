@@ -60,6 +60,27 @@
               </div>
             </div>
           </div>
+          <template id="editTaskTemplate">
+            <form action="#" class="edit-task-form" method="get">
+              <div class="inputs">
+                <input
+                  type="text"
+                  placeholder="title"
+                  required="required"
+                  class="title"
+                  id="title"
+                />
+                <input
+                  type="text"
+                  placeholder="description"
+                  required="required"
+                  id="description"
+                />
+                <div class="cancel-btn">Cancel</div>
+                <div class="save-btn">Save</div>
+              </div>
+            </form>
+          </template>
           <template id="newTaskTemplate">
             <form action="#" class="new-task-form" method="get">
               <div class="form-inputs">
