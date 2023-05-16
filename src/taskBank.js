@@ -21,17 +21,12 @@ const taskBank = (() => {
   };
 
   const addTask = (task) => {
-    const project = findProject(task.projectName);
+    const project = findProject(task.projName);
     project.tasks.push(task);
 
-    pubSub.publish("taskAdded", task);
+    pubSub.publish("projectRetrieved", project);
   };
 
-  const deleteTask = (id) => {
-    const index = _getTaskIndex(id);
-    tasks.splice(index, 1);
-    // pubSub.publish('task-deleted', dataindex) index will identify node later
-  };
 
   const setCompleted = (id) => {
     const index = _getTaskIndex(id);
@@ -54,7 +49,7 @@ const taskBank = (() => {
     const index = projects.indexOf(proj);
 
     projects.splice(index, 1);
-      pubSub.publish('projectDeleted', projName); 
+    pubSub.publish("projectDeleted", projName);
   };
 
   const addProject = (projName) => {
@@ -66,6 +61,14 @@ const taskBank = (() => {
     projects.push(project);
   };
 
+  const delTask = (task) => {
+    const proj = findProject(task.projName);
+    const taskIndex = proj.tasks.indexOf(task);
+
+    proj.tasks.splice(taskIndex, 1);
+      alert('task deleted')
+  };
+
   pubSub.subscribe("inboxClicked", getAllTasks);
 
   pubSub.subscribe("newProjectSubmitted", addProject);
@@ -73,13 +76,8 @@ const taskBank = (() => {
   pubSub.subscribe("projectRemoved", deleteProject);
 
   pubSub.subscribe("taskSubmitted", addTask);
+  pubSub.subscribe("taskDeleted", delTask);
 
-  return {
-    addTask,
-    deleteTask,
-    setCompleted,
-    getAllTasks, // for testing only
-  };
 })();
 
 export default taskBank;

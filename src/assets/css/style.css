@@ -100,7 +100,7 @@ body {
 }
 
 .project-viewer-title {
-    color: white;
+  color: white;
 }
 
 .project-title {
@@ -109,4 +109,8 @@ body {
 
 .add-task-btn {
   color: red;
+}
+
+.task-container {
+  color: white;
 }
