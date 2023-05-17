@@ -50,16 +50,19 @@ const domService = (() => {
     });
 
     saveBtn.addEventListener("click", () => {
-      // get current project
-    const curProjectName = getCurrentProjectName();
-      // Get field data
       const formEl = document.querySelector(".edit-task-form");
       const taskTitle = formEl.querySelector(".title");
       const taskDescription = formEl.querySelector(".description");
 
-        // clear form 
-        // publish changes 
+      const updatedTask = {};
 
+      updatedTask.name = taskTitle.value;
+      updatedTask.description = taskDescription.value;
+      updatedTask.projName = getCurrentProjectName();
+
+      pubSub.publish("taskModified", updatedTask);
+
+      formEl.remove();
     });
 
     taskContainer.appendChild(form);
@@ -67,6 +70,7 @@ const domService = (() => {
 
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
+      newTaskContainer.id = 'active-container'
 
     const nameEl = document.createElement("p");
     const descriptionEl = document.createElement("p");
@@ -109,12 +113,10 @@ const domService = (() => {
     newTaskContainer.appendChild(dueDateEl);
     newTaskContainer.appendChild(taskMenuContainer);
 
-    newTaskContainer.setAttribute("data-id", dataId);
 
     editBtnEL.addEventListener("click", () => {
       //expand task interface
       expandTask(newTaskContainer);
-
       // show edit fields
       // allow user input
       // save to submit
@@ -127,9 +129,6 @@ const domService = (() => {
 
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
-
-    const newTaskContainer = document.createElement("div");
-    newTaskContainer.classList.add("task-container");
 
     const taskHtmlElement = _createNewTaskNode(task);
     taskViewer.appendChild(taskHtmlElement);
@@ -255,8 +254,8 @@ const domService = (() => {
     const template = document.getElementById("newTaskTemplate");
     const formNode = template.content.cloneNode(true);
 
-    const taskContainer = document.querySelector(".project-viewer");
-    taskContainer.appendChild(formNode);
+    const projectViewer = document.querySelector(".project-viewer");
+    projectViewer.appendChild(formNode);
 
     const cancelBtn = document.querySelector(".cancel-task-btn");
     cancelBtn.addEventListener("click", () => {
@@ -308,7 +307,22 @@ const domService = (() => {
     createInbox();
   };
 
+  const getCurrentContainer = () => {
+    const openCon = document.getElementById("active-container");
+      
+      return openCon
+      };
+
+  const showUpdatedTask = (task) => {
+      const openContainer = getCurrentContainer(); 
+
+      // use query selector to grab this openContainer
+
+  };
+
   pubSub.subscribe("taskAdded", showTask);
+  // get a hold of actual DOM element and modify it
+  pubSub.subscribe("taskUpdated", showUpdatedTask);
 
   pubSub.subscribe("projectRetrieved", showProject);
   pubSub.subscribe("projectDeleted", showInbox);

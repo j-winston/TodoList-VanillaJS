@@ -22,8 +22,8 @@ const taskBank = (() => {
 
   const addTask = (task) => {
     const project = findProject(task.projName);
+    task.id = project.tasks.length;
     project.tasks.push(task);
-
     pubSub.publish("projectRetrieved", project);
   };
 
@@ -68,6 +68,16 @@ const taskBank = (() => {
     alert("task deleted");
   };
 
+  const updateTask = (taskUpdate) => {
+    const curProject = findProject(taskUpdate.projName);
+    const task = curProject.tasks.filter((task) => task.id === taskUpdate.id);
+
+    task.name = taskUpdate.name;
+    task.description = taskUpdate.description;
+
+    pubSub.publish("taskUpdated", task);
+  };
+
   pubSub.subscribe("inboxClicked", getAllTasks);
 
   pubSub.subscribe("newProjectSubmitted", addProject);
@@ -76,6 +86,7 @@ const taskBank = (() => {
 
   pubSub.subscribe("taskSubmitted", addTask);
   pubSub.subscribe("taskDeleted", delTask);
+  pubSub.subscribe("taskModified", updateTask);
 })();
 
 export default taskBank;
