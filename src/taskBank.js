@@ -24,7 +24,8 @@ const taskBank = (() => {
     const project = findProject(task.projName);
     task.id = project.tasks.length;
     project.tasks.push(task);
-    pubSub.publish("projectRetrieved", project);
+
+    pubSub.publish("projectRetrieved", project); // TODO change to taskAdded
   };
 
   const setCompleted = (id) => {
@@ -68,17 +69,21 @@ const taskBank = (() => {
     alert("task deleted");
   };
 
-  const updateTask = (taskUpdate) => {
+  const updateTask = (taskUpdates) => {
+    const curProject = findProject(taskUpdates.projName);
+    const task = curProject.tasks.filter(
+      (task) => task.id === taskUpdates.id
+    );
 
-    const curProject = findProject(taskUpdate.projName);
-    const task = curProject.tasks.filter((task) => task.id === taskUpdate.id);
+    task.name = taskUpdates.name;
+    task.description = taskUpdates.description;
+    task.duedate = taskUpdates.duedate;
+    task.completed = false;
 
-    task.name = taskUpdate.name;
-    task.description = taskUpdate.description;
-
-      pubSub.publish('taskUpdated', task); 
+    pubSub.publish("taskUpdated", task);
   };
 
+  // Subscriptions
   pubSub.subscribe("inboxClicked", getAllTasks);
 
   pubSub.subscribe("newProjectSubmitted", addProject);

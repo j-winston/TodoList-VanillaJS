@@ -46,11 +46,11 @@
           </div>
           <div class="add-project-btn">+</div>
         </div>
+
         <div class="project-viewer">
           <h1 class="project-viewer-title"></h1>
-
           <div class="project-tasks">
-            <div class="task-container" id='active-container'>
+            <div class="task-container" id="active-container">
               <p class="task-title"></p>
               <p class="task-description"></p>
               <p class="task-due-date"></p>
@@ -60,6 +60,7 @@
               </div>
             </div>
           </div>
+
           <template id="editTaskTemplate">
             <form action="#" class="edit-task-form" method="get">
               <div class="inputs">
@@ -77,20 +78,18 @@
                   id="description"
                   class="description"
                 />
-                <input
-                  type="text"
-                  placeholder="due date"
-                  id="duedate"
-                  class="dueDate"
-                />
+                <input type="date" id="duedate" class="date-picker" />
+
                 <button class="cancel-btn">Cancel</button>
-                <button class="save-btn" type='submit'>Save</button>
+                <button class="save-btn" type="submit">Save</button>
               </div>
             </form>
           </template>
+
           <template id="newTaskTemplate">
             <form action="#" class="new-task-form" method="get">
               <div class="form-inputs">
+                <input type="radio" id="completed" class="radio-button" />
                 <input
                   type="text"
                   placeholder="Pickup Julie @ 3pm"
@@ -103,12 +102,13 @@
                   required="required"
                   id="description"
                 />
-                <input type="text" placeholder="Due today" id="duedate" />
+                <input type="date" id="duedate" class="date-picker" />
               </div>
               <div class="form-confirm">
                 <button class="confirm-task-btn" type="submit">Add Task</button>
                 <button class="cancel-task-btn">Cancel</button>
               </div>
+              <div class="form-date"></div>
             </form>
           </template>
           <div class="add-task-btn">+</div>

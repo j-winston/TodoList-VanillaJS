@@ -1,6 +1,7 @@
 // domService.js
 // Role: Service provider
-// Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM events to pubSub
+// Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM related events to pubSub
+
 import pubSub from "./pubsub";
 
 const hideElement = (el) => {
@@ -10,6 +11,7 @@ const hideElement = (el) => {
 const showElement = (el) => {
   el.style.visibility = "visible";
 };
+
 const domService = (() => {
   const removeElement = (el) => {
     el.remove();
@@ -31,19 +33,23 @@ const domService = (() => {
       .forEach((task) => removeElement(task));
   };
 
-  const expandTask = (taskContainer) => {
-      taskContainer.id = 'active-container'; 
-    const title = taskContainer.querySelector(".task-title");
-    const description = taskContainer.querySelector(".task-description");
+  const showTaskEditMenu = (taskContainer) => {
+    taskContainer.id = "active-container";
+    const titleEl = taskContainer.querySelector(".task-title");
+    const descriptionEl = taskContainer.querySelector(".task-description");
+    const dueDateEl = taskContainer.querySelector(".task-due-date");
 
+    // TODO create function showForm(editTask), showForm(newTask);
     const template = document.getElementById("editTaskTemplate");
+    //this is the form that shows when you click edit
     const form = template.content.cloneNode(true);
 
     const cancelBtn = form.querySelector(".cancel-btn");
     const saveBtn = form.querySelector(".save-btn");
 
-    form.getElementById("title").value = title.textContent;
-    form.getElementById("description").value = description.textContent;
+    form.getElementById("title").value = titleEl.textContent;
+    form.getElementById("description").value = descriptionEl.textContent;
+    form.getElementById("duedate").value = dueDateEl.textContent;
 
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".edit-task-form");
@@ -51,19 +57,23 @@ const domService = (() => {
     });
 
     saveBtn.addEventListener("click", () => {
-      const formEl = document.querySelector(".edit-task-form");
-      const taskTitle = formEl.querySelector(".title");
-      const taskDescription = formEl.querySelector(".description");
+      const editTaskForm = document.querySelector(".edit-task-form");
+
+      const titleEl = editTaskForm.querySelector('input[class="title"]');
+      const descriptionEl = editTaskForm.querySelector(
+        'input[class="description"]'
+      );
+      const dueDateEl = editTaskForm.querySelector('input[type="date"]');
 
       const updatedTask = {};
-
-      updatedTask.name = taskTitle.value;
-      updatedTask.description = taskDescription.value;
       updatedTask.projName = getCurrentProjectName();
+      updatedTask.name = titleEl.value;
+      updatedTask.description = descriptionEl.value;
+      updatedTask.duedate = dueDateEl.value;
 
       pubSub.publish("taskModified", updatedTask);
 
-      formEl.remove();
+      editTaskForm.remove();
     });
 
     taskContainer.appendChild(form);
@@ -82,11 +92,11 @@ const domService = (() => {
     const descriptionEl = document.createElement("p");
     const dueDateEl = document.createElement("p");
 
-    const taskMenuContainer = document.createElement("div");
+    const taskBtnContainer = document.createElement("div");
     const deleteBtnEl = document.createElement("div");
     const editBtnEL = document.createElement("div");
 
-    taskMenuContainer.classList.add("task-menu-container");
+    taskBtnContainer.classList.add("task-btn-container");
 
     editBtnEL.classList.add("edit-btn");
     editBtnEL.textContent = "Edit";
@@ -98,8 +108,8 @@ const domService = (() => {
       pubSub.publish("taskDeleted", task);
     });
 
-    taskMenuContainer.appendChild(editBtnEL);
-    taskMenuContainer.appendChild(deleteBtnEl);
+    taskBtnContainer.appendChild(editBtnEL);
+    taskBtnContainer.appendChild(deleteBtnEl);
 
     newTaskContainer.classList.add("task-container");
 
@@ -112,23 +122,14 @@ const domService = (() => {
     dueDateEl.classList.add("task-due-date");
     dueDateEl.textContent = task.duedate;
 
-    const dataId = task.id;
-
     newTaskContainer.appendChild(nameEl);
     newTaskContainer.appendChild(descriptionEl);
     newTaskContainer.appendChild(dueDateEl);
-    newTaskContainer.appendChild(taskMenuContainer);
+    newTaskContainer.appendChild(taskBtnContainer);
 
     editBtnEL.addEventListener("click", () => {
-      //expand task interface
-      expandTask(newTaskContainer);
-      // show edit fields
-      // allow user input
-      // save to submit
-      // overwrite task in dom
-      // publish the update
+      showTaskEditMenu(newTaskContainer);
     });
-
 
     return newTaskContainer;
   };
@@ -136,8 +137,8 @@ const domService = (() => {
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
 
-    const taskHtmlElement = _createNewTaskNode(task);
-    taskViewer.appendChild(taskHtmlElement);
+    const taskEl = _createNewTaskNode(task);
+    taskViewer.appendChild(taskEl);
   };
 
   const showProject = (project) => {
@@ -254,9 +255,6 @@ const domService = (() => {
   };
 
   const showNewTaskForm = () => {
-    const addTaskBtn = document.querySelector(".add-task-btn");
-    hideElement(addTaskBtn);
-
     const template = document.getElementById("newTaskTemplate");
     const formNode = template.content.cloneNode(true);
 
@@ -267,16 +265,19 @@ const domService = (() => {
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".new-task-form");
       formEl.remove();
+      showElement(addTaskBtn);
     });
 
     const confirmBtn = document.querySelector(".confirm-task-btn");
     confirmBtn.addEventListener("click", (event) => {
+      //TODO change to getFormData
       getTaskFormData(event);
-      showElement(addTaskBtn);
+      showElement(document.querySelector(".add-task-btn"));
     });
   };
 
   const addNewTask = () => {
+    hideElement(document.querySelector(".add-task-btn"));
     showNewTaskForm();
   };
 
@@ -320,14 +321,18 @@ const domService = (() => {
   };
 
   const showUpdatedTask = (task) => {
-    const taskName = task.name;
-    const taskDescription = task.description;
+    const name = task.name;
+    const description = task.description;
+    const dueDate = task.duedate;
+    alert(task.duedate);
 
     const activeContainer = getCurrentContainer();
-    activeContainer.querySelector(".task-title").textContent = taskName;
+    activeContainer.querySelector(".task-title").textContent = name;
 
     activeContainer.querySelector(".task-description").textContent =
-      taskDescription;
+      description;
+
+    activeContainer.querySelector(".task-due-date").textContent = dueDate;
   };
 
   pubSub.subscribe("taskAdded", showTask);
