@@ -50,7 +50,7 @@
           <h1 class="project-viewer-title"></h1>
 
           <div class="project-tasks">
-            <div class="task-container">
+            <div class="task-container" id='active-container'>
               <p class="task-title"></p>
               <p class="task-description"></p>
               <p class="task-due-date"></p>
@@ -77,8 +77,14 @@
                   id="description"
                   class="description"
                 />
-                <div class="cancel-btn">Cancel</div>
-                <div class="save-btn">Save</div>
+                <input
+                  type="text"
+                  placeholder="due date"
+                  id="duedate"
+                  class="dueDate"
+                />
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn" type='submit'>Save</button>
               </div>
             </form>
           </template>

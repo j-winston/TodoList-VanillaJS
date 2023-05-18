@@ -69,13 +69,14 @@ const taskBank = (() => {
   };
 
   const updateTask = (taskUpdate) => {
+
     const curProject = findProject(taskUpdate.projName);
     const task = curProject.tasks.filter((task) => task.id === taskUpdate.id);
 
     task.name = taskUpdate.name;
     task.description = taskUpdate.description;
 
-    pubSub.publish("taskUpdated", task);
+      pubSub.publish('taskUpdated', task); 
   };
 
   pubSub.subscribe("inboxClicked", getAllTasks);

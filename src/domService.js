@@ -4,11 +4,11 @@
 import pubSub from "./pubsub";
 
 const hideElement = (el) => {
-  el.style.display = "hidden";
+  el.style.visibility = "hidden";
 };
 
 const showElement = (el) => {
-  el.style.display = "visible";
+  el.style.visibility = "visible";
 };
 const domService = (() => {
   const removeElement = (el) => {
@@ -32,6 +32,7 @@ const domService = (() => {
   };
 
   const expandTask = (taskContainer) => {
+      taskContainer.id = 'active-container'; 
     const title = taskContainer.querySelector(".task-title");
     const description = taskContainer.querySelector(".task-description");
 
@@ -68,9 +69,14 @@ const domService = (() => {
     taskContainer.appendChild(form);
   };
 
+  const setActiveContainer = (newContainer) => {
+    // get old container and remove active
+    document.getElementById("active-container").id = "inactive-container";
+    newContainer.id = "active-container";
+  };
+
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
-      newTaskContainer.id = 'active-container'
 
     const nameEl = document.createElement("p");
     const descriptionEl = document.createElement("p");
@@ -113,7 +119,6 @@ const domService = (() => {
     newTaskContainer.appendChild(dueDateEl);
     newTaskContainer.appendChild(taskMenuContainer);
 
-
     editBtnEL.addEventListener("click", () => {
       //expand task interface
       expandTask(newTaskContainer);
@@ -123,6 +128,7 @@ const domService = (() => {
       // overwrite task in dom
       // publish the update
     });
+
 
     return newTaskContainer;
   };
@@ -308,16 +314,20 @@ const domService = (() => {
   };
 
   const getCurrentContainer = () => {
-    const openCon = document.getElementById("active-container");
-      
-      return openCon
-      };
+    const taskContainer = document.getElementById("active-container");
+
+    return taskContainer;
+  };
 
   const showUpdatedTask = (task) => {
-      const openContainer = getCurrentContainer(); 
+    const taskName = task.name;
+    const taskDescription = task.description;
 
-      // use query selector to grab this openContainer
+    const activeContainer = getCurrentContainer();
+    activeContainer.querySelector(".task-title").textContent = taskName;
 
+    activeContainer.querySelector(".task-description").textContent =
+      taskDescription;
   };
 
   pubSub.subscribe("taskAdded", showTask);
