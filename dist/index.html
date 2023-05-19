@@ -48,19 +48,6 @@
         </div>
 
         <div class="project-viewer">
-          <h1 class="project-viewer-title"></h1>
-          <div class="project-tasks">
-            <div class="task-container" id="active-container">
-              <p class="task-title"></p>
-              <p class="task-description"></p>
-              <p class="task-due-date"></p>
-              <div class="task-edit-menu">
-                <div class="delete-task"></div>
-                <div class="edit-task"></div>
-              </div>
-            </div>
-          </div>
-
           <template id="editTaskTemplate">
             <form action="#" class="edit-task-form" method="get">
               <div class="inputs">
@@ -85,11 +72,22 @@
               </div>
             </form>
           </template>
+          <h1 class="project-viewer-title"></h1>
+          <div class="project-tasks">
+            <div class="task-container" id="active-container">
+              <p class="task-title"></p>
+              <p class="task-description"></p>
+              <p class="task-due-date"></p>
+              <div class="task-edit-menu">
+                <div class="delete-task"></div>
+                <div class="edit-task"></div>
+              </div>
+            </div>
+          </div>
 
           <template id="newTaskTemplate">
             <form action="#" class="new-task-form" method="get">
               <div class="form-inputs">
-                <input type="radio" id="completed" class="radio-button" />
                 <input
                   type="text"
                   placeholder="Pickup Julie @ 3pm"

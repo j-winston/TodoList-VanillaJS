@@ -4,6 +4,12 @@
 import pubSub from "./pubsub";
 
 const taskBank = (() => {
+  const createUid = () => {
+    return (
+      Date.now.toString(32) + Math.random(16).toString(16).replace(/\./g, "")
+    );
+  };
+
   const projects = [];
 
   const findProject = (name) => {
@@ -20,12 +26,19 @@ const taskBank = (() => {
     return index;
   };
 
-  const addTask = (task) => {
-    const project = findProject(task.projName);
-    task.id = project.tasks.length;
+  const addTask = (formValues) => {
+    const task = {};
+    const id = createUid();
+    task.id = id;
+
+    for (const field in formValues) {
+      task[field] = formValues[field];
+    }
+
+    const project = findProject(formValues.projName);
     project.tasks.push(task);
 
-    pubSub.publish("projectRetrieved", project); // TODO change to taskAdded
+    pubSub.publish("taskAdded", task); // TODO change to taskAdded
   };
 
   const setCompleted = (id) => {
@@ -54,6 +67,7 @@ const taskBank = (() => {
 
   const addProject = (projName) => {
     const project = {
+      id: createUid(),
       name: projName,
       tasks: [],
     };
@@ -66,21 +80,19 @@ const taskBank = (() => {
     const taskIndex = proj.tasks.indexOf(task);
 
     proj.tasks.splice(taskIndex, 1);
-    alert("task deleted");
   };
 
-  const updateTask = (taskUpdates) => {
-    const curProject = findProject(taskUpdates.projName);
-    const task = curProject.tasks.filter(
-      (task) => task.id === taskUpdates.id
-    );
-
-    task.name = taskUpdates.name;
-    task.description = taskUpdates.description;
-    task.duedate = taskUpdates.duedate;
-    task.completed = false;
-
-    pubSub.publish("taskUpdated", task);
+  const updateTask = (formValues) => {
+    projects.forEach((project) => {
+      for (const task of project.tasks) {
+        if (task.id === formValues.id) {
+          for (const taskField in task) {
+            task[taskField] = formValues[taskField];
+          }
+          pubSub.publish("taskUpdated", task);
+        }
+      }
+    });
   };
 
   // Subscriptions
@@ -90,9 +102,9 @@ const taskBank = (() => {
   pubSub.subscribe("projectClicked", getProject);
   pubSub.subscribe("projectRemoved", deleteProject);
 
-  pubSub.subscribe("taskSubmitted", addTask);
+  pubSub.subscribe("taskFormSubmitted", addTask);
   pubSub.subscribe("taskDeleted", delTask);
-  pubSub.subscribe("taskModified", updateTask);
+  pubSub.subscribe("taskEditSubmitted", updateTask);
 })();
 
 export default taskBank;

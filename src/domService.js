@@ -35,18 +35,20 @@ const domService = (() => {
 
   const showTaskEditMenu = (taskContainer) => {
     taskContainer.id = "active-container";
+
+    // We can use the current task info to autofill the edit fields
     const titleEl = taskContainer.querySelector(".task-title");
     const descriptionEl = taskContainer.querySelector(".task-description");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
 
-    // TODO create function showForm(editTask), showForm(newTask);
+    // When user clicks edit, show the edit form
     const template = document.getElementById("editTaskTemplate");
-    //this is the form that shows when you click edit
     const form = template.content.cloneNode(true);
 
     const cancelBtn = form.querySelector(".cancel-btn");
     const saveBtn = form.querySelector(".save-btn");
 
+    // Populate the form inputs initially with current values
     form.getElementById("title").value = titleEl.textContent;
     form.getElementById("description").value = descriptionEl.textContent;
     form.getElementById("duedate").value = dueDateEl.textContent;
@@ -57,6 +59,7 @@ const domService = (() => {
     });
 
     saveBtn.addEventListener("click", () => {
+      // We grab all the input values once they click save
       const editTaskForm = document.querySelector(".edit-task-form");
 
       const titleEl = editTaskForm.querySelector('input[class="title"]');
@@ -65,14 +68,22 @@ const domService = (() => {
       );
       const dueDateEl = editTaskForm.querySelector('input[type="date"]');
 
-      const updatedTask = {};
-      updatedTask.projName = getCurrentProjectName();
-      updatedTask.name = titleEl.value;
-      updatedTask.description = descriptionEl.value;
-      updatedTask.duedate = dueDateEl.value;
+      // Finally, broadcast all the stored edits along unique
+      // task id
+      const taskEditFormValues = {};
+      const taskId = document
+        .querySelector(".task-container")
+        .getAttribute("data-id");
 
-      pubSub.publish("taskModified", updatedTask);
+      taskEditFormValues.id = taskId;
+      taskEditFormValues.projName = getCurrentProjectName();
+      taskEditFormValues.name = titleEl.value;
+      taskEditFormValues.description = descriptionEl.value;
+      taskEditFormValues.duedate = dueDateEl.value;
 
+      pubSub.publish("taskEditSubmitted", taskEditFormValues);
+
+      // Once saved, remove the edit form
       editTaskForm.remove();
     });
 
@@ -87,6 +98,7 @@ const domService = (() => {
 
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
+    newTaskContainer.setAttribute("data-id", task.id);
 
     const nameEl = document.createElement("p");
     const descriptionEl = document.createElement("p");
@@ -95,23 +107,6 @@ const domService = (() => {
     const taskBtnContainer = document.createElement("div");
     const deleteBtnEl = document.createElement("div");
     const editBtnEL = document.createElement("div");
-
-    taskBtnContainer.classList.add("task-btn-container");
-
-    editBtnEL.classList.add("edit-btn");
-    editBtnEL.textContent = "Edit";
-
-    deleteBtnEl.classList.add("delete-btn");
-    deleteBtnEl.textContent = "Del";
-    deleteBtnEl.addEventListener("click", () => {
-      removeElement(newTaskContainer);
-      pubSub.publish("taskDeleted", task);
-    });
-
-    taskBtnContainer.appendChild(editBtnEL);
-    taskBtnContainer.appendChild(deleteBtnEl);
-
-    newTaskContainer.classList.add("task-container");
 
     nameEl.classList.add("task-title");
     nameEl.textContent = task.name;
@@ -122,14 +117,38 @@ const domService = (() => {
     dueDateEl.classList.add("task-due-date");
     dueDateEl.textContent = task.duedate;
 
+    deleteBtnEl.classList.add("delete-btn");
+    deleteBtnEl.textContent = "Del";
+    deleteBtnEl.addEventListener("click", () => {
+      removeElement(newTaskContainer);
+      pubSub.publish("taskDeleted", task);
+    });
+
+    taskBtnContainer.classList.add("task-btn-container");
+    editBtnEL.classList.add("edit-btn");
+
+    editBtnEL.textContent = "Edit";
+    editBtnEL.addEventListener("click", () => {
+      showTaskEditMenu(newTaskContainer);
+    });
+    const taskCompleteBtn = document.createElement("input");
+    taskCompleteBtn.setAttribute("type", "checkbox");
+    taskCompleteBtn.classList.add("task-complete-btn");
+
+    taskCompleteBtn.addEventListener("click", () => {
+      removeElement(newTaskContainer);
+    });
+
+    taskBtnContainer.appendChild(editBtnEL);
+    taskBtnContainer.appendChild(deleteBtnEl);
+
+    newTaskContainer.classList.add("task-container");
+
+    newTaskContainer.appendChild(taskCompleteBtn);
     newTaskContainer.appendChild(nameEl);
     newTaskContainer.appendChild(descriptionEl);
     newTaskContainer.appendChild(dueDateEl);
     newTaskContainer.appendChild(taskBtnContainer);
-
-    editBtnEL.addEventListener("click", () => {
-      showTaskEditMenu(newTaskContainer);
-    });
 
     return newTaskContainer;
   };
@@ -236,22 +255,26 @@ const domService = (() => {
     // START HERE Get all task form data and publish it
     // along with current project
     event.preventDefault();
-    const task = {};
+    const formValues = {};
 
     const formInputs = document.querySelectorAll(
       ".new-task-form .form-inputs input"
     );
-    formInputs.forEach((inputEl) => {
-      //-> task[description] = 'sweep up the kitchen'
-      task[inputEl.id] = inputEl.value;
+
+    formInputs.forEach((input) => {
+      //-> title = 'clean up room'
+      formValues[input.id] = input.value;
     });
 
-    task.projName = getCurrentProjectName();
+    formValues.projName = getCurrentProjectName();
+    formValues.id = document
+      .querySelector(".task-container")
+      .getAttribute("data-id");
 
     const form = document.querySelector(".new-task-form");
     removeElement(form);
 
-    pubSub.publish("taskSubmitted", task);
+    pubSub.publish("taskFormSubmitted", formValues);
   };
 
   const showNewTaskForm = () => {
@@ -314,25 +337,28 @@ const domService = (() => {
     createInbox();
   };
 
-  const getCurrentContainer = () => {
-    const taskContainer = document.getElementById("active-container");
-
-    return taskContainer;
+  const getTaskContainer = (taskId) => {
+    // Return the div container for the task
+    return document.querySelector("[data-id=" + `${taskId}` + "]");
   };
 
   const showUpdatedTask = (task) => {
+    // get whats currently on the stinking screen and change it
     const name = task.name;
     const description = task.description;
     const dueDate = task.duedate;
-    alert(task.duedate);
 
-    const activeContainer = getCurrentContainer();
-    activeContainer.querySelector(".task-title").textContent = name;
+    alert(name);
+    alert(description);
+    alert(dueDate);
 
-    activeContainer.querySelector(".task-description").textContent =
-      description;
+    const container = getTaskContainer(task.id);
 
-    activeContainer.querySelector(".task-due-date").textContent = dueDate;
+    container.querySelector(".task-title").textContent = name;
+
+    container.querySelector(".task-description").textContent = description;
+
+    container.querySelector(".task-due-date").textContent = dueDate;
   };
 
   pubSub.subscribe("taskAdded", showTask);
