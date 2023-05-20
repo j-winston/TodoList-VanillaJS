@@ -98,7 +98,6 @@ const domService = (() => {
     const newTaskContainer = document.createElement("div");
     newTaskContainer.setAttribute("data-id", task.id);
 
-    alert(getCurrentProjectName());
     const nameEl = document.createElement("p");
     const descriptionEl = document.createElement("p");
     const dueDateEl = document.createElement("p");
@@ -347,11 +346,6 @@ const domService = (() => {
     const name = task.name;
     const description = task.description;
     const dueDate = task.duedate;
-
-    alert(name);
-    alert(description);
-    alert(dueDate);
-
     const container = getTaskContainer(task.id);
 
     container.querySelector(".task-title").textContent = name;
