@@ -336,7 +336,11 @@ const domService = (() => {
 
   const getTaskContainer = (taskId) => {
     // Return the div container for the task
-    return document.querySelector("[data-id=" + `${taskId}` + "]");
+    const container = document.querySelector(
+      "[data-id=" + CSS.escape(taskId) + "]"
+    );
+
+    return container;
   };
 
   const showUpdatedTask = (task) => {
