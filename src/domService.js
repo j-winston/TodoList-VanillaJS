@@ -267,9 +267,6 @@ const domService = (() => {
     });
 
     formValues.projName = getCurrentProjectName();
-    formValues.id = document
-      .querySelector(".task-container")
-      .getAttribute("data-id");
 
     const form = document.querySelector(".new-task-form");
     removeElement(form);

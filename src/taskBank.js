@@ -5,9 +5,8 @@ import pubSub from "./pubsub";
 
 const taskBank = (() => {
   const createUid = () => {
-    return (
-      Date.now.toString(32) + Math.random(16).toString(16).replace(/\./g, "")
-    );
+      const UID = Date.now().toString(32) + Math.random(16).toString(16).replace(/\./g, "") ;
+      alert(UID);
   };
 
   const projects = [];
@@ -37,6 +36,7 @@ const taskBank = (() => {
 
     const project = findProject(formValues.projName);
     project.tasks.push(task);
+
 
     pubSub.publish("taskAdded", task); // TODO change to taskAdded
   };
@@ -86,9 +86,9 @@ const taskBank = (() => {
     projects.forEach((project) => {
       for (const task of project.tasks) {
         if (task.id === formValues.id) {
-          for (const taskField in task) {
-            task[taskField] = formValues[taskField];
-          }
+            for(const taskField in task){
+                task[taskField] = formValues[taskField]
+            }
           pubSub.publish("taskUpdated", task);
         }
       }
