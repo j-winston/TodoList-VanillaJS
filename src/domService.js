@@ -279,7 +279,7 @@ const domService = (() => {
     const projectViewer = document.querySelector(".project-viewer");
     projectViewer.appendChild(formNode);
 
-      const addTaskBtn = document.querySelector('.add-task-btn');
+    const addTaskBtn = document.querySelector(".add-task-btn");
     const cancelBtn = document.querySelector(".cancel-task-btn");
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".new-task-form");

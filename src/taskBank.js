@@ -4,27 +4,36 @@
 import pubSub from "./pubsub";
 
 const taskBank = (() => {
+
   const createUid = () => {
     const uid =
       Date.now().toString(32) + Math.random(16).toString(16).replace(/\./g, "");
     return uid;
   };
 
-  const projects = [];
+
+  const saveProject = (project) => {
+    localStorage.setItem(`${project.name}`, JSON.stringify(project));
+  };
+
+  const loadProject = (name) => {
+    const jsnData = localStorage.getItem(`${name}`);
+    const project = JSON.parse(jsnData);
+    return project;
+  };
+
+  const addToProject = (task) => {
+    const project = loadProject(`${task.projName}`);
+    project.tasks.push(task);
+
+    saveProject(project);
+  };
 
   const findProject = (name) => {
-    for (const project of projects) {
-      if (project.name === name) {
-        return project;
-      }
-    }
+    const project = loadProject(`${name}`);
+    return project;
   };
 
-  const _getTaskIndex = (id) => {
-    const index = tasks.findIndex((task) => task.id === id);
-
-    return index;
-  };
 
   const addTask = (formValues) => {
     const task = {};
@@ -35,34 +44,26 @@ const taskBank = (() => {
       task[field] = formValues[field];
     }
 
-    const project = findProject(formValues.projName);
-    project.tasks.push(task);
+    addToProject(task);
 
-    pubSub.publish("taskAdded", task); // TODO change to taskAdded
+    pubSub.publish("taskAdded", task);
   };
 
-  const setCompleted = (id) => {
-    const index = _getTaskIndex(id);
-    tasks[index].completed = true;
-    // pubSub.publish('task-updated',)
-  };
 
   const getAllTasks = () => {
     pubSub.publish("tasksRetrieved", tasks);
   };
 
-  // this should retrieve then entire project
+  // this should retrieve the entire project
   const getProject = (name) => {
     const proj = findProject(name);
     pubSub.publish("projectRetrieved", proj);
   };
 
-  const deleteProject = (projName) => {
-    const proj = findProject(projName);
-    const index = projects.indexOf(proj);
+  const removeProject = (name) => {
+    localStorage.removeItem(`${name}`);
 
-    projects.splice(index, 1);
-    pubSub.publish("projectDeleted", projName);
+    pubSub.publish("projectDeleted", name);
   };
 
   const addProject = (projName) => {
@@ -72,27 +73,45 @@ const taskBank = (() => {
       tasks: [],
     };
 
-    projects.push(project);
+    saveProject(project);
   };
 
   const delTask = (task) => {
-    const proj = findProject(task.projName);
-    const taskIndex = proj.tasks.indexOf(task);
+    const projName = task.projName;
+    const project = loadProject(projName);
+    const taskIndex = project.tasks.indexOf(task);
 
-    proj.tasks.splice(taskIndex, 1);
+    project.tasks.splice(taskIndex, 1);
+    saveProject(project);
+  };
+
+  const loadTask = (taskId, projName) => {
+    const proj = loadProject(projName);
+    for (const task of proj.tasks) {
+      if (task.id === taskId) {
+        return task;
+      }
+    }
+  };
+
+  const saveTask = (task) => {
+    const proj = loadProject(task.projName);
+    proj.tasks.push(task);
+
+    saveProject(proj);
   };
 
   const updateTask = (formValues) => {
-    projects.forEach((project) => {
-      for (const task of project.tasks) {
-        if (task.id === formValues.id) {
-          for (const taskField in task) {
-            task[taskField] = formValues[taskField];
-          }
-          pubSub.publish("taskUpdated", task);
-        }
-      }
-    });
+    const projName = formValues.projName;
+    const taskId = formValues.id;
+    const task = loadTask(taskId, projName);
+
+    for (const inputEntry in task) {
+      task[inputEntry] = formValues[inputEntry];
+    }
+
+    saveTask(task);
+    pubSub.publish("taskUpdated", task);
   };
 
   // Subscriptions
@@ -100,11 +119,11 @@ const taskBank = (() => {
 
   pubSub.subscribe("newProjectSubmitted", addProject);
   pubSub.subscribe("projectClicked", getProject);
-  pubSub.subscribe("projectRemoved", deleteProject);
+  pubSub.subscribe("projectRemoved", removeProject);
 
   pubSub.subscribe("taskFormSubmitted", addTask);
-  pubSub.subscribe("taskDeleted", delTask);
   pubSub.subscribe("taskEditSubmitted", updateTask);
+  pubSub.subscribe("taskDeleted", delTask);
 })();
 
 export default taskBank;
