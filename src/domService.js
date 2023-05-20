@@ -71,9 +71,7 @@ const domService = (() => {
       // Finally, broadcast all the stored edits along unique
       // task id
       const taskEditFormValues = {};
-      const taskId = document
-        .querySelector(".task-container")
-        .getAttribute("data-id");
+      const taskId = taskContainer.getAttribute("data-id");
 
       taskEditFormValues.id = taskId;
       taskEditFormValues.projName = getCurrentProjectName();
@@ -100,6 +98,7 @@ const domService = (() => {
     const newTaskContainer = document.createElement("div");
     newTaskContainer.setAttribute("data-id", task.id);
 
+    alert(getCurrentProjectName());
     const nameEl = document.createElement("p");
     const descriptionEl = document.createElement("p");
     const dueDateEl = document.createElement("p");

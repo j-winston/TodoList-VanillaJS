@@ -89,6 +89,7 @@ const taskBank = (() => {
           for (const taskField in task) {
             task[taskField] = formValues[taskField];
           }
+          alert("task found");
           pubSub.publish("taskUpdated", task);
         }
       }
