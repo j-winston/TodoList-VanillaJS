@@ -90,17 +90,21 @@
               <div class="form-inputs">
                 <input
                   type="text"
-                  placeholder="Pickup Julie @ 3pm"
+                  placeholder="Task Name"
                   required="required"
                   id="name"
                 />
                 <input
                   type="text"
-                  placeholder="Ballet class ends 2 hours early today"
+                  placeholder="Description"
                   required="required"
                   id="description"
                 />
-                <input type="date" id="duedate" class="date-picker" />
+                <div class="due-date-container">
+                    <div class="due-date-btn">Due on</div>
+
+                  <input type="date" id="duedate" class="date-picker" />
+                </div>
               </div>
               <div class="form-confirm">
                 <button class="confirm-task-btn" type="submit">Add Task</button>
@@ -109,6 +113,7 @@
               <div class="form-date"></div>
             </form>
           </template>
+
           <div class="add-task-btn">+</div>
         </div>
       </div>

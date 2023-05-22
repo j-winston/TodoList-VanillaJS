@@ -209,7 +209,7 @@ const domService = (() => {
     projectTitleElement.className = "project-title";
 
     projectTitleElement.addEventListener("click", () => {
-        showProject(project)
+      showProject(project);
       updateTaskViewerTitle(project.name);
     });
     projectTitleElement.textContent = project.name;
@@ -285,6 +285,13 @@ const domService = (() => {
 
     const projectViewer = document.querySelector(".project-viewer");
     projectViewer.appendChild(formNode);
+
+const dueDateBtn = document.querySelector('.due-date-btn');
+      dueDateBtn.addEventListener('click', ()=> {
+          const datePicker= document.getElementById('duedate');
+          datePicker.showPicker();
+          
+      })
 
     const addTaskBtn = document.querySelector(".add-task-btn");
     const cancelBtn = document.querySelector(".cancel-task-btn");
