@@ -57,13 +57,13 @@ const taskBank = (() => {
     pubSub.publish("projectRetrieved", proj);
   };
 
-  const removeProject = (name) => {
-    localStorage.removeItem(`${name}`);
+  const removeProject = (project) => {
+    localStorage.removeItem(`${project.name}`);
 
-    pubSub.publish("projectDeleted", name);
+    pubSub.publish("projectDeleted", project);
   };
 
-  const addProject = (projName) => {
+  const addNewProject = (projName) => {
     const project = {
       id: createUid(),
       name: projName,
@@ -71,6 +71,7 @@ const taskBank = (() => {
     };
 
     saveProject(project);
+    pubSub.publish("projectAdded", project);
   };
 
   const delTask = (task) => {
@@ -116,11 +117,11 @@ const taskBank = (() => {
 
     while (localStorage.key(index)) {
       const projName = localStorage.key(index);
-      findProject(projName);
+      const project = findProject(projName);
 
       index++;
 
-      pubSub.publish("savedProjectLoaded", projName);
+      pubSub.publish("projectRetrieved", project);
     }
   };
 
@@ -129,9 +130,10 @@ const taskBank = (() => {
   // }
 
   // Subscriptions
+  pubSub.subscribe("pageLoaded", loadSavedProjects);
   pubSub.subscribe("inboxClicked", getAllTasks);
 
-  pubSub.subscribe("newProjectSubmitted", addProject);
+  pubSub.subscribe("newProjectSubmitted", addNewProject);
   pubSub.subscribe("projectClicked", getProject);
   pubSub.subscribe("projectRemoved", removeProject);
 

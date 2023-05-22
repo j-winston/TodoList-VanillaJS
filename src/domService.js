@@ -4,6 +4,9 @@
 
 import pubSub from "./pubsub";
 
+window.onload = (event) => {
+  pubSub.publish("pageLoaded");
+};
 const hideElement = (el) => {
   el.style.visibility = "hidden";
 };
@@ -22,9 +25,16 @@ const domService = (() => {
     return name;
   };
 
-  const updateProjectList = (projectEl) => {
-    const projectListContainer = document.querySelector(".project-container");
-    projectListContainer.appendChild(projectEl);
+  const updateProjectList = (project) => {
+    if (
+      !document.querySelector("[data-id=" + CSS.escape(project.id) + "]") &&
+      project.name != "Inbox"
+    ) {
+      const projectEl = createProjectElement(project);
+      const projectListContainer = document.querySelector(".project-container");
+
+      projectListContainer.appendChild(projectEl);
+    }
   };
 
   const clearTaskViewer = () => {
@@ -159,6 +169,7 @@ const domService = (() => {
   };
 
   const showProject = (project) => {
+    updateProjectList(project);
     clearTaskViewer();
     updateTaskViewerTitle(project.name);
 
@@ -167,14 +178,14 @@ const domService = (() => {
     }
   };
 
-  const removeProject = (projName) => {
+  const removeProject = (project) => {
     const projectElement = document.querySelector(
-      '[data-id-project-name="' + projName + '"]'
+      "[data-id=" + CSS.escape(project.id) + "]"
     );
 
     removeElement(projectElement);
     clearTaskViewer();
-    pubSub.publish("projectRemoved", projName);
+    pubSub.publish("projectRemoved", project);
   };
 
   const getProjectFormData = () => {
@@ -187,27 +198,27 @@ const domService = (() => {
     return projName;
   };
 
-  const createProjectElement = (projectName) => {
+  const createProjectElement = (project) => {
     const projectElement = document.createElement("div");
     const projectTitleElement = document.createElement("div");
     const deleteBtn = document.createElement("div");
 
     projectElement.className = "project";
-    projectElement.setAttribute("data-id-project-name", projectName);
+    projectElement.setAttribute("data-id", project.id);
 
     projectTitleElement.className = "project-title";
 
     projectTitleElement.addEventListener("click", () => {
-      pubSub.publish("projectClicked", projectName);
-      updateTaskViewerTitle(projectName);
+        showProject(project)
+      updateTaskViewerTitle(project.name);
     });
-    projectTitleElement.textContent = projectName;
+    projectTitleElement.textContent = project.name;
 
     deleteBtn.className = "project-delete-btn";
     deleteBtn.textContent = "X";
 
     deleteBtn.addEventListener("click", () => {
-      removeProject(projectName);
+      removeProject(project);
     });
 
     projectElement.appendChild(projectTitleElement);
@@ -226,14 +237,6 @@ const domService = (() => {
 
     submitBtn.addEventListener("click", () => {
       const projName = getProjectFormData();
-
-      //TODO start here-----create API with below functionality
-      const projEl = createProjectElement(projName);
-      updateProjectList(projEl);
-      updateTaskViewerTitle(projName);
-      // END HERE ------>
-
-      clearTaskViewer();
       pubSub.publish("newProjectSubmitted", projName);
     });
 
@@ -332,11 +335,6 @@ const domService = (() => {
     pubSub.publish("projectClicked", "Inbox");
   };
 
-  const initializeUi = () => {
-    startTaskEvents();
-    createInbox();
-  };
-
   const getTaskContainer = (taskId) => {
     // Return the div container for the task
     const container = document.querySelector(
@@ -360,21 +358,18 @@ const domService = (() => {
     container.querySelector(".task-due-date").textContent = dueDate;
   };
 
-  const showLoadedProject = (name) => {
-    const projEl = createProjectElement(name);
-
-    updateProjectList(projEl);
-    updateTaskViewerTitle(name);
+  const initializeUi = () => {
+    startTaskEvents();
+    createInbox();
   };
 
   pubSub.subscribe("taskAdded", showTask);
-  // get a hold of actual DOM element and modify it
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
   pubSub.subscribe("projectRetrieved", showProject);
-  pubSub.subscribe("projectDeleted", showInbox);
+  pubSub.subscribe("projectAdded", showProject);
 
-  pubSub.subscribe("savedProjectLoaded", showLoadedProject);
+  pubSub.subscribe("projectDeleted", showInbox);
 
   return {
     initializeUi,

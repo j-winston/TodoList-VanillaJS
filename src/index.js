@@ -9,4 +9,3 @@ import domService from "./domService";
 import pubSub from "./pubsub";
 
 domService.initializeUi();
-taskBank.loadSavedProjects();
