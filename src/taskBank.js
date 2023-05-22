@@ -4,13 +4,11 @@
 import pubSub from "./pubsub";
 
 const taskBank = (() => {
-
   const createUid = () => {
     const uid =
       Date.now().toString(32) + Math.random(16).toString(16).replace(/\./g, "");
     return uid;
   };
-
 
   const saveProject = (project) => {
     localStorage.setItem(`${project.name}`, JSON.stringify(project));
@@ -31,9 +29,9 @@ const taskBank = (() => {
 
   const findProject = (name) => {
     const project = loadProject(`${name}`);
+
     return project;
   };
-
 
   const addTask = (formValues) => {
     const task = {};
@@ -48,7 +46,6 @@ const taskBank = (() => {
 
     pubSub.publish("taskAdded", task);
   };
-
 
   const getAllTasks = () => {
     pubSub.publish("tasksRetrieved", tasks);
@@ -114,6 +111,23 @@ const taskBank = (() => {
     pubSub.publish("taskUpdated", task);
   };
 
+  const loadSavedProjects = () => {
+    let index = 0;
+
+    while (localStorage.key(index)) {
+      const projName = localStorage.key(index);
+      findProject(projName);
+
+      index++;
+
+      pubSub.publish("savedProjectLoaded", projName);
+    }
+  };
+
+  //const clearAllData = ()=> {
+  //   localStorage.clear();
+  // }
+
   // Subscriptions
   pubSub.subscribe("inboxClicked", getAllTasks);
 
@@ -124,6 +138,10 @@ const taskBank = (() => {
   pubSub.subscribe("taskFormSubmitted", addTask);
   pubSub.subscribe("taskEditSubmitted", updateTask);
   pubSub.subscribe("taskDeleted", delTask);
+
+  return {
+    loadSavedProjects,
+  };
 })();
 
 export default taskBank;

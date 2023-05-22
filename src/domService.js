@@ -226,9 +226,13 @@ const domService = (() => {
 
     submitBtn.addEventListener("click", () => {
       const projName = getProjectFormData();
+
+      //TODO start here-----create API with below functionality
       const projEl = createProjectElement(projName);
       updateProjectList(projEl);
       updateTaskViewerTitle(projName);
+      // END HERE ------>
+
       clearTaskViewer();
       pubSub.publish("newProjectSubmitted", projName);
     });
@@ -356,12 +360,21 @@ const domService = (() => {
     container.querySelector(".task-due-date").textContent = dueDate;
   };
 
+  const showLoadedProject = (name) => {
+    const projEl = createProjectElement(name);
+
+    updateProjectList(projEl);
+    updateTaskViewerTitle(name);
+  };
+
   pubSub.subscribe("taskAdded", showTask);
   // get a hold of actual DOM element and modify it
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
   pubSub.subscribe("projectRetrieved", showProject);
   pubSub.subscribe("projectDeleted", showInbox);
+
+  pubSub.subscribe("savedProjectLoaded", showLoadedProject);
 
   return {
     initializeUi,
