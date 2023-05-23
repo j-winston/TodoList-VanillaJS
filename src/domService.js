@@ -279,6 +279,13 @@ const domService = (() => {
     pubSub.publish("taskFormSubmitted", formValues);
   };
 
+  const parseDate = (dateVal) => {
+    const pickerValue = dateVal.value;
+    const strDate = dateVal.split("-");
+    const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
+    return date;
+  };
+    
   const showNewTaskForm = () => {
     const template = document.getElementById("newTaskTemplate");
     const formNode = template.content.cloneNode(true);
@@ -286,12 +293,16 @@ const domService = (() => {
     const projectViewer = document.querySelector(".project-viewer");
     projectViewer.appendChild(formNode);
 
-const dueDateBtn = document.querySelector('.due-date-btn');
-      dueDateBtn.addEventListener('click', ()=> {
-          const datePicker= document.getElementById('duedate');
-          datePicker.showPicker();
-          
-      })
+    const dueDateBtn = document.querySelector(".due-date-btn");
+    dueDateBtn.addEventListener("click", () => {
+      const datePicker = document.getElementById("duedate");
+      datePicker.addEventListener("change", () => {
+        const date = parseDate(datePicker.value);
+
+        dueDateBtn.textContent = date;
+      });
+      datePicker.showPicker();
+    });
 
     const addTaskBtn = document.querySelector(".add-task-btn");
     const cancelBtn = document.querySelector(".cancel-task-btn");
@@ -303,7 +314,6 @@ const dueDateBtn = document.querySelector('.due-date-btn');
 
     const confirmBtn = document.querySelector(".confirm-task-btn");
     confirmBtn.addEventListener("click", (event) => {
-      //TODO change to getFormData
       getTaskFormData(event);
       showElement(document.querySelector(".add-task-btn"));
     });

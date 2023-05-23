@@ -48,6 +48,43 @@
         </div>
 
         <div class="project-viewer">
+          <!------Add new task-->
+          <template id="newTaskTemplate">
+            <div class="form-container">
+              <form action="#" class="new-task-form" method="get">
+                <div class="form-inputs">
+                  <input
+                    type="text"
+                    placeholder="Task Name"
+                    required="required"
+                    id="name"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    required="required"
+                    id="description"
+                  />
+
+                  <div class="due-date-btn">
+                    <p class="due-date-btn-text">Due date</p>
+                    <div class="due-date-picker-container">
+                      <input type="date" id="duedate" class="date-picker" />
+                    </div>
+                  </div>
+                  <div class="form-confirm">
+                    <button class="cancel-task-btn">Cancel</button>
+                    <button class="confirm-task-btn" type="submit">
+                      Add task
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!----Edit task -->
+          </template>
+          <h1 class="project-viewer-title">Inbox</h1>
           <template id="editTaskTemplate">
             <form action="#" class="edit-task-form" method="get">
               <div class="inputs">
@@ -72,7 +109,6 @@
               </div>
             </form>
           </template>
-          <h1 class="project-viewer-title"></h1>
           <div class="project-tasks">
             <div class="task-container" id="active-container">
               <p class="task-title"></p>
@@ -84,35 +120,6 @@
               </div>
             </div>
           </div>
-
-          <template id="newTaskTemplate">
-            <form action="#" class="new-task-form" method="get">
-              <div class="form-inputs">
-                <input
-                  type="text"
-                  placeholder="Task Name"
-                  required="required"
-                  id="name"
-                />
-                <input
-                  type="text"
-                  placeholder="Description"
-                  required="required"
-                  id="description"
-                />
-                <div class="due-date-container">
-                    <div class="due-date-btn">Due on</div>
-
-                  <input type="date" id="duedate" class="date-picker" />
-                </div>
-              </div>
-              <div class="form-confirm">
-                <button class="confirm-task-btn" type="submit">Add Task</button>
-                <button class="cancel-task-btn">Cancel</button>
-              </div>
-              <div class="form-date"></div>
-            </form>
-          </template>
 
           <div class="add-task-btn">+</div>
         </div>
