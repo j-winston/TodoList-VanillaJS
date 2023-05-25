@@ -44,9 +44,12 @@ const domService = (() => {
   };
 
   const showTaskEditMenu = (taskContainer) => {
+
     // We can use the current task info to autofill the edit fields
     const titleEl = taskContainer.querySelector(".task-title");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
+    const descriptionEl = taskContainer.querySelector(".task-description");
+
     // When user clicks edit, show the edit form
     const template = document.getElementById("editTaskTemplate");
     const form = template.content.cloneNode(true);
@@ -57,6 +60,7 @@ const domService = (() => {
     // Populate the form inputs initially with current values
     form.getElementById("title").value = titleEl.textContent;
     form.getElementById("duedate").value = dueDateEl.textContent;
+      form.getElementById('description').value = descriptionEl.textContent
 
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".edit-task-form");
@@ -65,9 +69,12 @@ const domService = (() => {
 
     saveBtn.addEventListener("click", () => {
       // We grab all the input values once they click save
-      const editTaskForm = document.querySelector(".edit-task-form");
+      const editTaskForm = document.querySelector(".edit-task-form .inputs");
       const titleEl = editTaskForm.querySelector('input[class="title"]');
       const dueDateEl = editTaskForm.querySelector('input[type="date"]');
+        const descriptionEl = editTaskForm.querySelector('input[class="description"]')
+        
+
 
       // Finally, broadcast all the stored edits along unique
       // task id
@@ -78,6 +85,7 @@ const domService = (() => {
       taskEditFormValues.projName = getCurrentProjectName();
       taskEditFormValues.name = titleEl.value;
       taskEditFormValues.duedate = dueDateEl.value;
+        taskEditFormValues.description = descriptionEl.value;
 
       pubSub.publish("taskEditSubmitted", taskEditFormValues);
 
@@ -105,10 +113,13 @@ const domService = (() => {
     nameEl.classList.add("task-title");
     nameEl.textContent = task.name;
 
+    const descriptionEl = document.createElement("p");
+    nameEl.classList.add("task-description");
+    nameEl.textContent = task.description;
+
     const dueDateEl = document.createElement("p");
     dueDateEl.classList.add("task-due-date");
     dueDateEl.textContent = task.duedate;
-    hideElement(dueDateEl);
 
     const taskBtnContainer = document.createElement("div");
     taskBtnContainer.classList.add("task-btn-container");
@@ -130,12 +141,13 @@ const domService = (() => {
       showTaskEditMenu(newTaskContainer);
     });
 
+      const taskInfoContainer = document.createElement('div')
     taskBtnContainer.append(deleteBtnEl, editBtnEL);
+      taskInfoContainer.append(nameEl, descriptionEl, dueDateEl)
 
     newTaskContainer.append(
       taskCompleteBtn,
-      nameEl,
-      dueDateEl,
+        taskInfoContainer,
       taskBtnContainer
     );
 
@@ -242,9 +254,9 @@ const domService = (() => {
     event.preventDefault();
     const formValues = {};
 
-    const formInputs = document.querySelectorAll(".new-task-form input");
+    const inputElements = document.querySelectorAll(".new-task-form input");
 
-    formInputs.forEach((input) => {
+    inputElements.forEach((input) => {
       //-> title = 'clean up room'
       formValues[input.id] = input.value;
     });
@@ -317,7 +329,6 @@ const domService = (() => {
 
     const inboxBtn = document.querySelector(".inbox-nav-link");
     inboxBtn.textContent = "Inbox";
-
     inboxBtn.addEventListener("click", () => {
       updateTaskViewerTitle("Inbox");
       pubSub.publish("projectClicked", "Inbox");
@@ -342,14 +353,17 @@ const domService = (() => {
   };
 
   const showUpdatedTask = (task) => {
-    // get whats currently on the stinking screen and change it
     const name = task.name;
     const description = task.description;
     const dueDate = task.duedate;
     const container = getTaskContainer(task.id);
 
-    container.querySelector(".task-title").textContent = name;
 
+      alert(name);
+      alert(dueDate);
+      alert(description)
+
+    container.querySelector(".task-title").textContent = name;
     container.querySelector(".task-description").textContent = description;
 
     container.querySelector(".task-due-date").textContent = dueDate;
