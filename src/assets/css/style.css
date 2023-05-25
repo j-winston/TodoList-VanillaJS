@@ -59,6 +59,7 @@ body {
 
 .content-container {
   display: flex;
+
   height: 100%;
 }
 
@@ -92,13 +93,15 @@ body {
 .project-viewer {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  margin-left: 2%;
+  width: min(700px, 80%);
+  margin-left: 4%;
 }
 
 .project-viewer-title {
   color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
+
+  margin-top: 1.5rem;
 }
 
 .add-task-btn {
@@ -110,14 +113,19 @@ input[type="text"] {
   padding: 0px;
 }
 
-.form-container {
-  width: min(700px, 80%);
-}
+/* 'Add task styling' */ 
 
-.new-task-form {
+.form-inputs {
   display: flex;
-  flex-direction: column;
+
   align-self: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+
+  border: 1px solid gray;
+  border-radius: 5px;
+
+  padding: 6px;
 }
 
 .new-task-form input {
@@ -138,6 +146,31 @@ input[type="text"] {
   font-weight: normal;
 }
 
+.new-task-btn-container {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 30px;
+
+  width: 100%;
+
+  gap: 7px;
+}
+
+.add-task-btn {
+  font-size: 1.2rem;
+  font-weight: 800;
+
+  width: 20%;
+  height: 2%;
+
+  color: lightgray;
+}
+
+.add-task-btn:hover {
+  cursor: pointer;
+  color: red;
+}
 .due-date-container {
   height: 20%;
   width: 30%;
@@ -189,7 +222,73 @@ input[type="text"] {
   width: 6rem;
 }
 
-.cancel-task-btn {
-  background-color: lightgray;
-  color: white;
+/* Task container */
+.task-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+
+  margin-top: 20px;
+
+  gap: 10px;
 }
+
+input[type="checkbox"] {
+  appearance: none;
+
+  margin: 0px;
+
+  font: inherit;
+
+  width: 1.2rem;
+  height: 1.2rem;
+
+  border: 2px solid gray;
+  border-radius: 2rem;
+  transform: translateY(-0.075em);
+}
+
+.task-btn-container {
+  visibility: hidden;
+
+  flex-basis: 100%;
+
+  height: 100%;
+  display: flex;
+  justify-content: end;
+
+  align-self: end;
+
+  margin-right: 20px;
+  gap: 20px;
+
+  color: white;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.task-container:hover .task-btn-container {
+  visibility: visible;
+}
+
+.task-title {
+  color: white;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.task-btn-container div:hover {
+  color: darkgray;
+}
+
+.add-task-btn {
+  width: 100%;
+
+  border-top: 1px solid gray;
+}
+
+/* 'Edit task' styling */ 
+
+

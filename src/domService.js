@@ -44,13 +44,9 @@ const domService = (() => {
   };
 
   const showTaskEditMenu = (taskContainer) => {
-    taskContainer.id = "active-container";
-
     // We can use the current task info to autofill the edit fields
     const titleEl = taskContainer.querySelector(".task-title");
-    const descriptionEl = taskContainer.querySelector(".task-description");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
-
     // When user clicks edit, show the edit form
     const template = document.getElementById("editTaskTemplate");
     const form = template.content.cloneNode(true);
@@ -60,7 +56,6 @@ const domService = (() => {
 
     // Populate the form inputs initially with current values
     form.getElementById("title").value = titleEl.textContent;
-    form.getElementById("description").value = descriptionEl.textContent;
     form.getElementById("duedate").value = dueDateEl.textContent;
 
     cancelBtn.addEventListener("click", () => {
@@ -71,11 +66,7 @@ const domService = (() => {
     saveBtn.addEventListener("click", () => {
       // We grab all the input values once they click save
       const editTaskForm = document.querySelector(".edit-task-form");
-
       const titleEl = editTaskForm.querySelector('input[class="title"]');
-      const descriptionEl = editTaskForm.querySelector(
-        'input[class="description"]'
-      );
       const dueDateEl = editTaskForm.querySelector('input[type="date"]');
 
       // Finally, broadcast all the stored edits along unique
@@ -86,7 +77,6 @@ const domService = (() => {
       taskEditFormValues.id = taskId;
       taskEditFormValues.projName = getCurrentProjectName();
       taskEditFormValues.name = titleEl.value;
-      taskEditFormValues.description = descriptionEl.value;
       taskEditFormValues.duedate = dueDateEl.value;
 
       pubSub.publish("taskEditSubmitted", taskEditFormValues);
@@ -98,65 +88,56 @@ const domService = (() => {
     taskContainer.appendChild(form);
   };
 
-  const setActiveContainer = (newContainer) => {
-    // get old container and remove active
-    document.getElementById("active-container").id = "inactive-container";
-    newContainer.id = "active-container";
-  };
-
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
     newTaskContainer.setAttribute("data-id", task.id);
+    newTaskContainer.classList.add("task-container");
 
-    const nameEl = document.createElement("p");
-    const descriptionEl = document.createElement("p");
-    const dueDateEl = document.createElement("p");
-
-    const taskBtnContainer = document.createElement("div");
-    const deleteBtnEl = document.createElement("div");
-    const editBtnEL = document.createElement("div");
-
-    nameEl.classList.add("task-title");
-    nameEl.textContent = task.name;
-
-    descriptionEl.classList.add("task-description");
-    descriptionEl.textContent = task.description;
-
-    dueDateEl.classList.add("task-due-date");
-    dueDateEl.textContent = task.duedate;
-
-    deleteBtnEl.classList.add("delete-btn");
-    deleteBtnEl.textContent = "Del";
-    deleteBtnEl.addEventListener("click", () => {
-      removeElement(newTaskContainer);
-      pubSub.publish("taskDeleted", task);
-    });
-
-    taskBtnContainer.classList.add("task-btn-container");
-    editBtnEL.classList.add("edit-btn");
-
-    editBtnEL.textContent = "Edit";
-    editBtnEL.addEventListener("click", () => {
-      showTaskEditMenu(newTaskContainer);
-    });
     const taskCompleteBtn = document.createElement("input");
-    taskCompleteBtn.setAttribute("type", "checkbox");
     taskCompleteBtn.classList.add("task-complete-btn");
+    taskCompleteBtn.setAttribute("type", "checkbox");
 
     taskCompleteBtn.addEventListener("click", () => {
       removeElement(newTaskContainer);
     });
 
-    taskBtnContainer.appendChild(editBtnEL);
-    taskBtnContainer.appendChild(deleteBtnEl);
+    const nameEl = document.createElement("p");
+    nameEl.classList.add("task-title");
+    nameEl.textContent = task.name;
 
-    newTaskContainer.classList.add("task-container");
+    const dueDateEl = document.createElement("p");
+    dueDateEl.classList.add("task-due-date");
+    dueDateEl.textContent = task.duedate;
+    hideElement(dueDateEl);
 
-    newTaskContainer.appendChild(taskCompleteBtn);
-    newTaskContainer.appendChild(nameEl);
-    newTaskContainer.appendChild(descriptionEl);
-    newTaskContainer.appendChild(dueDateEl);
-    newTaskContainer.appendChild(taskBtnContainer);
+    const taskBtnContainer = document.createElement("div");
+    taskBtnContainer.classList.add("task-btn-container");
+
+    const deleteBtnEl = document.createElement("div");
+    deleteBtnEl.classList.add("delete-btn");
+    deleteBtnEl.textContent = "Del";
+
+    deleteBtnEl.addEventListener("click", () => {
+      removeElement(newTaskContainer);
+      pubSub.publish("taskDeleted", task);
+    });
+
+    const editBtnEL = document.createElement("div");
+    editBtnEL.classList.add("edit-btn");
+    editBtnEL.textContent = "Edit";
+
+    editBtnEL.addEventListener("click", () => {
+      showTaskEditMenu(newTaskContainer);
+    });
+
+    taskBtnContainer.append(deleteBtnEl, editBtnEL);
+
+    newTaskContainer.append(
+      taskCompleteBtn,
+      nameEl,
+      dueDateEl,
+      taskBtnContainer
+    );
 
     return newTaskContainer;
   };
@@ -257,14 +238,11 @@ const domService = (() => {
   };
 
   const getTaskFormData = (event) => {
-    // START HERE Get all task form data and publish it
-    // along with current project
+    // After user clicks 'add task' get input and broadcast
     event.preventDefault();
     const formValues = {};
 
-    const formInputs = document.querySelectorAll(
-      ".new-task-form .form-inputs input"
-    );
+    const formInputs = document.querySelectorAll(".new-task-form input");
 
     formInputs.forEach((input) => {
       //-> title = 'clean up room'
@@ -272,6 +250,7 @@ const domService = (() => {
     });
 
     formValues.projName = getCurrentProjectName();
+    formValues.duedate = document.querySelector(".date-picker").value;
 
     const form = document.querySelector(".new-task-form");
     removeElement(form);
@@ -285,15 +264,15 @@ const domService = (() => {
     const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
     return date;
   };
-    
+
   const showNewTaskForm = () => {
     const template = document.getElementById("newTaskTemplate");
     const formNode = template.content.cloneNode(true);
-
     const projectViewer = document.querySelector(".project-viewer");
     projectViewer.appendChild(formNode);
 
-    const dueDateBtn = document.querySelector(".due-date-btn");
+    // Replace 'Due date' with date picker value
+    const dueDateBtn = document.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
       datePicker.addEventListener("change", () => {
@@ -301,11 +280,12 @@ const domService = (() => {
 
         dueDateBtn.textContent = date;
       });
+
       datePicker.showPicker();
     });
 
-    const addTaskBtn = document.querySelector(".add-task-btn");
     const cancelBtn = document.querySelector(".cancel-task-btn");
+
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".new-task-form");
       formEl.remove();
