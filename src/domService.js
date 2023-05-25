@@ -56,6 +56,7 @@ const domService = (() => {
 
     const cancelBtn = form.querySelector(".cancel-btn");
     const saveBtn = form.querySelector(".save-btn");
+      const calendarBtn = form.querySelector('.date-picker'); 
 
     // Populate the form inputs initially with current values
     form.getElementById("title").value = titleEl.textContent;
@@ -66,6 +67,11 @@ const domService = (() => {
       const formEl = document.querySelector(".edit-task-form");
       removeElement(formEl);
     });
+
+      // TODO we need to add a datepicker input to edit date
+      const datePicker = document.querySelector('.date-picker');
+      // TODO add event listener not working
+      //
 
     saveBtn.addEventListener("click", () => {
       // We grab all the input values once they click save
