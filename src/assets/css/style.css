@@ -128,7 +128,8 @@ input[type="text"] {
   padding: 6px;
 }
 
-.new-task-form input {
+.new-task-form input,
+.edit-task-form {
   background-color: transparent;
 
   font-size: 1.2rem;

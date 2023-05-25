@@ -44,9 +44,12 @@ const domService = (() => {
   };
 
   const showTaskEditMenu = (taskContainer) => {
+
     // We can use the current task info to autofill the edit fields
     const titleEl = taskContainer.querySelector(".task-title");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
+      alert(dueDateEl.textContent)
+
     // When user clicks edit, show the edit form
     const template = document.getElementById("editTaskTemplate");
     const form = template.content.cloneNode(true);
@@ -285,7 +288,6 @@ const domService = (() => {
     });
 
     const cancelBtn = document.querySelector(".cancel-task-btn");
-
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".new-task-form");
       formEl.remove();
