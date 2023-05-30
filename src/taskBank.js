@@ -46,8 +46,7 @@ const taskBank = (() => {
   };
 
   const removeProject = (project) => {
-    projectController.remove(project.projName);
-
+    projectController.remove(project.name);
     pubSub.publish("projectDeleted", project);
   };
 
