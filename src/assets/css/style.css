@@ -113,7 +113,7 @@ input[type="text"] {
   padding: 0px;
 }
 
-/* 'Add task styling' */ 
+/* 'Add task styling' */
 
 .form-inputs {
   display: flex;
@@ -290,6 +290,4 @@ input[type="checkbox"] {
   border-top: 1px solid gray;
 }
 
-/* 'Edit task' styling */ 
-
-
+/* 'Edit task' styling */

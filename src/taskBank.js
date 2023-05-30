@@ -1,50 +1,38 @@
 //Module: taskBank.js
 //Role: Information provider
 //Responsibilities: Add task, return task, delete task
+//
 import pubSub from "./pubsub";
+import storage from "./storage";
+import projectController from "./projectController";
+import taskController from "./taskController";
 
 const taskBank = (() => {
-  const createUid = () => {
-    const uid =
-      Date.now().toString(32) + Math.random(16).toString(16).replace(/\./g, "");
-    return uid;
-  };
-
-  const saveProject = (project) => {
-    localStorage.setItem(`${project.name}`, JSON.stringify(project));
-  };
-
-  const loadProject = (name) => {
-    const jsnData = localStorage.getItem(`${name}`);
-    const project = JSON.parse(jsnData);
-    return project;
-  };
-
-  const addToProject = (task) => {
-    const project = loadProject(`${task.projName}`);
-    project.tasks.push(task);
-
-    saveProject(project);
-  };
-
   const findProject = (name) => {
-    const project = loadProject(`${name}`);
+    const project = storage.loadProject(`${name}`);
 
     return project;
   };
 
-  const addTask = (formValues) => {
-    const task = {};
-    const id = createUid();
-    task.id = id;
-
-    for (const field in formValues) {
-      task[field] = formValues[field];
+  // TODO processor does this
+  const getKeyValues = (formInputValues) => {
+    const taskData = {};
+    for (let key in formInputValues) {
+      taskData[key] = formInputValues[key];
     }
+    return taskData;
+  };
 
-    addToProject(task);
+  const createTask = (userInputs) => {
+    const task = taskController.create(userInputs);
+    return task;
+  };
 
-    pubSub.publish("taskAdded", task);
+  // TODO add u/addbstraction layer for form inputs
+  //  for example processForm(formData)
+  const addTaskToProject = (formValues) => {
+    const task = createTask(formValues);
+    projectController.addTask(task);
   };
 
   const getAllTasks = () => {
@@ -58,33 +46,26 @@ const taskBank = (() => {
   };
 
   const removeProject = (project) => {
-    localStorage.removeItem(`${project.name}`);
+    projectController.remove(project.projName);
 
     pubSub.publish("projectDeleted", project);
   };
 
-  const addNewProject = (projName) => {
-    const project = {
-      id: createUid(),
-      name: projName,
-      tasks: [],
-    };
-
-    saveProject(project);
-    pubSub.publish("projectAdded", project);
+  const addNewProject = (name) => {
+    projectController.create(name);
   };
 
   const delTask = (task) => {
     const projName = task.projName;
-    const project = loadProject(projName);
+    const project = storage.loadProject(projName);
     const taskIndex = project.tasks.indexOf(task);
 
     project.tasks.splice(taskIndex, 1);
-    saveProject(project);
+    storage.saveProject(project);
   };
 
   const loadTask = (taskId, projName) => {
-    const proj = loadProject(projName);
+    const proj = storage.loadProject(projName);
     for (const task of proj.tasks) {
       if (task.id === taskId) {
         return task;
@@ -93,23 +74,16 @@ const taskBank = (() => {
   };
 
   const saveTask = (task) => {
-    const proj = loadProject(task.projName);
+    const proj = storage.loadProject(task.projName);
     proj.tasks.push(task);
 
-    saveProject(proj);
+    storage.saveProject(proj);
   };
 
   const updateTask = (formValues) => {
-    const projName = formValues.projName;
-    const taskId = formValues.id;
-    const task = loadTask(taskId, projName);
+taskController.update(formValues);
 
-    for (const inputEntry in task) {
-      task[inputEntry] = formValues[inputEntry];
-    }
 
-    saveTask(task);
-    pubSub.publish("taskUpdated", task);
   };
 
   const loadSavedProjects = () => {
@@ -125,11 +99,7 @@ const taskBank = (() => {
     }
   };
 
-  //const clearAllData = ()=> {
-  //   localStorage.clear();
-  // }
 
-  // Subscriptions
   pubSub.subscribe("pageLoaded", loadSavedProjects);
   pubSub.subscribe("inboxClicked", getAllTasks);
 
@@ -137,7 +107,7 @@ const taskBank = (() => {
   pubSub.subscribe("projectClicked", getProject);
   pubSub.subscribe("projectRemoved", removeProject);
 
-  pubSub.subscribe("taskFormSubmitted", addTask);
+  pubSub.subscribe("taskFormSubmitted", addTaskToProject);
   pubSub.subscribe("taskEditSubmitted", updateTask);
   pubSub.subscribe("taskDeleted", delTask);
 
