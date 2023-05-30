@@ -52,7 +52,7 @@
           <!------Add new task-->
           <template id="newTaskTemplate">
             <div class="form-container">
-              <form action="#" class="new-task-form" method="get">
+              <form action="#" data-id="" class="new-task-form" method="get">
                 <div class="form-inputs">
                   <input
                     type="text"
@@ -73,10 +73,12 @@
                       <input type="date" id="duedate" class="date-picker" />
                     </div>
                   </div>
-              <div class="new-task-btn-container">
-                <button class="cancel-task-btn">Cancel</button>
-                <button class="confirm-task-btn" type="submit">Add task</button>
-              </div>
+                  <div class="new-task-btn-container">
+                    <button class="cancel-task-btn">Cancel</button>
+                    <button class="confirm-task-btn" type="submit">
+                      Add task
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
