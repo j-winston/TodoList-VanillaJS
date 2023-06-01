@@ -13,11 +13,27 @@ const projectController = (() => {
     }
   };
 
+    const getProjectModel = () => {
+        const projectModel = {
+            // Here we create a project model that can be changed.  this gets checked everytime a new project is added to ensure it doesnt break if data keys dont match 
+
+        }
+    }
   const _getProject = (name) => {
     return storage.loadProject(name);
   };
 
-  const create = (name) => {
+    const getFormValues = (formInputs) => {
+
+        // logic here to get form data 
+        
+    }
+
+  const create = (formValues) => {
+      const values = getFormValues(formValues);
+
+     const getFormValues(formValues);  
+
     const freshProject = Project(name);
     _store(freshProject);
 

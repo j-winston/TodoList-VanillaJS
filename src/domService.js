@@ -226,20 +226,28 @@ const domService = (() => {
     return projectElement;
   };
 
-  const showNewProjectForm = () => {
-    const template = document.getElementById("newProjectTemplate");
-    const formNode = template.content.cloneNode(true);
+    const showInProjectListViewer = (form) => {
+
     const projectContainer = document.querySelector(".project-container");
-    projectContainer.appendChild(formNode);
+        projectContainer.appendChild(form)
+    }
 
-    const submitBtn = document.querySelector(".confirm-project-btn");
+  const showAddProject = () => {
+      const form = createForm('new-project-template'); 
+      // A generic form is created. However, project links
+      // are not conveyed 
+      showInProjectListViewer(form); 
 
-    submitBtn.addEventListener("click", () => {
-      const projName = getProjectFormData();
+    const addProjectBtn = document.querySelector(".add-project-btn");
+
+    addProjectBtn.addEventListener("click", () => {
+        // TODO submit the entire form values
+      const formValues = getFormValues();
       pubSub.publish("newProjectSubmitted", projName);
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
+
     cancelBtn.addEventListener("click", () => {
       const formEl = document.querySelector(".new-project-form");
       formEl.remove();
@@ -251,7 +259,7 @@ const domService = (() => {
   };
 
   const addNewProject = () => {
-    showNewProjectForm();
+    showAddProject();
   };
 
 
@@ -259,12 +267,14 @@ const domService = (() => {
     const pickerValue = dateVal.value;
     const strDate = dateVal.split("-");
     const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
+
     return date;
   };
 
   const getTemplateClone = (templateId) => {
-    const template = document.getElementById("new-task-template");
+    const template = document.getElementById(templateId);
     const clone = template.content.cloneNode(true);
+
     return clone;
   };
 
@@ -276,19 +286,7 @@ const domService = (() => {
       formValues[input.id] = input.value;
     });
 
-
-
-    
       return formValues; 
-
-
-    // formValues.projName = getCurrentProjectName();
-    // formValues.duedate = document.querySelector(".date-picker").value;
-    // end method
-
-    // removeElement(form);
-
-    // pubSub.publish("taskFormSubmitted", form);
   };
 
   const createForm = (templateId) => {

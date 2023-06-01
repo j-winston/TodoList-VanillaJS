@@ -53,8 +53,8 @@ const taskBank = (() => {
     pubSub.publish("projectDeleted", project);
   };
 
-  const addNewProject = (name) => {
-    projectController.create(name);
+  const addNewProject = (formValues) => {
+    projectController.create(formValues);
   };
 
   const delTask = (task) => {
