@@ -285,19 +285,22 @@ const domService = (() => {
     return date;
   };
 
+    const getTemplateClone = (templateId) => {
+ const template = document.getElementById('new-task-template');
+        const clone = template.content.cloneNode(true); 
+        return clone;
+    }
   const showNewTaskForm = () => {
-    const template = document.getElementById("newTaskTemplate");
-    const formFragment = template.content.cloneNode(true);
+      const clone = getTemplateClone('new-task-template'); 
 
-    const currentProject = getCurrentProjectName();
+    const projName = getCurrentProjectName();
 
     const projectViewer = document.querySelector(".project-viewer");
-    projectViewer.appendChild(formFragment);
+    projectViewer.appendChild(clone);
 
     const form = document.querySelector(".new-task-form");
-    form.setAttribute("data-id", currentProject);
+    form.setAttribute("data-id", projName);
 
-    // Replace 'Due date' with date picker value
     const dueDateBtn = document.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
