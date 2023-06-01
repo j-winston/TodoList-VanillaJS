@@ -80,9 +80,7 @@ const taskBank = (() => {
   };
 
   const updateTask = (formValues) => {
-taskController.update(formValues);
-
-
+    taskController.update(formValues);
   };
 
   const loadSavedProjects = () => {
@@ -97,7 +95,6 @@ taskController.update(formValues);
       pubSub.publish("projectRetrieved", project);
     }
   };
-
 
   pubSub.subscribe("pageLoaded", loadSavedProjects);
   pubSub.subscribe("inboxClicked", getAllTasks);

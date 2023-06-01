@@ -44,7 +44,6 @@ const domService = (() => {
   };
 
   const showTaskEditMenu = (taskContainer) => {
-
     // We can use the current task info to autofill the edit fields
     const titleEl = taskContainer.querySelector(".task-title");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
@@ -285,13 +284,13 @@ const domService = (() => {
     return date;
   };
 
-    const getTemplateClone = (templateId) => {
- const template = document.getElementById('new-task-template');
-        const clone = template.content.cloneNode(true); 
-        return clone;
-    }
+  const getTemplateClone = (templateId) => {
+    const template = document.getElementById("new-task-template");
+    const clone = template.content.cloneNode(true);
+    return clone;
+  };
   const showNewTaskForm = () => {
-      const clone = getTemplateClone('new-task-template'); 
+    const clone = getTemplateClone("new-task-template");
 
     const projName = getCurrentProjectName();
 

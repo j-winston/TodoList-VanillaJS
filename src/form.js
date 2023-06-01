@@ -3,18 +3,13 @@
 // Responsibilities: Extract user inputs from form elements.
 
 const form = (() => {
-    const getValues = (formElement) => {
-        alert('')
+  const getValues = (formElement) => {
+    alert("");
+  };
 
-
-
-    }
-    
-    return {
-        getData,
-    }
-
+  return {
+    getData,
+  };
 })();
 
-
-export default form
+export default form;
