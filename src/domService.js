@@ -3,6 +3,7 @@
 // Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM related events to pubSub
 
 import pubSub from "./pubsub";
+import taskController from "./taskController";
 
 window.onload = (event) => {
   pubSub.publish("pageLoaded");
@@ -254,23 +255,24 @@ const domService = (() => {
     showNewProjectForm();
   };
 
+  // consider getFormData(form name)
   const getTaskFormData = (event) => {
     const form = document.querySelector(".new-task-form");
 
     // After user clicks 'add task' get input and broadcast
     event.preventDefault();
-    const formValues = {};
 
+    // maybe create a separate method.. getInputValues() doesnt exist
+    const values = getInputValues(".new-task-form");
     const inputElements = document.querySelectorAll(".new-task-form input");
-
-    //TODO this is a problem--knows too much
+    const formValues = {};
     inputElements.forEach((input) => {
-      //-> title = 'clean up room'
       formValues[input.id] = input.value;
     });
 
     formValues.projName = getCurrentProjectName();
     formValues.duedate = document.querySelector(".date-picker").value;
+    // end method
 
     removeElement(form);
 
@@ -289,18 +291,43 @@ const domService = (() => {
     const clone = template.content.cloneNode(true);
     return clone;
   };
-  const showNewTaskForm = () => {
-    const clone = getTemplateClone("new-task-template");
 
-    const projName = getCurrentProjectName();
+  const getFormData = (form) => {
+
+    const values = getInputValues(".new-task-form");
+    const inputElements = document.querySelectorAll(".new-task-form input");
+    const formValues = {};
+    inputElements.forEach((input) => {
+      formValues[input.id] = input.value;
+    });
+
+    formValues.projName = getCurrentProjectName();
+    formValues.duedate = document.querySelector(".date-picker").value;
+    // end method
+
+    removeElement(form);
+
+    pubSub.publish("taskFormSubmitted", form);
+  };
+
+  const getForm = (templateId) => {
+    const template = getTemplateClone(templateId);
+    const form = template.querySelector("form");
+
+    return form;
+  };
+
+  const showAddTask = () => {
+    const form = getForm("new-task-template");
+
+    const projectName = getCurrentProjectName();
+    form.setAttribute("data-id", projectName);
 
     const projectViewer = document.querySelector(".project-viewer");
-    projectViewer.appendChild(clone);
+    projectViewer.appendChild(form);
 
-    const form = document.querySelector(".new-task-form");
-    form.setAttribute("data-id", projName);
 
-    const dueDateBtn = document.querySelector(".due-date-btn-text");
+    const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
       datePicker.addEventListener("change", () => {
@@ -319,16 +346,19 @@ const domService = (() => {
       showElement(addTaskBtn);
     });
 
-    const confirmBtn = document.querySelector(".confirm-task-btn");
-    confirmBtn.addEventListener("click", (event) => {
+    const saveBtn = document.querySelector(".save-task-btn");
+    saveBtn.addEventListener("click", (event) => {
+
       getTaskFormData(event);
+      getFormData(formT);
       showElement(document.querySelector(".add-task-btn"));
     });
+    //
   };
 
   const addNewTask = () => {
     hideElement(document.querySelector(".add-task-btn"));
-    showNewTaskForm();
+    showAddTask();
   };
 
   const startTaskEvents = () => {

@@ -7,14 +7,28 @@ import storage from "./storage";
 import pubSub from "./pubsub";
 
 const taskController = (() => {
-  const create = (taskData) => {
-    const task = {
-      id: uid.create(),
+  const getTaskModel = () => {
+    const taskModel = {
+      id: "",
       name: "",
       description: "",
-      duedate: "",
+      dueDate: "",
       projName: "",
     };
+
+    return taskModel;
+  };
+
+  const setUid = (task) => {
+    task.id = uid.create();
+    return task;
+  };
+
+  const create = (taskData) => {
+    const task = getTaskModel();
+    task.id = setUid();
+
+    // this is a common method with getTaskValues(inputElements)
 
     for (let key in taskData) {
       if (key in task) {
@@ -23,6 +37,10 @@ const taskController = (() => {
     }
 
     return task;
+  };
+
+  const getTaskValues = (inputElements) => {
+    const taskKeys = getTaskKeys();
   };
 
   const update = (taskUpdate) => {
