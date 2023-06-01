@@ -34,8 +34,7 @@ const taskBank = (() => {
     const task = getTask(keyValues);
     projectController.addTask(task);
 
-      pubSub.publish('taskAdded', task); 
-
+    pubSub.publish("taskAdded", task);
   };
 
   const getAllTasks = () => {
@@ -54,7 +53,8 @@ const taskBank = (() => {
   };
 
   const addNewProject = (formValues) => {
-    projectController.create(formValues);
+    const project = projectController.createNewProject(formValues);
+    pubSub.publish("projectAdded", project);
   };
 
   const delTask = (task) => {

@@ -21,6 +21,15 @@ const domService = (() => {
     el.remove();
   };
 
+  const getFormValues = (form) => {
+    const inputElements = form.querySelectorAll("input");
+    const formValues = {};
+    inputElements.forEach((input) => {
+      formValues[input.id] = input.value;
+    });
+
+    return formValues;
+  };
   const getCurrentProjectName = () => {
     const name = document.querySelector(".project-viewer-title").textContent;
     return name;
@@ -163,18 +172,22 @@ const domService = (() => {
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
 
+      // TODO i dont like this down here, buried
     const taskEl = _createNewTaskNode(task);
     taskViewer.appendChild(taskEl);
   };
 
-  const showProject = (project) => {
-    updateProjectList(project);
-    clearTaskViewer();
-    updateTaskViewerTitle(project.name);
-
+  const showAllTasks = (project) => {
     for (const task of project.tasks) {
       showTask(task);
     }
+  };
+  const showProject = (project) => {
+    updateProjectList(project);
+    updateTaskViewerTitle(project.name);
+
+    clearTaskViewer();
+    showAllTasks(project);
   };
 
   const removeProject = (project) => {
@@ -226,24 +239,23 @@ const domService = (() => {
     return projectElement;
   };
 
-    const showInProjectListViewer = (form) => {
-
+  const showInProjectListViewer = (form) => {
     const projectContainer = document.querySelector(".project-container");
-        projectContainer.appendChild(form)
-    }
+    projectContainer.appendChild(form);
+  };
 
   const showAddProject = () => {
-      const form = createForm('new-project-template'); 
-      // A generic form is created. However, project links
-      // are not conveyed 
-      showInProjectListViewer(form); 
+    const form = createForm("new-project-template");
+    // A generic form is created. However, project links
+    // are not conveyed
+    //TODO consider making showInViewer a single method
+    showInProjectListViewer(form);
 
     const addProjectBtn = document.querySelector(".add-project-btn");
 
     addProjectBtn.addEventListener("click", () => {
-        // TODO submit the entire form values
-      const formValues = getFormValues();
-      pubSub.publish("newProjectSubmitted", projName);
+      const formValues = getFormValues(form);
+      pubSub.publish("newProjectSubmitted", formValues);
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
@@ -262,7 +274,6 @@ const domService = (() => {
     showAddProject();
   };
 
-
   const parseDate = (dateVal) => {
     const pickerValue = dateVal.value;
     const strDate = dateVal.split("-");
@@ -278,21 +289,11 @@ const domService = (() => {
     return clone;
   };
 
-  const getFormValues = (form) => {
-
-    const inputElements = form.querySelectorAll("input");
-    const formValues = {};
-    inputElements.forEach((input) => {
-      formValues[input.id] = input.value;
-    });
-
-      return formValues; 
-  };
 
   const createForm = (templateId) => {
     const template = getTemplateClone(templateId);
     const form = template.querySelector("form");
-      form.setAttribute('data-id', getCurrentProjectName()); 
+    form.setAttribute("data-id", getCurrentProjectName());
 
     return form;
   };
@@ -313,7 +314,6 @@ const domService = (() => {
         const date = parseDate(datePicker.value);
 
         dueDateBtn.textContent = date;
-
       });
 
       datePicker.showPicker();
@@ -328,7 +328,7 @@ const domService = (() => {
     saveBtn.addEventListener("click", () => {
       const formKeyValues = getFormValues(form);
 
-        pubSub.publish('taskSubmitted', formKeyValues)
+      pubSub.publish("taskSubmitted", formKeyValues);
     });
     //
   };

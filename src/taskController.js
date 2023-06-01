@@ -20,22 +20,22 @@ const taskController = (() => {
   };
 
   const assignUid = (task) => {
-      task.id = uid.create();
+    task.id = uid.create();
 
-      return task; 
+    return task;
   };
 
   const assignTaskValues = (newTask, formKeyValuePairs) => {
     for (let key in formKeyValuePairs) {
       if (key in newTask) {
         newTask[key] = formKeyValuePairs[key];
-      }else{
-          console.log("KeyError: " + key + " not found")
+      } else {
+        console.log("KeyError: " + key + " not found");
       }
     }
-      const task = assignUid(newTask);
+    const task = assignUid(newTask);
 
-      return task; 
+    return task;
   };
 
   const createNewTask = (formKeyValues) => {

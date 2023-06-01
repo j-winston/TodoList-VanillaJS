@@ -4,7 +4,7 @@
 
 import pubSub from "./pubsub";
 import storage from "./storage";
-import Project from "./Project";
+import uid from "./uid";
 
 const projectController = (() => {
   const _store = (project) => {
@@ -13,31 +13,40 @@ const projectController = (() => {
     }
   };
 
-    const getProjectModel = () => {
-        const projectModel = {
-            // Here we create a project model that can be changed.  this gets checked everytime a new project is added to ensure it doesnt break if data keys dont match 
+  const getProjectModel = () => {
+    const projectModel = {
+      id: uid.create(),
+      name: "",
+      tasks: [],
+    };
+    return projectModel;
+  };
 
-        }
-    }
   const _getProject = (name) => {
     return storage.loadProject(name);
   };
 
-    const getFormValues = (formInputs) => {
+  const getFormValues = (formInputs) => {
+    // logic here to get form data
+  };
 
-        // logic here to get form data 
-        
+  const assignProjectValues = (newProject, formKeyValuePairs) => {
+    for (let key in formKeyValuePairs) {
+      if (key in newProject) {
+        newProject[key] = formKeyValuePairs[key];
+      } else {
+        console.log("KeyError:" + key + " not found");
+      }
     }
+    return newProject;
+  };
 
-  const create = (formValues) => {
-      const values = getFormValues(formValues);
+  const createNewProject = (formKeyValues) => {
+    const emptyProject = getProjectModel();
+    const project = assignProjectValues(emptyProject, formKeyValues);
 
-     const getFormValues(formValues);  
-
-    const freshProject = Project(name);
-    _store(freshProject);
-
-    pubSub.publish("projectAdded", freshProject);
+    _store(project);
+    return project;
   };
 
   const remove = (name) => {
@@ -55,7 +64,7 @@ const projectController = (() => {
   };
 
   return {
-    create,
+    createNewProject,
     remove,
     addTask,
   };
