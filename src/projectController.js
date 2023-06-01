@@ -35,7 +35,6 @@ const projectController = (() => {
     project.tasks.push(task);
 
     if (_store(project)) {
-      pubSub.publish("taskAdded", task);
     }
   };
 

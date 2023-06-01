@@ -2,9 +2,9 @@
 // Role: Information provider
 // Responsibilities:
 
-import uid from "./uid";
 import storage from "./storage";
 import pubSub from "./pubsub";
+import uid from "./uid";
 
 const taskController = (() => {
   const getTaskModel = () => {
@@ -12,35 +12,37 @@ const taskController = (() => {
       id: "",
       name: "",
       description: "",
-      dueDate: "",
+      duedate: "",
       projName: "",
     };
 
     return taskModel;
   };
 
-  const setUid = (task) => {
-    task.id = uid.create();
-    return task;
+  const assignUid = (task) => {
+      task.id = uid.create();
+
+      return task; 
   };
 
-  const create = (taskData) => {
-    const task = getTaskModel();
-    task.id = setUid();
-
-    // this is a common method with getTaskValues(inputElements)
-
-    for (let key in taskData) {
-      if (key in task) {
-        task[key] = taskData[key];
+  const assignTaskValues = (newTask, formKeyValuePairs) => {
+    for (let key in formKeyValuePairs) {
+      if (key in newTask) {
+        newTask[key] = formKeyValuePairs[key];
+      }else{
+          console.log("KeyError: " + key + " not found")
       }
     }
+      const task = assignUid(newTask);
 
-    return task;
+      return task; 
   };
 
-  const getTaskValues = (inputElements) => {
-    const taskKeys = getTaskKeys();
+  const createNewTask = (formKeyValues) => {
+    const emptyTask = getTaskModel();
+    const task = assignTaskValues(emptyTask, formKeyValues);
+
+    return task;
   };
 
   const update = (taskUpdate) => {
@@ -62,7 +64,7 @@ const taskController = (() => {
   };
 
   return {
-    create,
+    createNewTask,
     update,
   };
 })();

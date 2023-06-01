@@ -248,36 +248,12 @@ const domService = (() => {
 
   const updateTaskViewerTitle = (projName) => {
     const title = document.querySelector(".project-viewer-title");
-    title.textContent = projName;
   };
 
   const addNewProject = () => {
     showNewProjectForm();
   };
 
-  // consider getFormData(form name)
-  const getTaskFormData = (event) => {
-    const form = document.querySelector(".new-task-form");
-
-    // After user clicks 'add task' get input and broadcast
-    event.preventDefault();
-
-    // maybe create a separate method.. getInputValues() doesnt exist
-    const values = getInputValues(".new-task-form");
-    const inputElements = document.querySelectorAll(".new-task-form input");
-    const formValues = {};
-    inputElements.forEach((input) => {
-      formValues[input.id] = input.value;
-    });
-
-    formValues.projName = getCurrentProjectName();
-    formValues.duedate = document.querySelector(".date-picker").value;
-    // end method
-
-    removeElement(form);
-
-    pubSub.publish("taskFormSubmitted", formValues);
-  };
 
   const parseDate = (dateVal) => {
     const pickerValue = dateVal.value;
@@ -292,40 +268,45 @@ const domService = (() => {
     return clone;
   };
 
-  const getFormData = (form) => {
+  const getFormValues = (form) => {
 
-    const values = getInputValues(".new-task-form");
-    const inputElements = document.querySelectorAll(".new-task-form input");
+    const inputElements = form.querySelectorAll("input");
     const formValues = {};
     inputElements.forEach((input) => {
       formValues[input.id] = input.value;
     });
 
-    formValues.projName = getCurrentProjectName();
-    formValues.duedate = document.querySelector(".date-picker").value;
+
+
+    
+      return formValues; 
+
+
+    // formValues.projName = getCurrentProjectName();
+    // formValues.duedate = document.querySelector(".date-picker").value;
     // end method
 
-    removeElement(form);
+    // removeElement(form);
 
-    pubSub.publish("taskFormSubmitted", form);
+    // pubSub.publish("taskFormSubmitted", form);
   };
 
-  const getForm = (templateId) => {
+  const createForm = (templateId) => {
     const template = getTemplateClone(templateId);
     const form = template.querySelector("form");
+      form.setAttribute('data-id', getCurrentProjectName()); 
 
     return form;
   };
 
   const showAddTask = () => {
-    const form = getForm("new-task-template");
+    const form = createForm("new-task-template");
 
     const projectName = getCurrentProjectName();
     form.setAttribute("data-id", projectName);
 
     const projectViewer = document.querySelector(".project-viewer");
     projectViewer.appendChild(form);
-
 
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
@@ -334,6 +315,7 @@ const domService = (() => {
         const date = parseDate(datePicker.value);
 
         dueDateBtn.textContent = date;
+
       });
 
       datePicker.showPicker();
@@ -341,17 +323,14 @@ const domService = (() => {
 
     const cancelBtn = document.querySelector(".cancel-task-btn");
     cancelBtn.addEventListener("click", () => {
-      const formEl = document.querySelector(".new-task-form");
-      formEl.remove();
-      showElement(addTaskBtn);
+      form.remove();
     });
 
     const saveBtn = document.querySelector(".save-task-btn");
-    saveBtn.addEventListener("click", (event) => {
+    saveBtn.addEventListener("click", () => {
+      const formKeyValues = getFormValues(form);
 
-      getTaskFormData(event);
-      getFormData(formT);
-      showElement(document.querySelector(".add-task-btn"));
+        pubSub.publish('taskSubmitted', formKeyValues)
     });
     //
   };
@@ -383,6 +362,7 @@ const domService = (() => {
   };
 
   const showInbox = () => {
+    showElement(document.querySelector("add-task-btn"));
     updateTaskViewerTitle("Inbox");
 
     pubSub.publish("projectClicked", "Inbox");
@@ -402,10 +382,6 @@ const domService = (() => {
     const description = task.description;
     const dueDate = task.duedate;
     const container = getTaskContainer(task.id);
-
-    alert(name);
-    alert(dueDate);
-    alert(description);
 
     container.querySelector(".task-title").textContent = name;
     container.querySelector(".task-description").textContent = description;

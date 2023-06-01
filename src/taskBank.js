@@ -23,16 +23,19 @@ const taskBank = (() => {
     return taskData;
   };
 
-  const createTask = (userInputs) => {
-    const task = taskController.create(userInputs);
+  const getTask = (formKeyValues) => {
+    const task = taskController.createNewTask(formKeyValues);
     return task;
   };
 
   // TODO add u/addbstraction layer for form inputs
   //  for example processForm(formData)
-  const addTaskToProject = (formValues) => {
-    const task = createTask(formValues);
+  const addTaskToProject = (keyValues) => {
+    const task = getTask(keyValues);
     projectController.addTask(task);
+
+      pubSub.publish('taskAdded', task); 
+
   };
 
   const getAllTasks = () => {
@@ -103,7 +106,7 @@ const taskBank = (() => {
   pubSub.subscribe("projectClicked", getProject);
   pubSub.subscribe("projectRemoved", removeProject);
 
-  pubSub.subscribe("taskFormSubmitted", addTaskToProject);
+  pubSub.subscribe("taskSubmitted", addTaskToProject);
   pubSub.subscribe("taskEditSubmitted", updateTask);
   pubSub.subscribe("taskDeleted", delTask);
 
