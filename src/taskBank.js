@@ -54,6 +54,7 @@ const taskBank = (() => {
 
   const addNewProject = (formValues) => {
     const project = projectController.createNewProject(formValues);
+
     pubSub.publish("projectAdded", project);
   };
 

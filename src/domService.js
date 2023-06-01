@@ -252,22 +252,21 @@ const domService = (() => {
     showInProjectListViewer(form);
 
     const addProjectBtn = document.querySelector(".add-project-btn");
-
     addProjectBtn.addEventListener("click", () => {
       const formValues = getFormValues(form);
+
       pubSub.publish("newProjectSubmitted", formValues);
     });
 
     const cancelBtn = document.querySelector(".cancel-project-btn");
-
     cancelBtn.addEventListener("click", () => {
-      const formEl = document.querySelector(".new-project-form");
-      formEl.remove();
+        removeElement(form); 
     });
   };
 
   const updateTaskViewerTitle = (projName) => {
     const title = document.querySelector(".project-viewer-title");
+      title.textContent = projName; 
   };
 
   const addNewProject = () => {
