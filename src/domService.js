@@ -3,9 +3,8 @@
 // Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM related events to pubSub
 
 import pubSub from "./pubsub";
-import taskController from "./taskController";
 
-window.onload = (event) => {
+window.onload = () => {
   pubSub.publish("pageLoaded");
 };
 const hideElement = (el) => {
@@ -19,6 +18,14 @@ const showElement = (el) => {
 const domService = (() => {
   const removeElement = (el) => {
     el.remove();
+  };
+
+  const createForm = (templateId) => {
+    const template = getTemplateClone(templateId);
+    const form = template.querySelector("form");
+    form.setAttribute("data-id", getCurrentProjectName());
+
+    return form;
   };
 
   const getFormValues = (form) => {
@@ -35,15 +42,36 @@ const domService = (() => {
     return name;
   };
 
-  const updateProjectList = (project) => {
+  const createProjectElement = (project) => {
     if (
       !document.querySelector("[data-id=" + CSS.escape(project.id) + "]") &&
       project.name != "Inbox"
     ) {
-      const projectEl = createProjectElement(project);
-      const projectListContainer = document.querySelector(".project-container");
+      const projectContainerElement = document.createElement("div");
+      const projectTitleElement = document.createElement("div");
+      const deleteBtn = document.createElement("div");
 
-      projectListContainer.appendChild(projectEl);
+      projectContainerElement.className = "project";
+      projectContainerElement.setAttribute("data-id", project.id);
+
+      projectTitleElement.className = "project-title";
+
+      projectTitleElement.addEventListener("click", () => {
+        updateTaskViewerTitle(project.name);
+      });
+      projectTitleElement.textContent = project.name;
+
+      deleteBtn.className = "project-delete-btn";
+      deleteBtn.textContent = "X";
+
+      deleteBtn.addEventListener("click", () => {
+        removeProject(project);
+      });
+
+      projectContainerElement.appendChild(projectTitleElement);
+      projectContainerElement.appendChild(deleteBtn);
+
+      return projectContainerElement;
     }
   };
 
@@ -51,6 +79,10 @@ const domService = (() => {
     document
       .querySelectorAll(".task-container")
       .forEach((task) => removeElement(task));
+  };
+  const updateTaskViewerTitle = (projName) => {
+    const title = document.querySelector(".project-viewer-title");
+    title.textContent = projName;
   };
 
   const showTaskEditMenu = (taskContainer) => {
@@ -65,7 +97,6 @@ const domService = (() => {
 
     const cancelBtn = form.querySelector(".cancel-btn");
     const saveBtn = form.querySelector(".save-btn");
-    const calendarBtn = form.querySelector(".date-picker");
 
     // Populate the form inputs initially with current values
     form.getElementById("title").value = titleEl.textContent;
@@ -76,11 +107,6 @@ const domService = (() => {
       const formEl = document.querySelector(".edit-task-form");
       removeElement(formEl);
     });
-
-    // TODO we need to add a datepicker input to edit date
-    const datePicker = document.querySelector(".date-picker");
-    // TODO add event listener not working
-    //
 
     saveBtn.addEventListener("click", () => {
       // We grab all the input values once they click save
@@ -172,7 +198,7 @@ const domService = (() => {
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
 
-      // TODO i dont like this down here, buried
+    // TODO i dont like this down here, buried
     const taskEl = _createNewTaskNode(task);
     taskViewer.appendChild(taskEl);
   };
@@ -182,13 +208,12 @@ const domService = (() => {
       showTask(task);
     }
   };
-  const showProject = (project) => {
-    updateProjectList(project);
-    updateTaskViewerTitle(project.name);
 
-    clearTaskViewer();
-    showAllTasks(project);
+  const addProjectToViewer = (projectEl) => {
+    const projectListContainer = document.querySelector(".project-container");
+    projectListContainer.appendChild(projectEl);
   };
+
 
   const removeProject = (project) => {
     const projectElement = document.querySelector(
@@ -200,81 +225,43 @@ const domService = (() => {
     pubSub.publish("projectRemoved", project);
   };
 
-  const getProjectFormData = () => {
-    const input = document.querySelector(".new-project-form input");
-    const projName = input.value;
-    input.value = "";
+  const showAddProjectDialog = () => {
+    const newProjectForm = createForm("new-project-template");
 
-    const form = document.querySelector(".new-project-form");
-    form.remove();
-    return projName;
-  };
-
-  const createProjectElement = (project) => {
-    const projectElement = document.createElement("div");
-    const projectTitleElement = document.createElement("div");
-    const deleteBtn = document.createElement("div");
-
-    projectElement.className = "project";
-    projectElement.setAttribute("data-id", project.id);
-
-    projectTitleElement.className = "project-title";
-
-    projectTitleElement.addEventListener("click", () => {
-      showProject(project);
-      updateTaskViewerTitle(project.name);
-    });
-    projectTitleElement.textContent = project.name;
-
-    deleteBtn.className = "project-delete-btn";
-    deleteBtn.textContent = "X";
-
-    deleteBtn.addEventListener("click", () => {
-      removeProject(project);
-    });
-
-    projectElement.appendChild(projectTitleElement);
-    projectElement.appendChild(deleteBtn);
-
-    return projectElement;
-  };
-
-  const showInProjectListViewer = (form) => {
     const projectContainer = document.querySelector(".project-container");
-    projectContainer.appendChild(form);
-  };
 
-  const showAddProject = () => {
-    const form = createForm("new-project-template");
-    // A generic form is created. However, project links
-    // are not conveyed
-    //TODO consider making showInViewer a single method
-    showInProjectListViewer(form);
+    projectContainer.appendChild(newProjectForm);
+      
 
-    const addProjectBtn = document.querySelector(".add-project-btn");
-    addProjectBtn.addEventListener("click", () => {
-      const formValues = getFormValues(form);
-
-      pubSub.publish("newProjectSubmitted", formValues);
+    const confirmProjectBtn = document.querySelector(".confirm-project-btn");
+    confirmProjectBtn.addEventListener("click", () => {
+      const formValues = getFormValues(newProjectForm);
+        removeElement(newProjectForm);
+        pubSub.publish('newProjectSubmitted', formValues);
     });
 
-    const cancelBtn = document.querySelector(".cancel-project-btn");
+    const cancelBtn = document.querySelector('.cancel-project-btn');
     cancelBtn.addEventListener("click", () => {
-        removeElement(form); 
+      removeElement(newProjectForm);
     });
   };
 
-  const updateTaskViewerTitle = (projName) => {
-    const title = document.querySelector(".project-viewer-title");
-      title.textContent = projName; 
+  const showNewProject = (project) => {
+    const projectEl = createProjectElement(project);
+
+    updateTaskViewerTitle(project.name);
+
+    addProjectToViewer(projectEl);
+
+    clearTaskViewer();
+    showAllTasks(project);
   };
 
   const addNewProject = () => {
-    showAddProject();
+    showAddProjectDialog();
   };
 
   const parseDate = (dateVal) => {
-    const pickerValue = dateVal.value;
     const strDate = dateVal.split("-");
     const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
 
@@ -288,14 +275,6 @@ const domService = (() => {
     return clone;
   };
 
-
-  const createForm = (templateId) => {
-    const template = getTemplateClone(templateId);
-    const form = template.querySelector("form");
-    form.setAttribute("data-id", getCurrentProjectName());
-
-    return form;
-  };
 
   const showAddTask = () => {
     const form = createForm("new-task-template");
@@ -394,8 +373,8 @@ const domService = (() => {
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
-  pubSub.subscribe("projectRetrieved", showProject);
-  pubSub.subscribe("projectAdded", showProject);
+  pubSub.subscribe("projectAdded", showNewProject);
+   // pubSub.subscribe('projectRetrieved')
 
   pubSub.subscribe("projectDeleted", showInbox);
 
