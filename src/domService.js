@@ -42,28 +42,30 @@ const domService = (() => {
     return name;
   };
 
-  const createProjectElement = (project) => {
-    if (
-      !document.querySelector("[data-id=" + CSS.escape(project.id) + "]") &&
-      project.name != "Inbox"
-    ) {
-      const projectContainerElement = document.createElement("div");
-      const projectTitleElement = document.createElement("div");
-      const deleteBtn = document.createElement("div");
+  const projectExists = (projectId) => {
+    if (document.querySelector("[data-id=" + CSS.escape(projectId) + "]")) {
+      return true;
+    }
+    return false;
+  };
 
+  const createProjectElement = (project) => {
+    if (!projectExists(project.id) && project.name != "Inbox") {
+
+      const projectContainerElement = document.createElement("div");
       projectContainerElement.className = "project";
       projectContainerElement.setAttribute("data-id", project.id);
 
-      projectTitleElement.className = "project-title";
-
+      const projectTitleElement = document.createElement("div");
       projectTitleElement.addEventListener("click", () => {
         updateTaskViewerTitle(project.name);
       });
       projectTitleElement.textContent = project.name;
+      projectTitleElement.className = "project-title";
 
+      const deleteBtn = document.createElement("div");
       deleteBtn.className = "project-delete-btn";
       deleteBtn.textContent = "X";
-
       deleteBtn.addEventListener("click", () => {
         removeProject(project);
       });
@@ -214,14 +216,14 @@ const domService = (() => {
     projectListContainer.appendChild(projectEl);
   };
 
-
   const removeProject = (project) => {
     const projectElement = document.querySelector(
       "[data-id=" + CSS.escape(project.id) + "]"
     );
-
     removeElement(projectElement);
+
     clearTaskViewer();
+
     pubSub.publish("projectRemoved", project);
   };
 
@@ -231,16 +233,15 @@ const domService = (() => {
     const projectContainer = document.querySelector(".project-container");
 
     projectContainer.appendChild(newProjectForm);
-      
 
     const confirmProjectBtn = document.querySelector(".confirm-project-btn");
     confirmProjectBtn.addEventListener("click", () => {
       const formValues = getFormValues(newProjectForm);
-        removeElement(newProjectForm);
-        pubSub.publish('newProjectSubmitted', formValues);
+      removeElement(newProjectForm);
+      pubSub.publish("newProjectSubmitted", formValues);
     });
 
-    const cancelBtn = document.querySelector('.cancel-project-btn');
+    const cancelBtn = document.querySelector(".cancel-project-btn");
     cancelBtn.addEventListener("click", () => {
       removeElement(newProjectForm);
     });
@@ -274,7 +275,6 @@ const domService = (() => {
 
     return clone;
   };
-
 
   const showAddTask = () => {
     const form = createForm("new-task-template");
@@ -338,7 +338,7 @@ const domService = (() => {
   };
 
   const showInbox = () => {
-    showElement(document.querySelector("add-task-btn"));
+    showElement(document.querySelector(".add-task-btn"));
     updateTaskViewerTitle("Inbox");
 
     pubSub.publish("projectClicked", "Inbox");
@@ -374,7 +374,7 @@ const domService = (() => {
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
   pubSub.subscribe("projectAdded", showNewProject);
-   // pubSub.subscribe('projectRetrieved')
+  // pubSub.subscribe('projectRetrieved')
 
   pubSub.subscribe("projectDeleted", showInbox);
 
