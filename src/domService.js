@@ -24,12 +24,25 @@ const domService = (() => {
     return form;
   };
 
+  const removeProject = (project) => {
+    const projectElement = document.querySelector(
+      "[data-id=" + CSS.escape(project.id) + "]"
+    );
+    removeElement(projectElement);
+
+    clearTaskViewer();
+
+    pubSub.publish("projectRemoved", project);
+  };
+
   const getFormValues = (form) => {
     const inputElements = form.querySelectorAll("input");
     const formValues = {};
+
     inputElements.forEach((input) => {
       formValues[input.id] = input.value;
     });
+
 
     return formValues;
   };
@@ -46,9 +59,6 @@ const domService = (() => {
   };
 
   const createProjectElement = (project) => {
-    //this is evaluating false project isnt being created
-    // Initial project is inbox when all projects are retrieved
-    // the inbox project is being retrieved
     if (!projectExists(project.id) && project.name != "Inbox") {
       const projectContainerElement = document.createElement("div");
       projectContainerElement.className = "project";
@@ -57,6 +67,7 @@ const domService = (() => {
       const projectTitleElement = document.createElement("div");
       projectTitleElement.addEventListener("click", () => {
         updateTaskViewerTitle(project.name);
+          pubSub.publish('projectClicked', project); 
       });
       projectTitleElement.textContent = project.name;
       projectTitleElement.className = "project-title";
@@ -198,7 +209,6 @@ const domService = (() => {
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
 
-    // TODO i dont like this down here, buried
     const taskEl = _createNewTaskNode(task);
     taskViewer.appendChild(taskEl);
   };
@@ -214,16 +224,6 @@ const domService = (() => {
     projectListContainer.appendChild(projectEl);
   };
 
-  const removeProject = (project) => {
-    const projectElement = document.querySelector(
-      "[data-id=" + CSS.escape(project.id) + "]"
-    );
-    removeElement(projectElement);
-
-    clearTaskViewer();
-
-    pubSub.publish("projectRemoved", project);
-  };
 
   const showAddProjectDialog = () => {
     const newProjectForm = createForm("new-project-template");
@@ -298,7 +298,7 @@ const domService = (() => {
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
       const formKeyValues = getFormValues(form);
-
+        formKeyValues.projName = projectName;
       pubSub.publish("taskSubmitted", formKeyValues);
     });
     //
@@ -351,6 +351,7 @@ const domService = (() => {
     clearTaskViewer();
     showAllTasks(project);
   };
+
   const showAllProjects = (projArr) => {
     for (let i = 0; i < projArr.length; i++) {
       const proj = projArr[i];
@@ -386,6 +387,7 @@ const domService = (() => {
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
   pubSub.subscribe("projectDeleted", showInbox);
+    pubSub.subscribe('projectRetrieved', showProject); 
 
   return {
     initializeUi,

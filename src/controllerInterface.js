@@ -23,15 +23,13 @@ const controllerInterface = (() => {
     return taskData;
   };
 
-  const getTask = (formKeyValues) => {
+  const requestNewTaskObj = (formKeyValues) => {
     const task = taskController.createNewTask(formKeyValues);
     return task;
   };
 
-  // TODO add u/addbstraction layer for form inputs
-  //  for example processForm(formData)
   const addTaskToProject = (keyValues) => {
-    const task = getTask(keyValues);
+    const task = requestNewTaskObj(keyValues);
     projectController.addTask(task);
 
     pubSub.publish("taskAdded", task);
@@ -78,13 +76,22 @@ const controllerInterface = (() => {
   })();
 
   // this should retrieve the entire project
-  const getProject = (name) => {
-    const proj = findProject(name);
+  const getProject = (project) => {
+      let name = ''; 
+
+      if(project === 'Inbox'){
+          name = 'Inbox'
+      } else {
+          name = project.name; 
+      }
+          const proj = findProject(name); 
+
     pubSub.publish("projectRetrieved", proj);
   };
 
   const removeProject = (project) => {
     projectController.remove(project.name);
+
     pubSub.publish("projectDeleted", project);
   };
 
