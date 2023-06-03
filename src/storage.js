@@ -22,10 +22,9 @@ const storage = (() => {
       const projName = localStorage.key(i);
       const project = loadProject(projName);
 
-      projomeonects.push(project);
+      projects.push(project);
     }
     return projects;
-
   };
 
   const deleteProject = (name) => {
@@ -53,7 +52,7 @@ const storage = (() => {
     saveProject,
     loadProject,
     loadAllProjects,
-      deleteAllProjects,
+    deleteAllProjects,
     deleteProject,
     loadTask,
   };

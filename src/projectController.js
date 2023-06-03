@@ -57,9 +57,9 @@ const projectController = (() => {
     }
   };
 
-    const removeAll = () => {
-        storage.deleteAllProjects();
-    }
+  const removeAll = () => {
+    storage.deleteAllProjects();
+  };
 
   const addTask = (task) => {
     const project = _getProject(task.projName);
@@ -69,12 +69,11 @@ const projectController = (() => {
     }
   };
 
-
   return {
     loadAllProjects,
     createNewProject,
     remove,
-      removeAll,
+    removeAll,
     addTask,
   };
 })();

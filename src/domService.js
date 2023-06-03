@@ -46,6 +46,9 @@ const domService = (() => {
   };
 
   const createProjectElement = (project) => {
+    //this is evaluating false project isnt being created
+    // Initial project is inbox when all projects are retrieved
+    // the inbox project is being retrieved
     if (!projectExists(project.id) && project.name != "Inbox") {
       const projectContainerElement = document.createElement("div");
       projectContainerElement.className = "project";
@@ -343,10 +346,20 @@ const domService = (() => {
     return container;
   };
 
+  const showProject = (project) => {
+    updateTaskViewerTitle(project.name);
+    clearTaskViewer();
+    showAllTasks(project);
+  };
   const showAllProjects = (projArr) => {
     for (let i = 0; i < projArr.length; i++) {
       const proj = projArr[i];
-      showNewAddedProject(proj);
+
+      if (projectExists(proj) || proj.name === "Inbox") {
+        showProject(proj);
+      } else {
+        showNewAddedProject(proj);
+      }
     }
   };
   const showUpdatedTask = (task) => {
@@ -374,9 +387,9 @@ const domService = (() => {
 
   pubSub.subscribe("projectDeleted", showInbox);
 
-    return {
-        initializeUi, 
-    }
+  return {
+    initializeUi,
+  };
 })();
 
 export default domService;

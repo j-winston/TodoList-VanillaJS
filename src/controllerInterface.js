@@ -130,7 +130,6 @@ const controllerInterface = (() => {
   const getAllSavedProjects = () => {
     const projArr = projectController.loadAllProjects();
     pubSub.publish("allSavedProjectsRetrieved", projArr);
-
   };
 
   // Subcriptions
