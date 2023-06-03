@@ -1,21 +1,17 @@
-// domService.js
-// Role: Service provider
-// Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM related events to pubSub
-
+// domService.js Role: Service provider Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM related events to pubSub
 import pubSub from "./pubsub";
 
-window.onload = () => {
-  pubSub.publish("pageLoaded");
-};
-const hideElement = (el) => {
-  el.style.visibility = "hidden";
-};
-
-const showElement = (el) => {
-  el.style.visibility = "visible";
-};
-
 const domService = (() => {
+  const hideElement = (el) => {
+    el.style.visibility = "hidden";
+  };
+
+  const showElement = (el) => {
+    el.style.visibility = "visible";
+  };
+  window.onload = () => {
+    pubSub.publish("pageLoaded");
+  };
   const removeElement = (el) => {
     el.remove();
   };
@@ -51,7 +47,6 @@ const domService = (() => {
 
   const createProjectElement = (project) => {
     if (!projectExists(project.id) && project.name != "Inbox") {
-
       const projectContainerElement = document.createElement("div");
       projectContainerElement.className = "project";
       projectContainerElement.setAttribute("data-id", project.id);
@@ -231,35 +226,30 @@ const domService = (() => {
     const newProjectForm = createForm("new-project-template");
 
     const projectContainer = document.querySelector(".project-container");
-
     projectContainer.appendChild(newProjectForm);
 
-    const confirmProjectBtn = document.querySelector(".confirm-project-btn");
-    confirmProjectBtn.addEventListener("click", () => {
+    const confirmNewProjectBtn = document.querySelector(".confirm-project-btn");
+    confirmNewProjectBtn.addEventListener("click", () => {
       const formValues = getFormValues(newProjectForm);
       removeElement(newProjectForm);
-      pubSub.publish("newProjectSubmitted", formValues);
+
+      pubSub.publish("addProjectFormSubmitted", formValues);
     });
 
-    const cancelBtn = document.querySelector(".cancel-project-btn");
-    cancelBtn.addEventListener("click", () => {
+    const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
+    cancelNewProjectBtn.addEventListener("click", () => {
       removeElement(newProjectForm);
     });
   };
 
-  const showNewProject = (project) => {
+  const showNewAddedProject = (project) => {
     const projectEl = createProjectElement(project);
-
     updateTaskViewerTitle(project.name);
 
     addProjectToViewer(projectEl);
 
     clearTaskViewer();
     showAllTasks(project);
-  };
-
-  const addNewProject = () => {
-    showAddProjectDialog();
   };
 
   const parseDate = (dateVal) => {
@@ -318,7 +308,7 @@ const domService = (() => {
 
   const startTaskEvents = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
-    addProjectBtn.addEventListener("click", addNewProject);
+    addProjectBtn.addEventListener("click", showAddProjectDialog);
 
     const addTaskBtn = document.querySelector(".add-task-btn");
     addTaskBtn.addEventListener("click", addNewTask);
@@ -353,6 +343,12 @@ const domService = (() => {
     return container;
   };
 
+  const showAllProjects = (projArr) => {
+    for (let i = 0; i < projArr.length; i++) {
+      const proj = projArr[i];
+      showNewAddedProject(proj);
+    }
+  };
   const showUpdatedTask = (task) => {
     const name = task.name;
     const description = task.description;
@@ -370,17 +366,17 @@ const domService = (() => {
     createInbox();
   };
 
+  pubSub.subscribe("allSavedProjectsRetrieved", showAllProjects);
+  pubSub.subscribe("newProjectAdded", showNewAddedProject);
+
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
-  pubSub.subscribe("projectAdded", showNewProject);
-  // pubSub.subscribe('projectRetrieved')
-
   pubSub.subscribe("projectDeleted", showInbox);
 
-  return {
-    initializeUi,
-  };
+    return {
+        initializeUi, 
+    }
 })();
 
 export default domService;

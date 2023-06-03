@@ -26,10 +26,6 @@ const projectController = (() => {
     return storage.loadProject(name);
   };
 
-  const getFormValues = (formInputs) => {
-    // logic here to get form data
-  };
-
   const assignProjectValues = (newProject, formKeyValuePairs) => {
     for (let key in formKeyValuePairs) {
       if (key in newProject) {
@@ -39,6 +35,12 @@ const projectController = (() => {
       }
     }
     return newProject;
+  };
+
+  const loadAllProjects = () => {
+    const allSavedProjects = storage.loadAllProjects();
+
+    return allSavedProjects;
   };
 
   const createNewProject = (formKeyValues) => {
@@ -55,6 +57,10 @@ const projectController = (() => {
     }
   };
 
+    const removeAll = () => {
+        storage.deleteAllProjects();
+    }
+
   const addTask = (task) => {
     const project = _getProject(task.projName);
     project.tasks.push(task);
@@ -63,9 +69,12 @@ const projectController = (() => {
     }
   };
 
+
   return {
+    loadAllProjects,
     createNewProject,
     remove,
+      removeAll,
     addTask,
   };
 })();

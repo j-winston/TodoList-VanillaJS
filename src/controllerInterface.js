@@ -1,13 +1,13 @@
-//Module: taskBank.js
-//Role: Information provider
-//Responsibilities: Add task, return task, delete task
+//Module: controllerInterface.js
+//Role: Bridge
+//Responsibilities: Subscribe to events pubblished from the DOM and pass on to appropriate controller.
 //
 import pubSub from "./pubsub";
 import storage from "./storage";
 import projectController from "./projectController";
 import taskController from "./taskController";
 
-const taskBank = (() => {
+const controllerInterface = (() => {
   const findProject = (name) => {
     const project = storage.loadProject(`${name}`);
 
@@ -41,6 +41,42 @@ const taskBank = (() => {
     pubSub.publish("tasksRetrieved", tasks);
   };
 
+  const errorHandler = (() => {
+    const undefinedValues = [];
+
+    const logUndefinedKeys = (key) => {
+      undefinedValues.push(key);
+    };
+
+    const getUndefinedValues = () => {
+      return undefinedValues;
+    };
+
+    const isEmpty = (arr) => {
+      arr.length === 0 ? true : false;
+    };
+
+    const undefinedExists = () => {
+      undefinedValues.length === 0 ? false : true;
+    };
+
+    const hasUndefinedValues = (project) => {
+      for (let key in project) {
+        if (project[key] === undefined) {
+          logUndefinedKeys(key);
+        }
+      }
+      if (undefinedExists()) {
+        return true;
+      }
+    };
+
+    return {
+      hasUndefinedValues,
+      getUndefinedValues,
+    };
+  })();
+
   // this should retrieve the entire project
   const getProject = (name) => {
     const proj = findProject(name);
@@ -55,7 +91,11 @@ const taskBank = (() => {
   const addNewProject = (formValues) => {
     const project = projectController.createNewProject(formValues);
 
-    pubSub.publish("projectAdded", project);
+    if (errorHandler.hasUndefinedValues(project)) {
+      console.log(error.getUndefinedValues);
+    } else {
+      pubSub.publish("newProjectAdded", project);
+    }
   };
 
   const delTask = (task) => {
@@ -87,23 +127,18 @@ const taskBank = (() => {
     taskController.update(formValues);
   };
 
-  const loadSavedProjects = () => {
-    let index = 0;
+  const getAllSavedProjects = () => {
+    const projArr = projectController.loadAllProjects();
+    pubSub.publish("allSavedProjectsRetrieved", projArr);
 
-    while (localStorage.key(index)) {
-      const projName = localStorage.key(index);
-      const project = findProject(projName);
-
-      index++;
-
-      pubSub.publish("projectRetrieved", project);
-    }
   };
 
-  pubSub.subscribe("pageLoaded", loadSavedProjects);
+  // Subcriptions
+
+  pubSub.subscribe("pageLoaded", getAllSavedProjects);
   pubSub.subscribe("inboxClicked", getAllTasks);
 
-  pubSub.subscribe("newProjectSubmitted", addNewProject);
+  pubSub.subscribe("addProjectFormSubmitted", addNewProject);
   pubSub.subscribe("projectClicked", getProject);
   pubSub.subscribe("projectRemoved", removeProject);
 
@@ -111,9 +146,7 @@ const taskBank = (() => {
   pubSub.subscribe("taskEditSubmitted", updateTask);
   pubSub.subscribe("taskDeleted", delTask);
 
-  return {
-    loadSavedProjects,
-  };
+  return {};
 })();
 
-export default taskBank;
+export default controllerInterface;

@@ -15,11 +15,27 @@ const storage = (() => {
     return project;
   };
 
+  const loadAllProjects = () => {
+    const projects = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const projName = localStorage.key(i);
+      const project = loadProject(projName);
+
+      projomeonects.push(project);
+    }
+    return projects;
+
+  };
+
   const deleteProject = (name) => {
     localStorage.removeItem(`${name}`);
     if (!localStorage.getItem(`${name}`)) {
       return true;
     }
+  };
+  const deleteAllProjects = () => {
+    localStorage.clear();
   };
 
   const loadTask = (projName, id) => {
@@ -36,6 +52,8 @@ const storage = (() => {
   return {
     saveProject,
     loadProject,
+    loadAllProjects,
+      deleteAllProjects,
     deleteProject,
     loadTask,
   };
