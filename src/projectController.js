@@ -65,8 +65,7 @@ const projectController = (() => {
     const project = _getProject(task.projName);
     project.tasks.push(task);
 
-    _store(project) 
-    
+    _store(project);
   };
 
   return {

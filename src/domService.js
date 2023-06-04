@@ -43,7 +43,6 @@ const domService = (() => {
       formValues[input.id] = input.value;
     });
 
-
     return formValues;
   };
   const getCurrentProjectName = () => {
@@ -67,7 +66,7 @@ const domService = (() => {
       const projectTitleElement = document.createElement("div");
       projectTitleElement.addEventListener("click", () => {
         updateTaskViewerTitle(project.name);
-          pubSub.publish('projectClicked', project); 
+        pubSub.publish("projectClicked", project);
       });
       projectTitleElement.textContent = project.name;
       projectTitleElement.className = "project-title";
@@ -224,7 +223,6 @@ const domService = (() => {
     projectListContainer.appendChild(projectEl);
   };
 
-
   const showAddProjectDialog = () => {
     const newProjectForm = createForm("new-project-template");
 
@@ -269,15 +267,21 @@ const domService = (() => {
     return clone;
   };
 
+  const appendFormToViewer = (form, el) => {
+    
+    const viewer = document.querySelector(el);
+
+
+    viewer.appendChild(form);
+  };
   const showAddTask = () => {
     const form = createForm("new-task-template");
+    appendFormToViewer(form, '.project-viewer');
 
     const projectName = getCurrentProjectName();
     form.setAttribute("data-id", projectName);
 
-    const projectViewer = document.querySelector(".project-viewer");
-    projectViewer.appendChild(form);
-
+      // Event handlers 
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
@@ -298,10 +302,13 @@ const domService = (() => {
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
       const formKeyValues = getFormValues(form);
-        formKeyValues.projName = projectName;
+      formKeyValues.projName = projectName;
+
+        removeElement(form);
+
       pubSub.publish("taskSubmitted", formKeyValues);
     });
-    //
+    // End event handlers
   };
 
   const addNewTask = () => {
@@ -387,7 +394,7 @@ const domService = (() => {
   pubSub.subscribe("taskUpdated", showUpdatedTask);
 
   pubSub.subscribe("projectDeleted", showInbox);
-    pubSub.subscribe('projectRetrieved', showProject); 
+  pubSub.subscribe("projectRetrieved", showProject);
 
   return {
     initializeUi,

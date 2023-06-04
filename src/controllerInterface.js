@@ -77,14 +77,14 @@ const controllerInterface = (() => {
 
   // this should retrieve the entire project
   const getProject = (project) => {
-      let name = ''; 
+    let name = "";
 
-      if(project === 'Inbox'){
-          name = 'Inbox'
-      } else {
-          name = project.name; 
-      }
-          const proj = findProject(name); 
+    if (project === "Inbox") {
+      name = "Inbox";
+    } else {
+      name = project.name;
+    }
+    const proj = findProject(name);
 
     pubSub.publish("projectRetrieved", proj);
   };
