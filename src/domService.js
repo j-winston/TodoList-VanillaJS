@@ -6,9 +6,12 @@ const domService = (() => {
     el.style.visibility = "hidden";
   };
 
-  const showElement = (el) => {
-    el.style.visibility = "visible";
+  const showElement = (hiddenElement) => {
+      const element = document.querySelector(hiddenElement); 
+
+    element.style.visibility = "visible";
   };
+
   window.onload = () => {
     pubSub.publish("pageLoaded");
   };
@@ -305,6 +308,8 @@ const domService = (() => {
       formKeyValues.projName = projectName;
 
         removeElement(form);
+        showElement('.add-task-btn')
+
 
       pubSub.publish("taskSubmitted", formKeyValues);
     });
