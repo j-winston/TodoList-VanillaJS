@@ -62,7 +62,8 @@ const projectController = (() => {
   };
 
   const addTask = (task) => {
-    const project = _getProject(task.projName);
+
+    const project = _getProject(task.getProjectName);
     project.tasks.push(task);
 
     _store(project);

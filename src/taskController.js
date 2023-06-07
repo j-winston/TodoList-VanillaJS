@@ -7,40 +7,76 @@ import pubSub from "./pubsub";
 import uid from "./uid";
 
 const taskController = (() => {
-  const getTaskModel = () => {
-    const taskModel = {
+  const taskMaker = {
+      newTask() {
+          return Object.create(this.taskModel); 
+      }, 
+      
+    taskModel: {
       id: "",
       name: "",
       description: "",
       duedate: "",
       projName: "",
-    };
 
-    return taskModel;
+
+        set setId(taskId) {
+            this.id = taskId; 
+        },
+
+        set setTitle(taskTitle) {
+            this.name = taskTitle;
+        },
+
+        set setDueDate(taskDueDate) {
+            this.duedate = taskDueDate;
+        },
+
+        set setProjectName(taskProjectName) {
+            this.projName = taskProjectName;
+        },
+
+        get getProjectName() {
+            return this.projName;
+        },
+
+        get getTitle() {
+            return this.name; 
+        },
+
+        get getId() {
+            return this.id;
+        },
+
+        get getDescription() {
+            return this.description; 
+        }, 
+
+    }, 
   };
 
   const assignUid = (task) => {
-    task.id = uid.create();
+     task.setId = uid.create(); 
 
     return task;
   };
 
+
   const assignTaskValues = (newTask, formKeyValuePairs) => {
-    for (let key in formKeyValuePairs) {
-      if (key in newTask) {
-        newTask[key] = formKeyValuePairs[key];
-      } else {
-        console.log("KeyError: " + key + " not found");
-      }
-    }
     const task = assignUid(newTask);
 
+    task.setTitle = formKeyValuePairs.name; 
+      task.setDescription = formKeyValuePairs.description;
+      task.setDueDate = formKeyValuePairs.duedate; 
+      task.setProjectName = formKeyValuePairs.projName; 
+
+      alert(task.getTitle); 
     return task;
   };
 
   const createNewTask = (formKeyValues) => {
-    const emptyTask = getTaskModel();
-    const task = assignTaskValues(emptyTask, formKeyValues);
+      const newTask = taskMaker.newTask(); 
+    const task = assignTaskValues(newTask, formKeyValues);
 
     return task;
   };
