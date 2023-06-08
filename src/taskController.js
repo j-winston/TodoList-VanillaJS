@@ -18,6 +18,7 @@ const taskController = (() => {
       description: "",
       duedate: "",
       projName: "",
+        caca: '', 
 
       set setId(taskId) {
         this.id = taskId;
@@ -60,6 +61,8 @@ const taskController = (() => {
   const assignUid = (task) => {
     task.setId = uid.create();
 
+    
+
     return task;
   };
 
@@ -76,22 +79,25 @@ const taskController = (() => {
 
   const createNewTask = (formKeyValues) => {
     const newTask = taskMaker.newTask();
+      alert(newTask);
     const task = assignTaskValues(newTask, formKeyValues);
 
     return task;
   };
 
-  const update = (taskUpdate) => {
-    // 'taskify' data goes here
-    // TODO fix delete bug and move on
-    const projName = taskUpdate.projName;
-    const id = taskUpdate.id;
+  const update = (formValues) => {
+
+    const projName = formValues.projName;
+    const id = formValues.id;
 
     const task = storage.loadTask(projName, id);
+      alert(Object.getOwnPropertyNames(task))
 
-    for (const key in taskUpdate) {
+      // another example of non-transparency..dangerous
+
+    for (const key in formValues) {
       if (key in task) {
-        task[key] = taskUpdate[key];
+        task[key] = formValues[key];
       }
     }
     // task data now needs to be saved

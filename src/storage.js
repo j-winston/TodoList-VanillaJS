@@ -9,8 +9,8 @@ const storage = (() => {
     }
   };
 
-  const loadProject = (name) => {
-    const jsnData = localStorage.getItem(`${name}`);
+  const loadProject = (projectName) => {
+    const jsnData = localStorage.getItem(`${projectName}`);
     const project = JSON.parse(jsnData);
     return project;
   };
@@ -23,6 +23,7 @@ const storage = (() => {
       const project = loadProject(projName);
 
       projects.push(project);
+
     }
     return projects;
   };
@@ -39,10 +40,10 @@ const storage = (() => {
 
   const loadTask = (projName, id) => {
     const proj = loadProject(projName);
-    const tasks = proj.tasks;
 
-    for (const task of tasks) {
+    for (const task of proj.tasks) {
       if (task.id === id) {
+          alert(Object.getOwnPropertyNames(task)); 
         return task;
       }
     }

@@ -27,13 +27,19 @@ const projectController = (() => {
   };
 
   const assignProjectValues = (newProject, formKeyValuePairs) => {
-    for (let key in formKeyValuePairs) {
-      if (key in newProject) {
-        newProject[key] = formKeyValuePairs[key];
-      } else {
-        console.log("KeyError:" + key + " not found");
-      }
-    }
+      // iterating over non-transparent keys of two 
+      // objects(one not transparent) is a horrible horrible
+      // idea that should never be repeated 
+      
+    //for (let key in formKeyValuePairs) {
+    //  if (key in newProject) {
+    //    newProject[key] = formKeyValuePairs[key];
+    //  } else {
+    //    console.log("KeyError:" + key + " not found");
+    //  }
+      newProject.id = formKeyValuePairs.id; 
+      newProject.name = formKeyValuePairs.name;
+    
     return newProject;
   };
 

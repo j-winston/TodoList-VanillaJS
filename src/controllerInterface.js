@@ -8,32 +8,13 @@ import projectController from "./projectController";
 import taskController from "./taskController";
 
 const controllerInterface = (() => {
-  const findProject = (name) => {
-    const project = storage.loadProject(`${name}`);
 
-    return project;
-  };
-
-  // TODO processor does this
-  const getKeyValues = (formInputValues) => {
-    const taskData = {};
-    for (let key in formInputValues) {
-      taskData[key] = formInputValues[key];
-    }
-    return taskData;
-  };
-
-  const requestNewTaskObj = (formKeyValues) => {
-    const task = taskController.createNewTask(formKeyValues);
-    return task;
-  };
 
   const addTaskToProject = (formValues) => {
     const task = taskController.createNewTask(formValues);
     projectController.addTask(task);
   };
 
-  // this should retrieve the entire project
   const getProject = (project) => {
     let name = "";
 

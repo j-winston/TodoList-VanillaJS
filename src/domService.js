@@ -7,7 +7,7 @@ const domService = (() => {
   };
 
   const showElement = (hiddenElement) => {
-    const element = document.querySelector(hiddenElement);
+      const element = document.querySelector(hiddenElement); 
 
     element.style.visibility = "visible";
   };
@@ -152,7 +152,7 @@ const domService = (() => {
 
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
-    // when task.id is changed to task.getId, this breaks it
+      // when task.id is changed to task.getId, this breaks it
     newTaskContainer.setAttribute("data-id", task.id);
     newTaskContainer.classList.add("task-container");
 
@@ -210,7 +210,7 @@ const domService = (() => {
   };
 
   const showTask = (task) => {
-    // task.getId doesnt work here, either
+      // task.getId doesnt work here, either
     const taskViewer = document.querySelector(".project-tasks");
 
     const taskEl = _createNewTaskNode(task);
@@ -219,8 +219,10 @@ const domService = (() => {
 
   const showAllTasks = (project) => {
     for (const task of project.tasks) {
-      // When inbox is loaded on start, task.getId doesnt work here
+    
+        // When inbox is loaded on start, task.getId doesnt work here
       showTask(task);
+
     }
   };
 
@@ -274,18 +276,20 @@ const domService = (() => {
   };
 
   const appendFormToViewer = (form, el) => {
+    
     const viewer = document.querySelector(el);
+
 
     viewer.appendChild(form);
   };
   const showAddTask = () => {
     const form = createForm("new-task-template");
-    appendFormToViewer(form, ".project-viewer");
+    appendFormToViewer(form, '.project-viewer');
 
     const projectName = getCurrentProjectName();
     form.setAttribute("data-id", projectName);
 
-    // Event handlers
+      // Event handlers 
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
@@ -308,8 +312,9 @@ const domService = (() => {
       const formKeyValues = getFormValues(form);
       formKeyValues.projName = projectName;
 
-      removeElement(form);
-      showElement(".add-task-btn");
+        removeElement(form);
+        showElement('.add-task-btn')
+
 
       pubSub.publish("taskSubmitted", formKeyValues);
     });
