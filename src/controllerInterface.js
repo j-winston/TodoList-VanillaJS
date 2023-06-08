@@ -92,7 +92,6 @@ const controllerInterface = (() => {
   const removeProject = (project) => {
     projectController.remove(project.name);
 
-    pubSub.publish("projectDeleted", project);
   };
 
   const addNewProject = (formValues) => {
