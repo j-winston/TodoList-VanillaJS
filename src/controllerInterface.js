@@ -35,10 +35,6 @@ const controllerInterface = (() => {
     pubSub.publish("taskAdded", task);
   };
 
-  const getAllTasks = () => {
-    pubSub.publish("tasksRetrieved", tasks);
-  };
-
 
   // this should retrieve the entire project
   const getProject = (project) => {
@@ -78,13 +74,11 @@ const controllerInterface = (() => {
 
   const getAllSavedProjects = () => {
     projectController.loadAllProjects();
-
   };
 
   // Subcriptions
 
   pubSub.subscribe("pageLoaded", getAllSavedProjects);
-  pubSub.subscribe("inboxClicked", getAllTasks);
 
   pubSub.subscribe("addProjectFormSubmitted", addNewProject);
   pubSub.subscribe("projectClicked", getProject);
