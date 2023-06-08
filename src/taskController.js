@@ -36,6 +36,10 @@ const taskController = (() => {
             this.projName = taskProjectName;
         },
 
+        set setDescription(taskDescription) {
+            this.description = taskDescription;
+        }, 
+
         get getProjectName() {
             return this.projName;
         },
@@ -70,7 +74,6 @@ const taskController = (() => {
       task.setDueDate = formKeyValuePairs.duedate; 
       task.setProjectName = formKeyValuePairs.projName; 
 
-      alert(task.getTitle); 
     return task;
   };
 
