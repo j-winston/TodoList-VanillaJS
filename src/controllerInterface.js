@@ -49,9 +49,7 @@ const controllerInterface = (() => {
     } else {
       name = project.name;
     }
-
       projectController.findProject(name);
-
 
   };
 
@@ -73,29 +71,14 @@ const controllerInterface = (() => {
     storage.saveProject(project);
   };
 
-  const loadTask = (taskId, projName) => {
-    const proj = storage.loadProject(projName);
-    for (const task of proj.tasks) {
-      if (task.id === taskId) {
-        return task;
-      }
-    }
-  };
-
-  const saveTask = (task) => {
-    const proj = storage.loadProject(task.projName);
-    proj.tasks.push(task);
-
-    storage.saveProject(proj);
-  };
 
   const updateTask = (formValues) => {
     taskController.update(formValues);
   };
 
   const getAllSavedProjects = () => {
-    const projArr = projectController.loadAllProjects();
-    pubSub.publish("allSavedProjectsRetrieved", projArr);
+    projectController.loadAllProjects();
+
   };
 
   // Subcriptions

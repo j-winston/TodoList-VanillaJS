@@ -38,9 +38,10 @@ const projectController = (() => {
   };
 
   const loadAllProjects = () => {
-    const allSavedProjects = storage.loadAllProjects();
+    const projArr = storage.loadAllProjects();
+      pubSub.publish('allSavedProjectsRetrieved', projArr); 
 
-    return allSavedProjects;
+
   };
 
   const createNewProject = (formKeyValues) => {
@@ -82,6 +83,7 @@ const projectController = (() => {
         return proj; 
 
     }
+
 
   return {
     loadAllProjects,
