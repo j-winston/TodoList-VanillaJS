@@ -61,6 +61,7 @@ const projectController = (() => {
     }
   };
 
+
   const removeAll = () => {
     storage.deleteAllProjects();
   };
@@ -73,12 +74,22 @@ const projectController = (() => {
     _store(project);
   };
 
+
+    const findProject = (projectName) => {
+        const proj = storage.loadProject(projectName); 
+       pubSub.publish('projectRetrieved', proj);  
+        
+        return proj; 
+
+    }
+
   return {
     loadAllProjects,
     createNewProject,
     remove,
     removeAll,
     addTask,
+      findProject, 
   };
 })();
 

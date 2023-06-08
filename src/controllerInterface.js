@@ -39,41 +39,6 @@ const controllerInterface = (() => {
     pubSub.publish("tasksRetrieved", tasks);
   };
 
-  const errorHandler = (() => {
-    const undefinedValues = [];
-
-    const logUndefinedKeys = (key) => {
-      undefinedValues.push(key);
-    };
-
-    const getUndefinedValues = () => {
-      return undefinedValues;
-    };
-
-    const isEmpty = (arr) => {
-      arr.length === 0 ? true : false;
-    };
-
-    const undefinedExists = () => {
-      undefinedValues.length === 0 ? false : true;
-    };
-
-    const hasUndefinedValues = (project) => {
-      for (let key in project) {
-        if (project[key] === undefined) {
-          logUndefinedKeys(key);
-        }
-      }
-      if (undefinedExists()) {
-        return true;
-      }
-    };
-
-    return {
-      hasUndefinedValues,
-      getUndefinedValues,
-    };
-  })();
 
   // this should retrieve the entire project
   const getProject = (project) => {
@@ -84,9 +49,10 @@ const controllerInterface = (() => {
     } else {
       name = project.name;
     }
-    const proj = findProject(name);
 
-    pubSub.publish("projectRetrieved", proj);
+      projectController.findProject(name);
+
+
   };
 
   const removeProject = (project) => {
