@@ -39,18 +39,15 @@ const projectController = (() => {
 
   const loadAllProjects = () => {
     const projArr = storage.loadAllProjects();
-      pubSub.publish('allSavedProjectsRetrieved', projArr); 
-
-
+    pubSub.publish("allSavedProjectsRetrieved", projArr);
   };
 
   const createNewProject = (formKeyValues) => {
     const emptyProject = getProjectModel();
     const project = assignProjectValues(emptyProject, formKeyValues);
 
-    if(_store(project)){
-      pubSub.publish('newProjectAdded', project); 
-
+    if (_store(project)) {
+      pubSub.publish("newProjectAdded", project);
     }
 
     return project;
@@ -62,28 +59,24 @@ const projectController = (() => {
     }
   };
 
-
   const removeAll = () => {
     storage.deleteAllProjects();
   };
 
   const addTask = (task) => {
-
     const project = _getProject(task.getProjectName);
-    project.tasks.push(task);
-
-    _store(project);
+    if (project.tasks.push(task)) {
+      _store(project);
+      pubSub.publish("taskAdded", task);
+    }
   };
 
+  const findProject = (projectName) => {
+    const proj = storage.loadProject(projectName);
+    pubSub.publish("projectRetrieved", proj);
 
-    const findProject = (projectName) => {
-        const proj = storage.loadProject(projectName); 
-       pubSub.publish('projectRetrieved', proj);  
-        
-        return proj; 
-
-    }
-
+    return proj;
+  };
 
   return {
     loadAllProjects,
@@ -91,7 +84,7 @@ const projectController = (() => {
     remove,
     removeAll,
     addTask,
-      findProject, 
+    findProject,
   };
 })();
 

@@ -28,13 +28,10 @@ const controllerInterface = (() => {
     return task;
   };
 
-  const addTaskToProject = (keyValues) => {
-    const task = requestNewTaskObj(keyValues);
+  const addTaskToProject = (formValues) => {
+    const task = taskController.createNewTask(formValues);
     projectController.addTask(task);
-
-    pubSub.publish("taskAdded", task);
   };
-
 
   // this should retrieve the entire project
   const getProject = (project) => {
@@ -45,13 +42,11 @@ const controllerInterface = (() => {
     } else {
       name = project.name;
     }
-      projectController.findProject(name);
-
+    projectController.findProject(name);
   };
 
   const removeProject = (project) => {
     projectController.remove(project.name);
-
   };
 
   const addNewProject = (formValues) => {
@@ -66,7 +61,6 @@ const controllerInterface = (() => {
     project.tasks.splice(taskIndex, 1);
     storage.saveProject(project);
   };
-
 
   const updateTask = (formValues) => {
     taskController.update(formValues);
