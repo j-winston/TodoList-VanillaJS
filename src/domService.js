@@ -343,7 +343,6 @@ const domService = (() => {
   };
 
   const showInbox = () => {
-    showElement(document.querySelector(".add-task-btn"));
     updateTaskViewerTitle("Inbox");
 
     pubSub.publish("projectClicked", "Inbox");
