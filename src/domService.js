@@ -152,6 +152,7 @@ const domService = (() => {
 
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
+      // when task.id is changed to task.getId, this breaks it
     newTaskContainer.setAttribute("data-id", task.id);
     newTaskContainer.classList.add("task-container");
 
@@ -209,6 +210,7 @@ const domService = (() => {
   };
 
   const showTask = (task) => {
+      // task.getId doesnt work here, either
     const taskViewer = document.querySelector(".project-tasks");
 
     const taskEl = _createNewTaskNode(task);
@@ -217,6 +219,7 @@ const domService = (() => {
 
   const showAllTasks = (project) => {
     for (const task of project.tasks) {
+        // When inbox is loaded on start, task.getId doesnt work here
       showTask(task);
     }
   };

@@ -47,7 +47,11 @@ const projectController = (() => {
     const emptyProject = getProjectModel();
     const project = assignProjectValues(emptyProject, formKeyValues);
 
-    _store(project);
+    if(_store(project)){
+      pubSub.publish('newProjectAdded', project); 
+
+    }
+
     return project;
   };
 

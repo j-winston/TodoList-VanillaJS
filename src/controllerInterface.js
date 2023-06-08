@@ -96,13 +96,7 @@ const controllerInterface = (() => {
   };
 
   const addNewProject = (formValues) => {
-    const project = projectController.createNewProject(formValues);
-
-    if (errorHandler.hasUndefinedValues(project)) {
-      console.log(error.getUndefinedValues);
-    } else {
-      pubSub.publish("newProjectAdded", project);
-    }
+    projectController.createNewProject(formValues);
   };
 
   const delTask = (task) => {
