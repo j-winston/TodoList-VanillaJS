@@ -4,6 +4,7 @@
 
 import pubSub from "./pubsub";
 import storage from "./storage";
+import taskController from "./taskController";
 import uid from "./uid";
 
 const projectController = (() => {
@@ -17,7 +18,16 @@ const projectController = (() => {
     const projectModel = {
       id: uid.create(),
       name: "",
+      lastTask: "",
       tasks: [],
+
+      set lastTask(task) {
+        this.lastTask = task;
+      },
+
+      get lastTask() {
+        return this.last;
+      },
     };
     return projectModel;
   };
@@ -26,37 +36,37 @@ const projectController = (() => {
     return storage.loadProject(name);
   };
 
-  const assignProjectValues = (newProject, formKeyValuePairs) => {
-      // iterating over non-transparent keys of two 
-      // objects(one not transparent) is a horrible horrible
-      // idea that should never be repeated 
-      
+  const assignProjectValues = (newProject, projName) => {
+    // iterating over non-transparent keys of two
+    // objects(one not transparent) is a horrible horrible
+    // idea that should never be repeated
+
     //for (let key in formKeyValuePairs) {
     //  if (key in newProject) {
     //    newProject[key] = formKeyValuePairs[key];
     //  } else {
     //    console.log("KeyError:" + key + " not found");
     //  }
-      newProject.id = formKeyValuePairs.id; 
-      newProject.name = formKeyValuePairs.name;
-    
+    newProject.id = uid.create();
+    newProject.name = projName;
+
     return newProject;
   };
 
   const loadAllProjects = () => {
     const projArr = storage.loadAllProjects();
-    pubSub.publish("allSavedProjectsRetrieved", projArr);
+    return projArr;
+    //    pubSub.publish("allSavedProjectsRetrieved", projArr);
   };
 
-  const createNewProject = (formKeyValues) => {
-    const emptyProject = getProjectModel();
-    const project = assignProjectValues(emptyProject, formKeyValues);
+  const createNewProject = (projectName) => {
+    const project = getProjectModel();
+
+    project.name = projectName;
 
     if (_store(project)) {
-      pubSub.publish("newProjectAdded", project);
+      return project;
     }
-
-    return project;
   };
 
   const remove = (name) => {
@@ -69,11 +79,23 @@ const projectController = (() => {
     storage.deleteAllProjects();
   };
 
-  const addTask = (task) => {
-    const project = _getProject(task.getProjectName);
+  const getNewTask = (formKeyValues) => {
+    return taskController.createNewTask(formKeyValues);
+  };
+
+  const getLastTask = () => {
+    return storage.getLastTaskAdded();
+  };
+
+  const addTaskToProject = (formKeyValuePairs) => {
+    const task = getNewTask(formKeyValuePairs);
+    const projName = task.getProjectName;
+    const project = _getProject(projName);
+
     if (project.tasks.push(task)) {
       _store(project);
-      pubSub.publish("taskAdded", task);
+
+        return task; 
     }
   };
 
@@ -85,11 +107,12 @@ const projectController = (() => {
   };
 
   return {
+
     loadAllProjects,
     createNewProject,
     remove,
     removeAll,
-    addTask,
+    addTaskToProject,
     findProject,
   };
 })();

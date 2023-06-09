@@ -13,55 +13,56 @@ const taskController = (() => {
     },
 
     taskModel: {
-      id: "",
-      name: "",
-      description: "",
-      duedate: "",
-      projName: "",
-        caca: '', 
+      _id: "",
+      _taskTitle: "",
+      _description: "",
+      _dueDate: "",
+      _projectName: "",
 
       set setId(taskId) {
-        this.id = taskId;
+        this._id = taskId;
       },
 
-      set setTitle(taskTitle) {
-        this.name = taskTitle;
+      set setTitle(title) {
+        this._taskTitle = title;
       },
 
       set setDueDate(taskDueDate) {
-        this.duedate = taskDueDate;
+        this._dueDate = taskDueDate;
       },
 
       set setProjectName(taskProjectName) {
-        this.projName = taskProjectName;
+        this._projectName = taskProjectName;
       },
 
       set setDescription(taskDescription) {
-        this.description = taskDescription;
+        this._description = taskDescription;
       },
 
       get getProjectName() {
-        return this.projName;
+        return this._projectName;
       },
 
       get getTitle() {
-        return this.name;
+        return this._taskTitle;
       },
 
       get getId() {
-        return this.id;
+        return this._id;
       },
 
       get getDescription() {
-        return this.description;
+        return this._description;
+      },
+
+      get getDueDate() {
+        return this._dueDate;
       },
     },
   };
 
   const assignUid = (task) => {
     task.setId = uid.create();
-
-    
 
     return task;
   };
@@ -79,21 +80,18 @@ const taskController = (() => {
 
   const createNewTask = (formKeyValues) => {
     const newTask = taskMaker.newTask();
-      alert(newTask);
     const task = assignTaskValues(newTask, formKeyValues);
 
     return task;
   };
 
   const update = (formValues) => {
-
     const projName = formValues.projName;
     const id = formValues.id;
 
     const task = storage.loadTask(projName, id);
-      alert(Object.getOwnPropertyNames(task))
 
-      // another example of non-transparency..dangerous
+    // another example of non-transparency..dangerous
 
     for (const key in formValues) {
       if (key in task) {

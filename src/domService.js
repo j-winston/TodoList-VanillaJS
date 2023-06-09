@@ -1,4 +1,4 @@
-// domService.js Role: Service provider Responsibilities: Add/remove/listen to DOM elements. Broadcast DOM related events to pubSub
+import controllerInterface from "./controllerInterface";
 import pubSub from "./pubsub";
 
 const domService = (() => {
@@ -7,14 +7,11 @@ const domService = (() => {
   };
 
   const showElement = (hiddenElement) => {
-      const element = document.querySelector(hiddenElement); 
+    const element = document.querySelector(hiddenElement);
 
     element.style.visibility = "visible";
   };
 
-  window.onload = () => {
-    pubSub.publish("pageLoaded");
-  };
   const removeElement = (el) => {
     el.remove();
   };
@@ -152,8 +149,8 @@ const domService = (() => {
 
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
-      // when task.id is changed to task.getId, this breaks it
-    newTaskContainer.setAttribute("data-id", task.id);
+    // when task.id is changed to task.getId, this breaks it
+    newTaskContainer.setAttribute("data-id", task.getId);
     newTaskContainer.classList.add("task-container");
 
     const taskCompleteBtn = document.createElement("input");
@@ -166,15 +163,15 @@ const domService = (() => {
 
     const nameEl = document.createElement("p");
     nameEl.classList.add("task-title");
-    nameEl.textContent = task.name;
+    nameEl.textContent = task.getTitle;
 
     const descriptionEl = document.createElement("p");
     descriptionEl.classList.add("task-description");
-    descriptionEl.textContent = task.description;
+    descriptionEl.textContent = task.getDescription;
 
     const dueDateEl = document.createElement("p");
     dueDateEl.classList.add("task-due-date");
-    dueDateEl.textContent = task.duedate;
+    dueDateEl.textContent = task.getDueDate;
 
     const taskBtnContainer = document.createElement("div");
     taskBtnContainer.classList.add("task-btn-container");
@@ -210,7 +207,7 @@ const domService = (() => {
   };
 
   const showTask = (task) => {
-      // task.getId doesnt work here, either
+    // task.getId doesnt work here, either
     const taskViewer = document.querySelector(".project-tasks");
 
     const taskEl = _createNewTaskNode(task);
@@ -219,10 +216,8 @@ const domService = (() => {
 
   const showAllTasks = (project) => {
     for (const task of project.tasks) {
-    
-        // When inbox is loaded on start, task.getId doesnt work here
+      // When inbox is loaded on start, task.getId doesnt work here
       showTask(task);
-
     }
   };
 
@@ -242,7 +237,7 @@ const domService = (() => {
       const formValues = getFormValues(newProjectForm);
       removeElement(newProjectForm);
 
-      pubSub.publish("addProjectFormSubmitted", formValues);
+      submitProject(formValues.name);
     });
 
     const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
@@ -251,7 +246,7 @@ const domService = (() => {
     });
   };
 
-  const showNewAddedProject = (project) => {
+  const showNewProject = (project) => {
     const projectEl = createProjectElement(project);
     updateTaskViewerTitle(project.name);
 
@@ -276,20 +271,23 @@ const domService = (() => {
   };
 
   const appendFormToViewer = (form, el) => {
-    
     const viewer = document.querySelector(el);
-
 
     viewer.appendChild(form);
   };
+
+  const submitTask = (formKeyValues) => {
+    controllerInterface.addTask(formKeyValues);
+  };
+
   const showAddTask = () => {
     const form = createForm("new-task-template");
-    appendFormToViewer(form, '.project-viewer');
+    appendFormToViewer(form, ".project-viewer");
 
     const projectName = getCurrentProjectName();
     form.setAttribute("data-id", projectName);
 
-      // Event handlers 
+    // Event handlers
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
@@ -312,11 +310,10 @@ const domService = (() => {
       const formKeyValues = getFormValues(form);
       formKeyValues.projName = projectName;
 
-        removeElement(form);
-        showElement('.add-task-btn')
-
-
-      pubSub.publish("taskSubmitted", formKeyValues);
+      showElement(".add-task-btn");
+      submitTask(formKeyValues);
+      removeElement(form);
+      //.pubSub.publish("taskSubmitted", formKeyValues);
     });
     // End event handlers
   };
@@ -334,17 +331,19 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", addNewTask);
   };
 
+  const submitProject = (name) => {
+    controllerInterface.addNewProject(name);
+  };
+
   const createInbox = () => {
     updateTaskViewerTitle("Inbox");
 
     const inboxBtn = document.querySelector(".inbox-nav-link");
     inboxBtn.textContent = "Inbox";
+    submitProject("Inbox");
     inboxBtn.addEventListener("click", () => {
       updateTaskViewerTitle("Inbox");
-      pubSub.publish("projectClicked", "Inbox");
     });
-
-    pubSub.publish("newProjectSubmitted", "Inbox");
   };
 
   const showInbox = () => {
@@ -368,14 +367,15 @@ const domService = (() => {
     showAllTasks(project);
   };
 
-  const showAllProjects = (projArr) => {
+  const showAllProjects = () => {
+    const projArr = controllerInterface.getAllSavedProjects();
     for (let i = 0; i < projArr.length; i++) {
       const proj = projArr[i];
 
       if (projectExists(proj) || proj.name === "Inbox") {
         showProject(proj);
       } else {
-        showNewAddedProject(proj);
+        showNewProject(proj);
       }
     }
   };
@@ -396,8 +396,10 @@ const domService = (() => {
     createInbox();
   };
 
+  window.onload = (event) => {};
+
   pubSub.subscribe("allSavedProjectsRetrieved", showAllProjects);
-  pubSub.subscribe("newProjectAdded", showNewAddedProject);
+  pubSub.subscribe("newProjectSaved", showNewProject);
 
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("taskUpdated", showUpdatedTask);

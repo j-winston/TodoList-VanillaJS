@@ -3,15 +3,38 @@
 // Responsilities: Save project data to user local drive
 const storage = (() => {
   const saveProject = (project) => {
-    localStorage.setItem(`${project.name}`, JSON.stringify(project));
+    const jsnProj = toJsn(project);
+
+    localStorage.setItem(`${project.name}`, jsnProj);
+
     if (localStorage.getItem(`${project.name}`)) {
       return true;
     }
   };
 
+  const getLastTaskAdded = () => {
+    const length = localStorage.length;
+    const key = localStorage.key(length - 1);
+    const proj = loadProject(key);
+    const tasks = proj.tasks;
+
+    const lastTask = tasks[tasks.length-1];
+
+    return lastTask;
+  };
+
+  const toJsn = (project) => {
+    return JSON.stringify(project);
+  };
+
+  const toString = (jsnData) => {
+    return JSON.parse(jsnData);
+  };
+
   const loadProject = (projectName) => {
     const jsnData = localStorage.getItem(`${projectName}`);
-    const project = JSON.parse(jsnData);
+    const project = toString(jsnData);
+
     return project;
   };
 
@@ -23,7 +46,6 @@ const storage = (() => {
       const project = loadProject(projName);
 
       projects.push(project);
-
     }
     return projects;
   };
@@ -42,8 +64,9 @@ const storage = (() => {
     const proj = loadProject(projName);
 
     for (const task of proj.tasks) {
-      if (task.id === id) {
-          alert(Object.getOwnPropertyNames(task)); 
+      // clearly proj.tasks is being loaded with the wrong task ob
+      alert(task.getId);
+      if (task.getId === id) {
         return task;
       }
     }
@@ -56,6 +79,7 @@ const storage = (() => {
     deleteAllProjects,
     deleteProject,
     loadTask,
+    getLastTaskAdded,
   };
 })();
 

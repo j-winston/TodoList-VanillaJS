@@ -8,11 +8,11 @@ import projectController from "./projectController";
 import taskController from "./taskController";
 
 const controllerInterface = (() => {
-
-
-  const addTaskToProject = (formValues) => {
-    const task = taskController.createNewTask(formValues);
-    projectController.addTask(task);
+  const addTask = (formValues) => {
+    if (projectController.addTaskToProject(formValues)) {
+        const task = projectController.addTaskToProject(formValues);
+      pubSub.publish("taskAdded", task);
+    }
   };
 
   const getProject = (project) => {
@@ -30,8 +30,9 @@ const controllerInterface = (() => {
     projectController.remove(project.name);
   };
 
-  const addNewProject = (formValues) => {
-    projectController.createNewProject(formValues);
+  const addNewProject = (name) => {
+    const project = projectController.createNewProject(name);
+    pubSub.publish("newProjectSaved", project);
   };
 
   const delTask = (task) => {
@@ -48,22 +49,34 @@ const controllerInterface = (() => {
   };
 
   const getAllSavedProjects = () => {
-    projectController.loadAllProjects();
+    const projects = projectController.loadAllProjects();
+    return projects;
+  };
+
+  const renderInbox = () => {
+    projectController.createNewProject({
+      name: "Inbox",
+      id: "djas939u234asd",
+    });
   };
 
   // Subcriptions
 
   pubSub.subscribe("pageLoaded", getAllSavedProjects);
 
-  pubSub.subscribe("addProjectFormSubmitted", addNewProject);
-  pubSub.subscribe("projectClicked", getProject);
-  pubSub.subscribe("projectRemoved", removeProject);
+  // pubSub.subscribe("addProjectFormSubmitted", addNewProject);
+  //pubSub.subscribe("projectClicked", getProject);
+  //pubSub.subscribe("projectRemoved", removeProject);
 
-  pubSub.subscribe("taskSubmitted", addTaskToProject);
-  pubSub.subscribe("taskEditSubmitted", updateTask);
-  pubSub.subscribe("taskDeleted", delTask);
+  //pubSub.subscribe("taskSubmitted", addTaskToProject);
+  //pubSub.subscribe("taskEditSubmitted", updateTask);
+  // pubSub.subscribe("taskDeleted", delTask);
 
-  return {};
+  return {
+    addTask,
+    getAllSavedProjects,
+    addNewProject,
+  };
 })();
 
 export default controllerInterface;
