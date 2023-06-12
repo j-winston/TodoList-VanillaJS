@@ -71,7 +71,7 @@ const projectController = (() => {
 
   const remove = (name) => {
     if (storage.deleteProject(name)) {
-      pubSub.publish("projectDeleted", name);
+      return true;
     }
   };
 
@@ -90,13 +90,15 @@ const projectController = (() => {
   const addTaskToProject = (formKeyValuePairs) => {
     const task = getNewTask(formKeyValuePairs);
     const projName = task.getProjectName;
-    const project = _getProject(projName);
+    let project = _getProject(projName);
 
-    if (project.tasks.push(task)) {
-      _store(project);
-
-        return task; 
+    if (!project) {
+        project = createNewProject(projName);
     }
+    project.tasks.push(task);
+    _store(project);
+
+    return task;
   };
 
   const findProject = (projectName) => {
@@ -107,7 +109,6 @@ const projectController = (() => {
   };
 
   return {
-
     loadAllProjects,
     createNewProject,
     remove,

@@ -1,4 +1,5 @@
 import controllerInterface from "./controllerInterface";
+import projectController from "./projectController";
 import pubSub from "./pubsub";
 
 const domService = (() => {
@@ -24,15 +25,21 @@ const domService = (() => {
     return form;
   };
 
-  const removeProject = (project) => {
-    const projectElement = document.querySelector(
-      "[data-id=" + CSS.escape(project.id) + "]"
+  const findProjectEl = (projectId) => {
+    const projEl = document.querySelector(
+      "[data-id=" + CSS.escape(projectId) + "]"
     );
-    removeElement(projectElement);
 
-    clearTaskViewer();
+    return projEl;
+  };
 
-    pubSub.publish("projectRemoved", project);
+  const removeProject = (proj) => {
+    const projElement = findProjectEl(proj.id);
+
+    if (controllerInterface.deleteProject(proj.name)) {
+      removeElement(projElement);
+      clearTaskViewer();
+    }
   };
 
   const getFormValues = (form) => {
@@ -285,6 +292,7 @@ const domService = (() => {
     appendFormToViewer(form, ".project-viewer");
 
     const projectName = getCurrentProjectName();
+    console.log(projectName);
     form.setAttribute("data-id", projectName);
 
     // Event handlers
@@ -348,8 +356,6 @@ const domService = (() => {
 
   const showInbox = () => {
     updateTaskViewerTitle("Inbox");
-
-    pubSub.publish("projectClicked", "Inbox");
   };
 
   const getTaskContainer = (taskId) => {
@@ -367,11 +373,8 @@ const domService = (() => {
     showAllTasks(project);
   };
 
-  const showAllProjects = () => {
-    const projArr = controllerInterface.getAllSavedProjects();
-    for (let i = 0; i < projArr.length; i++) {
-      const proj = projArr[i];
-
+  const showAllProjects = (projectsArr) => {
+    for (const proj of projectsArr) {
       if (projectExists(proj) || proj.name === "Inbox") {
         showProject(proj);
       } else {
@@ -379,6 +382,7 @@ const domService = (() => {
       }
     }
   };
+
   const showUpdatedTask = (task) => {
     const name = task.name;
     const description = task.description;
@@ -391,21 +395,26 @@ const domService = (() => {
     container.querySelector(".task-due-date").textContent = dueDate;
   };
 
-  const initializeUi = () => {
-    startTaskEvents();
-    createInbox();
+  const loadFromLocalStorage = () => {
+    controllerInterface.getAllProjects();
   };
 
-  window.onload = (event) => {};
+  const initializeUi = () => {
+    startTaskEvents();
+  };
 
-  pubSub.subscribe("allSavedProjectsRetrieved", showAllProjects);
+  window.onload = (event) => {
+    loadFromLocalStorage();
+  };
+
+  pubSub.subscribe("allProjectsRetrieved", showAllProjects);
+  pubSub.subscribe("projectDeleted", showInbox);
+  pubSub.subscribe("projectRetrieved", showProject);
+
   pubSub.subscribe("newProjectSaved", showNewProject);
 
   pubSub.subscribe("taskAdded", showTask);
   pubSub.subscribe("taskUpdated", showUpdatedTask);
-
-  pubSub.subscribe("projectDeleted", showInbox);
-  pubSub.subscribe("projectRetrieved", showProject);
 
   return {
     initializeUi,

@@ -9,8 +9,9 @@ import taskController from "./taskController";
 
 const controllerInterface = (() => {
   const addTask = (formValues) => {
-    if (projectController.addTaskToProject(formValues)) {
-        const task = projectController.addTaskToProject(formValues);
+    const task = projectController.addTaskToProject(formValues);
+
+    if (task) {
       pubSub.publish("taskAdded", task);
     }
   };
@@ -26,13 +27,15 @@ const controllerInterface = (() => {
     projectController.findProject(name);
   };
 
-  const removeProject = (project) => {
-    projectController.remove(project.name);
-  };
-
   const addNewProject = (name) => {
     const project = projectController.createNewProject(name);
     pubSub.publish("newProjectSaved", project);
+  };
+
+  const deleteProject = (projId) => {
+    if (projectController.remove(projId)) {
+      return true;
+    }
   };
 
   const delTask = (task) => {
@@ -48,9 +51,11 @@ const controllerInterface = (() => {
     taskController.update(formValues);
   };
 
-  const getAllSavedProjects = () => {
-    const projects = projectController.loadAllProjects();
-    return projects;
+  const getAllProjects = () => {
+    const projectsArr = projectController.loadAllProjects();
+    // maybe error checking here?
+
+    pubSub.publish("allProjectsRetrieved", projectsArr);
   };
 
   const renderInbox = () => {
@@ -61,9 +66,6 @@ const controllerInterface = (() => {
   };
 
   // Subcriptions
-
-  pubSub.subscribe("pageLoaded", getAllSavedProjects);
-
   // pubSub.subscribe("addProjectFormSubmitted", addNewProject);
   //pubSub.subscribe("projectClicked", getProject);
   //pubSub.subscribe("projectRemoved", removeProject);
@@ -73,9 +75,10 @@ const controllerInterface = (() => {
   // pubSub.subscribe("taskDeleted", delTask);
 
   return {
-    addTask,
-    getAllSavedProjects,
+    getAllProjects,
     addNewProject,
+    addTask,
+    deleteProject,
   };
 })();
 

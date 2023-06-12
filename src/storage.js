@@ -12,13 +12,14 @@ const storage = (() => {
     }
   };
 
+  // TODO on ice
   const getLastTaskAdded = () => {
     const length = localStorage.length;
     const key = localStorage.key(length - 1);
     const proj = loadProject(key);
     const tasks = proj.tasks;
 
-    const lastTask = tasks[tasks.length-1];
+    const lastTask = tasks[tasks.length - 1];
 
     return lastTask;
   };
@@ -33,9 +34,11 @@ const storage = (() => {
 
   const loadProject = (projectName) => {
     const jsnData = localStorage.getItem(`${projectName}`);
-    const project = toString(jsnData);
+    if (jsnData) {
+      const project = toString(jsnData);
 
-    return project;
+      return project;
+    } else return false;
   };
 
   const loadAllProjects = () => {
