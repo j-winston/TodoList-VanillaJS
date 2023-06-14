@@ -1,7 +1,37 @@
 import controllerInterface from "./controllerInterface";
+import projectController from "./projectController";
 import pubSub from "./pubsub";
 
 const domService = (() => {
+ //consider moving this later
+
+    const Container = (form) => {
+        let _formData = new FormData(form); 
+        let _el = createProjectElement(_formData); 
+        let _projName = _formData.get('name');  
+
+        return {
+
+            getElement () {
+                return el;
+            }, 
+
+            set name(name){
+                _formData.set('name', name); 
+                _el = createProjectElement(_formData);
+            },
+
+            get name() {
+                return _projName; 
+            }
+        }
+
+    }
+
+
+
+
+
   const hideElement = (el) => {
     el.style.visibility = "hidden";
   };
@@ -19,7 +49,6 @@ const domService = (() => {
   const createForm = (templateId) => {
     const template = getTemplateClone(templateId);
     const form = template.querySelector("form");
-    form.setAttribute("data-id", getCurrentProjectName());
 
     return form;
   };
@@ -33,11 +62,8 @@ const domService = (() => {
   };
 
   const removeProject = (el) => {
-
-      removeElement(el);
-      clearTaskViewer();
-
-
+    removeElement(el);
+    clearTaskViewer();
   };
 
   const getFormValues = (form) => {
@@ -62,33 +88,33 @@ const domService = (() => {
     return false;
   };
 
-  const createProjectElement = (project) => {
-    if (!projectExists(project.id) && project.name != "Inbox") {
-      const projectContainerElement = document.createElement("div");
-      projectContainerElement.className = "project";
-      projectContainerElement.setAttribute("data-id", project.id);
+  const createProjectElement = (formData) => {
+      const name = formData.get('name'); 
 
-      const projectTitleElement = document.createElement("div");
-      projectTitleElement.addEventListener("click", () => {
-        updateTaskViewerTitle(project.name);
-        pubSub.publish("projectClicked", project);
+      const projectContainerEl = document.createElement("div");
+      projectContainerEl.className = "project";
+
+      const projectTitleEl = document.createElement("div");
+      projectTitleEl.className = "project-title";
+      projectTitleEl.textContent = name;  
+      projectTitleEl.addEventListener("click", () => {
+        updateTaskViewerTitle(name);
+        // pubSub.publish("projectClicked", project);
       });
-      projectTitleElement.textContent = project.name;
-      projectTitleElement.className = "project-title";
 
       const deleteBtn = document.createElement("div");
       deleteBtn.className = "project-delete-btn";
       deleteBtn.textContent = "X";
       deleteBtn.addEventListener("click", () => {
-        removeProject(projectContainerElement);
-          pubSub.publish('projectRemoved', project.name)
+        removeProject(projectContainerEl);
+
+        // pubSub.publish("projectRemoved", name);
       });
 
-      projectContainerElement.appendChild(projectTitleElement);
-      projectContainerElement.appendChild(deleteBtn);
+      projectContainerEl.appendChild(projectTitleEl);
+      projectContainerEl.appendChild(deleteBtn);
 
-      return projectContainerElement;
-    }
+      return projectContainerEl;
   };
 
   const clearTaskViewer = () => {
@@ -224,29 +250,41 @@ const domService = (() => {
     projectListContainer.appendChild(projectEl);
   };
 
-
   const showAddProjectDialog = () => {
+    // create a form from a template
     const form = createForm("new-project-template");
-      alert(form.getAttribute('data-id'))
-    
 
+    // append add form to the dom
     const projectContainer = document.querySelector(".project-container");
-    projectContainer.appendChild(form); 
+    projectContainer.appendChild(form);
 
+    // on submit do this
+
+    // create event listeners for save button
+    // should be looking to the actual form or project container
     const saveProjBtn = document.querySelector(".confirm-project-btn");
-
     saveProjBtn.addEventListener("click", () => {
-      pubSub.publish("newProjectSubmitted", form); 
-      removeElement(form)
+        const projContainer = Container(form);
+        
+
+      pubSub.publish("newProject", projContainer);
+
+      // remove the window from the screen
+      removeElement(form);
     });
 
     const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
     cancelNewProjectBtn.addEventListener("click", () => {
-      removeElement(form); 
+      removeElement(form);
     });
   };
 
-  const showNewProject = (project) => {
+
+
+
+
+  const showNewProject = (projContainer) => {
+
     const projectEl = createProjectElement(project);
     updateTaskViewerTitle(project.name);
 
@@ -398,14 +436,14 @@ const domService = (() => {
   window.onload = (event) => {
     loadFromLocalStorage();
   };
-
+pubSub.subscribe('newProjectContainer', showNewProject)
 
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
   // pubSub.subscribe("projectDeleted", showInbox);
   // pubSub.subscribe("projectRetrieved", showProject);
 
-  pubSub.subscribe("newProjectSaved", showNewProject);
-    pubSub.subscribe('projectDeleted', showInbox); 
+  //pubSub.subscribe("newProjectSaved", showNewProject);
+  // pubSub.subscribe('projectDeleted', showInbox);
 
   // pubSub.subscribe("taskAdded", showTask);
   // pubSub.subscribe("taskUpdated", showUpdatedTask);

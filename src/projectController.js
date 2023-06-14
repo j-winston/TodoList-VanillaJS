@@ -14,125 +14,130 @@ const projectController = (() => {
     }
   };
 
-  const getProjectModel = () => {
-    const projectModel = {
-      id: uid.create(),
-      name: "",
-      lastTask: "",
-      tasks: [],
+  const newProject = (name) => {
+    let _id;
+    let _name;
+    let _tasks = [];
 
-      set lastTask(task) {
-        this.lastTask = task;
+    return {
+      set name(name) {
+        _name = name;
+      },
+      get name() {
+        return _name;
       },
 
-      get lastTask() {
-        return this.last;
+      set id(id) {
+        _id = id;
+      },
+      get id() {
+        return _id;
+      },
+      set tasks(task) {
+        _tasks.push(task);
+      },
+      get tasks() {
+        return _tasks;
       },
     };
-    return projectModel;
   };
 
-  const _getProject = (name) => {
-    return storage.loadProject(name);
-  };
+  //const _getProject = (name) => {
+  //  return storage.loadProject(name);
+  //};
 
-  const assignProjectValues = (newProject, projName) => {
-    // iterating over non-transparent keys of two
-    // objects(one not transparent) is a horrible horrible
-    // idea that should never be repeated
+  //const assignProjectValues = (newProject, projName) => {
+  //  // iterating over non-transparent keys of two
+  //  // objects(one not transparent) is a horrible horrible
+  //  // idea that should never be repeated
 
-    //for (let key in formKeyValuePairs) {
-    //  if (key in newProject) {
-    //    newProject[key] = formKeyValuePairs[key];
-    //  } else {
-    //    console.log("KeyError:" + key + " not found");
-    //  }
-    newProject.id = uid.create();
-    newProject.name = projName;
+  //  //for (let key in formKeyValuePairs) {
+  //  //  if (key in newProject) {
+  //  //    newProject[key] = formKeyValuePairs[key];
+  //  //  } else {
+  //  //    console.log("KeyError:" + key + " not found");
+  //  //  }
+  //  newProject.id = uid.create();
+  //  newProject.name = projName;
 
-    return newProject;
-  };
+  //  return newProject;
+  //};
 
-  const getValues = (form) => {
-    const inputElements = form.querySelectorAll("input");
-    const formValues = {};
+  //const getValues = (form) => {
+  //  const inputElements = form.querySelectorAll("input");
+  //  const formValues = {};
 
-    inputElements.forEach((input) => {
-      formValues[input.id] = input.value;
-    });
+  //  inputElements.forEach((input) => {
+  //    formValues[input.id] = input.value;
+  //  });
 
-    return formValues;
-  };
+  //  return formValues;
+  //};
 
-  const loadAllProjects = () => {
-    const projArr = storage.loadAllProjects();
-    return projArr;
-  };
+  //const loadAllProjects = () => {
+  //  const projArr = storage.loadAllProjects();
+  //  return projArr;
+  //};
 
-  const createNewProject = (form) => {
-    const frmValues = getValues(form);
+  //const remove = (name) => {
+  //  if (storage.deleteProject(name)) {
+  //    return true;
+  //  }
+  //};
 
-    const project = getProjectModel();
+  //const removeAll = () => {
+  //  storage.deleteAllProjects();
+  //};
 
-    project.name = frmValues.name; 
+  //const getNewTask = (formKeyValues) => {
+  //  return taskController.createNewTask(formKeyValues);
+  //};
+
+  //const getLastTask = () => {
+  //  return storage.getLastTaskAdded();
+  //};
+
+  //const addTaskToProject = (form) => {
+  //  //START HERE--> get tasks to work :)
+  //  const values = getValues(form);
+
+  //  const task = getNewTask(values);
+
+  //  const projName = task.getProjName();
+
+  //  let project = _getProject(projName);
+
+  //  if (!project) {
+  //    project = createNewProject(projName);
+  //  }
+  //  project.tasks.push(task);
+  //  _store(project);
+
+  //  return project;
+  //};
+
+  //const findProject = (projectName) => {
+  //  const proj = storage.loadProject(projectName);
+  //  pubSub.publish("projectRetrieved", proj);
+
+  //  return proj;
+  //};
+
+  const createNewProject = (name) => {
+    const project = newProject(name);
 
     if (_store(project)) {
       return project;
     }
   };
 
-  const remove = (name) => {
-    if (storage.deleteProject(name)) {
-      return true;
-    }
-  };
-
-  const removeAll = () => {
-    storage.deleteAllProjects();
-  };
-
-  const getNewTask = (formKeyValues) => {
-    return taskController.createNewTask(formKeyValues);
-  };
-
-  const getLastTask = () => {
-    return storage.getLastTaskAdded();
-  };
-
-  const addTaskToProject = (form) => {
-      //START HERE--> get tasks to work :)
-      const values = getValues(form); 
-
-    const task = getNewTask(values);
-
-
-    const projName = task.getProjName();
-
-    let project = _getProject(projName);
-
-    if (!project) {
-      project = createNewProject(projName);
-    }
-    project.tasks.push(task);
-    _store(project);
-
-    return project;
-  };
-
-  const findProject = (projectName) => {
-    const proj = storage.loadProject(projectName);
-    pubSub.publish("projectRetrieved", proj);
-
-    return proj;
-  };
-
   return {
-    loadAllProjects,
     createNewProject,
-    remove,
-    removeAll,
-    addTaskToProject,
-    findProject,
+    //loadAllProjects,
+    //remove,
+    //removeAll,
+    //addTaskToProject,
+    //findProject,
   };
 })();
 
