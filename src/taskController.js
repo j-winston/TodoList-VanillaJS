@@ -7,81 +7,59 @@ import pubSub from "./pubsub";
 import uid from "./uid";
 
 const taskController = (() => {
-  const taskMaker = {
-    newTask() {
-      return Object.create(this.taskModel);
-    },
+  const Task = () => {
+    let id;
+    let title;
+    let description;
+    let projectName;
+    let dueDate;
 
-    taskModel: {
-      _id: "",
-      _taskTitle: "",
-      _description: "",
-      _dueDate: "",
-      _projectName: "",
+    const setId = (taskId) => (id = taskId);
+    const setTitle = (taskTitle) => (title = taskTitle);
+    const setDescription = (descr) => (description = descr);
+    const setDueDate = (date) => (dueDate = date);
+    const setProjectName = (name) => (projectName = name);
 
-      set setId(taskId) {
-        this._id = taskId;
-      },
+    const getProjectName = () => projectName;
+    const getId = () => id;
+    const getTitle = () => title;
+    const getDueDate = () => dueDate;
+    const getDescription = () => description;
 
-      set setTitle(title) {
-        this._taskTitle = title;
-      },
+    return {
+      setId,
+      setTitle,
+      setDescription,
+      setDueDate,
+      setProjectName,
 
-      set setDueDate(taskDueDate) {
-        this._dueDate = taskDueDate;
-      },
-
-      set setProjectName(taskProjectName) {
-        this._projectName = taskProjectName;
-      },
-
-      set setDescription(taskDescription) {
-        this._description = taskDescription;
-      },
-
-      get getProjectName() {
-        return this._projectName;
-      },
-
-      get getTitle() {
-        return this._taskTitle;
-      },
-
-      get getId() {
-        return this._id;
-      },
-
-      get getDescription() {
-        return this._description;
-      },
-
-      get getDueDate() {
-        return this._dueDate;
-      },
-    },
+      getProjectName,
+      getId,
+      getTitle,
+      getDueDate,
+      getDescription,
+    };
   };
 
-  const assignUid = (task) => {
-    task.setId = uid.create();
-
-    return task;
+  const getUid = () => {
+    return uid.create();
   };
 
-  const assignTaskValues = (newTask, formKeyValuePairs) => {
-    const task = assignUid(newTask);
+  const assignTaskValues = (task, formKeyValuePairs) => {
+    const uid = getUid();
 
-    task.setTitle = formKeyValuePairs.name;
-    task.setDescription = formKeyValuePairs.description;
-    task.setDueDate = formKeyValuePairs.duedate;
-    task.setProjectName = formKeyValuePairs.projName;
+    task.setId(uid);
+    task.setTitle(formKeyValuePairs.name);
+    task.setDescription(formKeyValuePairs.description);
+    task.setDueDate(formKeyValuePairs.duedate);
+    task.setProjectName(formKeyValuePairs.projectName);
 
     return task;
   };
 
   const createNewTask = (formKeyValues) => {
-    const newTask = taskMaker.newTask();
-    const task = assignTaskValues(newTask, formKeyValues);
-
+    const taskObj = Task();
+    const task = assignTaskValues(taskObj, formKeyValues);
     return task;
   };
 

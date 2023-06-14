@@ -53,16 +53,28 @@ const projectController = (() => {
     return newProject;
   };
 
+  const getValues = (form) => {
+    const inputElements = form.querySelectorAll("input");
+    const formValues = {};
+
+    inputElements.forEach((input) => {
+      formValues[input.id] = input.value;
+    });
+
+    return formValues;
+  };
+
   const loadAllProjects = () => {
     const projArr = storage.loadAllProjects();
     return projArr;
-    //    pubSub.publish("allSavedProjectsRetrieved", projArr);
   };
 
-  const createNewProject = (projectName) => {
+  const createNewProject = (form) => {
+    const frmValues = getValues(form);
+
     const project = getProjectModel();
 
-    project.name = projectName;
+    project.name = frmValues.name; 
 
     if (_store(project)) {
       return project;
@@ -87,18 +99,24 @@ const projectController = (() => {
     return storage.getLastTaskAdded();
   };
 
-  const addTaskToProject = (formKeyValuePairs) => {
-    const task = getNewTask(formKeyValuePairs);
-    const projName = task.getProjectName;
+  const addTaskToProject = (form) => {
+      //START HERE--> get tasks to work :)
+      const values = getValues(form); 
+
+    const task = getNewTask(values);
+
+
+    const projName = task.getProjName();
+
     let project = _getProject(projName);
 
     if (!project) {
-        project = createNewProject(projName);
+      project = createNewProject(projName);
     }
     project.tasks.push(task);
     _store(project);
 
-    return task;
+    return project;
   };
 
   const findProject = (projectName) => {

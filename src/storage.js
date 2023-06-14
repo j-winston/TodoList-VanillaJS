@@ -48,8 +48,11 @@ const storage = (() => {
       const projName = localStorage.key(i);
       const project = loadProject(projName);
 
-      projects.push(project);
+      if (project) {
+        projects.push(project);
+      }
     }
+
     return projects;
   };
 

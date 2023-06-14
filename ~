@@ -6,16 +6,17 @@ import pubSub from "./pubsub";
 import storage from "./storage";
 import projectController from "./projectController";
 import taskController from "./taskController";
-import domService from "./domService";
 
 const controllerInterface = (() => {
 
-  const addTask = (form) => {
-      projectController.addTaskToProject(form);
-      
-      
 
+  const updateProject = (form) => {
+    const frmValues = domService.getFormValues(form);
+    const project = projectController.addTaskToProject(frmValues);
+
+    domService.showProject(project);
   };
+
 
   const getProject = (project) => {
     let name = "";
@@ -29,16 +30,17 @@ const controllerInterface = (() => {
   };
 
   const addNewProject = (form) => {
-    const project = projectController.createNewProject(form);
+
+
+    const project = projectController.createNewProject(name);
 
     pubSub.publish("newProjectSaved", project);
   };
 
-  const deleteProject = (name) => {
-    if (projectController.remove(name)) {
-        pubSub.publish('projectDeleted');
+  const deleteProject = (projId) => {
+    if (projectController.remove(projId)) {
+      return true;
     }
-
   };
 
   const delTask = (task) => {
@@ -72,17 +74,21 @@ const controllerInterface = (() => {
     const inputValues = document.querySelectorAll("input");
   };
 
-  pubSub.subscribe("newProjectSubmitted", addNewProject);
+
+
+pubSub.subscribe('newProjectFormSubmitted', addNewProject); 
   // Subcriptions
   // pubSub.subscribe("addProjectFormSubmitted", addNewProject);
   //pubSub.subscribe("projectClicked", getProject);
-  pubSub.subscribe("projectRemoved", deleteProject);
+  //pubSub.subscribe("projectRemoved", removeProject);
 
-  pubSub.subscribe("taskSubmitted", addTask);
+  //pubSub.subscribe("taskSubmitted", addTaskToProject);
   //pubSub.subscribe("taskEditSubmitted", updateTask);
   // pubSub.subscribe("taskDeleted", delTask);
 
-  return {};
+
+  return {
+  };
 })();
 
 export default controllerInterface;
