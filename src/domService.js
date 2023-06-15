@@ -1,126 +1,10 @@
 import controllerInterface from "./controllerInterface";
 import projectController from "./projectController";
 import pubSub from "./pubsub";
+import Container from "./container";
 
 const domService = (() => {
   //consider moving this later
-
-  const Container = (form) => {
-    let _formData = new FormData(form);
-
-    const _createProjectElement = () => {
-      const name = _formData.get("name");
-
-      const projectEl = document.createElement("div");
-      projectEl.className = "project";
-
-      const projectTitleEl = document.createElement("div");
-      projectTitleEl.className = "project-title";
-      projectTitleEl.textContent = name;
-      projectTitleEl.addEventListener("click", () => {
-        updateTaskViewerTitle(name);
-        // pubSub.publish("projectClicked", project);
-      });
-
-      const deleteBtn = document.createElement("div");
-      deleteBtn.className = "project-delete-btn";
-      deleteBtn.textContent = "X";
-      deleteBtn.addEventListener("click", () => {
-        removeProject(projectEl);
-
-        pubSub.publish("projectRemoved", name);
-      });
-
-      projectEl.appendChild(projectTitleEl);
-      projectEl.appendChild(deleteBtn);
-
-      return projectEl;
-    };
-
-    const _createTaskElement = () => {
-      const taskEl = document.createElement("div");
-
-      taskEl.setAttribute("data-id", task.getId());
-      taskEl.classList.add("task-container");
-
-      const taskCompleteBtn = document.createElement("input");
-      taskCompleteBtn.classList.add("task-complete-btn");
-      taskCompleteBtn.setAttribute("type", "checkbox");
-
-      taskCompleteBtn.addEventListener("click", () => {
-        removeElement(taskEl);
-      });
-
-      const nameEl = document.createElement("p");
-      nameEl.classList.add("task-title");
-      nameEl.textContent = task.getTitle();
-
-      const descriptionEl = document.createElement("p");
-      descriptionEl.classList.add("task-description");
-      descriptionEl.textContent = task.getDescription();
-
-      const dueDateEl = document.createElement("p");
-      dueDateEl.classList.add("task-due-date");
-      dueDateEl.textContent = task.getDueDate();
-
-      const taskBtnContainer = document.createElement("div");
-      taskBtnContainer.classList.add("task-btn-container");
-
-      const deleteBtnEl = document.createElement("div");
-      deleteBtnEl.classList.add("delete-btn");
-      deleteBtnEl.textContent = "Del";
-
-      deleteBtnEl.addEventListener("click", () => {
-        removeElement(taskEl);
-        pubSub.publish("taskDeleted", task);
-      });
-
-      const editBtnEL = document.createElement("div");
-      editBtnEL.classList.add("edit-btn");
-      editBtnEL.textContent = "Edit";
-
-      editBtnEL.addEventListener("click", () => {
-        showTaskEditMenu(taskEl);
-      });
-
-      const taskInfoContainer = document.createElement("div");
-      taskBtnContainer.append(deleteBtnEl, editBtnEL);
-      taskInfoContainer.append(nameEl, descriptionEl, dueDateEl);
-
-      taskEl.append(taskCompleteBtn, taskInfoContainer, taskBtnContainer);
-
-      return taskEl;
-    };
-
-    const getNewProjectContainer = () => {
-      let _el = _createProjectElement(_formData);
-      let _projName = _formData.get("name");
-
-      return {
-        getElement() {
-          return _el;
-        },
-
-        set name(name) {
-          _formData.set("name", name);
-          _el = _createProjectElement(_formData);
-        },
-
-        get name() {
-          return _projName;
-        },
-      };
-    };
-
-    const getNewTaskContainer = (_formData) => {
-      let _taskEl = _createTaskElement(_formData);
-    };
-
-    return {
-      getNewProjectContainer,
-      getNewTaskContainer,
-    };
-  };
 
   const hideElement = (el) => {
     el.style.visibility = "hidden";
@@ -275,7 +159,7 @@ const domService = (() => {
 
   const showNewProject = (container) => {
     const projEl = container.getElement();
-      const title = container.name; 
+    const title = container.name;
 
     addProjectToViewer(projEl);
     updateTaskViewerTitle(title);
@@ -307,6 +191,7 @@ const domService = (() => {
 
   const showAddTaskDialog = () => {
     const form = createForm("new-task-template");
+    const formData = new FormData(form);
     appendFormToViewer(form, ".project-viewer");
 
     const projectName = getCurrentProjectName();
@@ -315,11 +200,11 @@ const domService = (() => {
     // Event handlers
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
-      const datePicker = document.getElementById("duedate");
+      const datePicker = document.getElementById("due-date");
       datePicker.addEventListener("change", () => {
-        const date = parseDate(datePicker.value);
+        const dueDate = parseDate(datePicker.value);
 
-        dueDateBtn.textContent = date;
+        dueDateBtn.textContent = dueDate;
       });
 
       datePicker.showPicker();
@@ -334,8 +219,9 @@ const domService = (() => {
     saveBtn.addEventListener("click", () => {
       const container = Container(form);
       const taskContainer = Container.getNewTaskContainer();
+      alert(taskContainer.name);
 
-      pubSub.publish("newTaskAdded", taskContainer);
+      //pubSub.publish("newTaskAdded", taskContainer);
 
       showElement(".add-task-btn");
       removeElement(form);
