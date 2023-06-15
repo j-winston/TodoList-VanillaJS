@@ -3,34 +3,35 @@ import projectController from "./projectController";
 import pubSub from "./pubsub";
 
 const domService = (() => {
- //consider moving this later
+  //consider moving this later
 
-    const Container = (form) => {
-        let _formData = new FormData(form); 
-        let _el = createProjectElement(_formData); 
-        let _projName = _formData.get('name');  
+  const Container = (form) => {
+    let _formData = new FormData(form);
 
-        return {
+    const GetNewProjectContainer = (form) => {
+      let _el = createProjectElement(_formData);
+      let _projName = _formData.get("name");
 
-            getElement () {
-                return el;
-            }, 
+      return {
+        getElement() {
+          return _el;
+        },
 
-            set name(name){
-                _formData.set('name', name); 
-                _el = createProjectElement(_formData);
-            },
+        set name(name) {
+          _formData.set("name", name);
+          _el = createProjectElement(_formData);
+        },
 
-            get name() {
-                return _projName; 
-            }
-        }
+        get name() {
+          return _projName;
+        },
+      };
+    };
 
-    }
-
-
-
-
+      return{
+          GetNewProjectContainer,
+      }
+  };
 
   const hideElement = (el) => {
     el.style.visibility = "hidden";
@@ -64,6 +65,7 @@ const domService = (() => {
   const removeProject = (el) => {
     removeElement(el);
     clearTaskViewer();
+      showInbox(); 
   };
 
   const getFormValues = (form) => {
@@ -89,32 +91,33 @@ const domService = (() => {
   };
 
   const createProjectElement = (formData) => {
-      const name = formData.get('name'); 
+    const name = formData.get("name");
 
-      const projectContainerEl = document.createElement("div");
-      projectContainerEl.className = "project";
+    const projectEl = document.createElement("div");
+    projectEl.className = "project";
 
-      const projectTitleEl = document.createElement("div");
-      projectTitleEl.className = "project-title";
-      projectTitleEl.textContent = name;  
-      projectTitleEl.addEventListener("click", () => {
-        updateTaskViewerTitle(name);
-        // pubSub.publish("projectClicked", project);
-      });
+    const projectTitleEl = document.createElement("div");
+    projectTitleEl.className = "project-title";
+    projectTitleEl.textContent = name;
+    projectTitleEl.addEventListener("click", () => {
+      updateTaskViewerTitle(name);
+      // pubSub.publish("projectClicked", project);
+    });
 
-      const deleteBtn = document.createElement("div");
-      deleteBtn.className = "project-delete-btn";
-      deleteBtn.textContent = "X";
-      deleteBtn.addEventListener("click", () => {
-        removeProject(projectContainerEl);
+    const deleteBtn = document.createElement("div");
+    deleteBtn.className = "project-delete-btn";
+    deleteBtn.textContent = "X";
+    deleteBtn.addEventListener("click", () => {
+      removeProject(projectEl);
 
-        // pubSub.publish("projectRemoved", name);
-      });
+      pubSub.publish("projectRemoved", name);
 
-      projectContainerEl.appendChild(projectTitleEl);
-      projectContainerEl.appendChild(deleteBtn);
+    });
 
-      return projectContainerEl;
+    projectEl.appendChild(projectTitleEl);
+    projectEl.appendChild(deleteBtn);
+
+    return projectEl;
   };
 
   const clearTaskViewer = () => {
@@ -264,12 +267,11 @@ const domService = (() => {
     // should be looking to the actual form or project container
     const saveProjBtn = document.querySelector(".confirm-project-btn");
     saveProjBtn.addEventListener("click", () => {
-        const projContainer = Container(form);
-        
+      const container = Container(form);
+        const projContainer = container.GetNewProjectContainer();
 
       pubSub.publish("newProject", projContainer);
 
-      // remove the window from the screen
       removeElement(form);
     });
 
@@ -279,19 +281,9 @@ const domService = (() => {
     });
   };
 
-
-
-
-
-  const showNewProject = (projContainer) => {
-
-    const projectEl = createProjectElement(project);
-    updateTaskViewerTitle(project.name);
-
-    addProjectToViewer(projectEl);
-
-    clearTaskViewer();
-    showProject(project);
+  const showNewProject = (container) => {
+    updateTaskViewerTitle(container.name);
+    addProjectToViewer(container.getElement());
   };
 
   const parseDate = (dateVal) => {
@@ -436,7 +428,7 @@ const domService = (() => {
   window.onload = (event) => {
     loadFromLocalStorage();
   };
-pubSub.subscribe('newProjectContainer', showNewProject)
+  pubSub.subscribe("newProjectContainer", showNewProject);
 
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
   // pubSub.subscribe("projectDeleted", showInbox);

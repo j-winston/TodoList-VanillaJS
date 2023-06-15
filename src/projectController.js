@@ -79,11 +79,11 @@ const projectController = (() => {
   //  return projArr;
   //};
 
-  //const remove = (name) => {
-  //  if (storage.deleteProject(name)) {
-  //    return true;
-  //  }
-  //};
+  const deleteProject = (name) => {
+    if (storage.deleteProject(name)) {
+      return true;
+    }
+  };
 
   //const removeAll = () => {
   //  storage.deleteAllProjects();
@@ -133,6 +133,7 @@ const projectController = (() => {
 
   return {
     createNewProject,
+      deleteProject,
     //loadAllProjects,
     //remove,
     //removeAll,
