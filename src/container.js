@@ -18,7 +18,7 @@ const Container = (() => {
     deleteBtn.className = "project-delete-btn";
     deleteBtn.textContent = "X";
     deleteBtn.addEventListener("click", () => {
-        projectEl.remove(); 
+      projectEl.remove();
 
       pubSub.publish("projectRemoved", name);
     });
@@ -31,8 +31,6 @@ const Container = (() => {
 
   const _createTaskElement = (_formData) => {
     const taskEl = document.createElement("div");
-
-    // taskEl.setAttribute("data-id", task.getId());
     taskEl.classList.add("task-container");
 
     const taskCompleteBtn = document.createElement("input");
@@ -113,10 +111,19 @@ const Container = (() => {
     let _name = _formData.get("name");
     let _description = _formData.get("description");
     let _dueDate = _formData.get("due-date");
+    let _projectName = _formData.get("project-name");
 
     return {
       getElement() {
         return _taskEl;
+      },
+
+      getEntries() {
+        return _formData.entries();
+      },
+
+      get projectName() {
+        return _projectName;
       },
 
       get name() {

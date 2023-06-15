@@ -3,7 +3,6 @@ import projectController from "./projectController";
 import pubSub from "./pubsub";
 import Container from "./container";
 const domService = (() => {
-
   const hideElement = (el) => {
     el.style.visibility = "hidden";
   };
@@ -188,16 +187,16 @@ const domService = (() => {
 
   const showAddTaskDialog = () => {
     const form = createForm("new-task-template");
-    const formData = new FormData(form);
     appendFormToViewer(form, ".project-viewer");
 
-    const projectName = getCurrentProjectName();
-    form.setAttribute("data-id", projectName);
+      form.elements['project-name'].value = getCurrentProjectName();
+
+
 
     // Event handlers
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
-      const datePicker = document.getElementById("due-date");
+      const datePicker = form.querySelector("[name=due-date]");
       datePicker.addEventListener("change", () => {
         const dueDate = parseDate(datePicker.value);
 
@@ -215,9 +214,9 @@ const domService = (() => {
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
       const taskContainer = Container.getNewTaskContainer(form);
-      alert(taskContainer.name);
 
-      //pubSub.publish("newTaskAdded", taskContainer);
+
+      pubSub.publish("newTaskAdded", taskContainer);
 
       showElement(".add-task-btn");
       removeElement(form);
@@ -254,7 +253,7 @@ const domService = (() => {
 
   const showInbox = () => {
     updateTaskViewerTitle("Inbox");
-      clearTaskViewer(); 
+    clearTaskViewer();
   };
 
   const getTaskContainer = (taskId) => {
@@ -311,7 +310,7 @@ const domService = (() => {
 
   pubSub.subscribe("projectSaved", showNewProject);
   pubSub.subscribe("taskSaved", showTask);
-    pubSub.subscribe('projectDeleted', showInbox)
+  pubSub.subscribe("projectDeleted", showInbox);
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
   // pubSub.subscribe("projectDeleted", showInbox);
   // pubSub.subscribe("projectRetrieved", showProject);

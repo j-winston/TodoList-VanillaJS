@@ -77,10 +77,10 @@ const controllerInterface = (() => {
     }
   };
 
-  const addTaskToProject = (container) => {
-    const values = container.getValues();
+  const addTaskToProject = (taskContainer) => {
+    const formEntries = taskContainer.getEntries();
 
-    projectController.addTaskToProject(values);
+    projectController.addTaskToProject(formEntries);
   };
 
   pubSub.subscribe("newProjectAdded", addProject);

@@ -89,34 +89,36 @@ const projectController = (() => {
   //  storage.deleteAllProjects();
   //};
 
-  //const getNewTask = (formKeyValues) => {
-  //  return taskController.createNewTask(formKeyValues);
-  //};
+  const getNewTask = (formKeyValues) => {
+    return taskController.createNewTask(formKeyValues);
+  };
 
   //const getLastTask = () => {
   //  return storage.getLastTaskAdded();
   //};
 
-  const addTaskToProject = (form) => {
-    //  //START HERE--> get tasks to work :)
-    //  const values = getValues(form);
-    //  const task = getNewTask(values);
-    //  const projName = task.getProjName();
-    //  let project = _getProject(projName);
-    //  if (!project) {
-    //    project = createNewProject(projName);
-    //  }
-    //  project.tasks.push(task);
-    //  _store(project);
-    //  return project;
-    //};
-    //const findProject = (projectName) => {
-    //  const proj = storage.loadProject(projectName);
-    //  pubSub.publish("projectRetrieved", proj);
-    //  return proj;
-    //};
-    //
+  const addTaskToProject = (formDataEntries) => {
+    const task = getNewTask(formDataEntries);
   };
+
+  //  //START HERE--> get tasks to work :)
+  //  const values = getValues(form);
+  //  const task = getNewTask(values);
+  //  const projName = task.getProjName();
+  //  let project = _getProject(projName);
+  //  if (!project) {
+  //    project = createNewProject(projName);
+  //  }
+  //  project.tasks.push(task);
+  //  _store(project);
+  //  return project;
+  //};
+  //const findProject = (projectName) => {
+  //  const proj = storage.loadProject(projectName);
+  //  pubSub.publish("projectRetrieved", proj);
+  //  return proj;
+  //};
+  //
 
   const createNewProject = (name) => {
     const project = newProject(name);

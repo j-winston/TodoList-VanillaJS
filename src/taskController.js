@@ -9,13 +9,13 @@ import uid from "./uid";
 const taskController = (() => {
   const Task = () => {
     let id;
-    let title;
+    let name;
     let description;
     let projectName;
     let dueDate;
 
     const setId = (taskId) => (id = taskId);
-    const setTitle = (taskTitle) => (title = taskTitle);
+    const setTitle = (taskTitle) => (name = taskTitle);
     const setDescription = (descr) => (description = descr);
     const setDueDate = (date) => (dueDate = date);
     const setProjectName = (name) => (projectName = name);
@@ -26,7 +26,19 @@ const taskController = (() => {
     const getDueDate = () => dueDate;
     const getDescription = () => description;
 
+    const keys = () => {
+      const props = {
+        id: "",
+        name: "",
+        description: "",
+        projectName: "",
+        dueDate: "",
+      };
+      return props;
+    };
+
     return {
+      keys,
       setId,
       setTitle,
       setDescription,
@@ -45,21 +57,36 @@ const taskController = (() => {
     return uid.create();
   };
 
-  const assignTaskValues = (task, formKeyValuePairs) => {
+  const assignTaskValues = (task, formDataArray) => {
     const uid = getUid();
 
+    const taskValues = {};
+
+    for (const pair of formDataArray) {
+      const key = pair[0];
+      const value = pair[1];
+      alert(pair);
+
+      if (key in task.keys()) {
+        taskValues[key] = value;
+      } else {
+        taskValues[key] = "field not found";
+      }
+    }
+
     task.setId(uid);
-    task.setTitle(formKeyValuePairs.name);
-    task.setDescription(formKeyValuePairs.description);
-    task.setDueDate(formKeyValuePairs.duedate);
-    task.setProjectName(formKeyValuePairs.projectName);
+    task.setTitle(taskValues.name);
+    task.setDescription(taskValues.description);
+    task.setDueDate(taskValues.duedate);
+    task.setProjectName(taskValues.projectName);
+
 
     return task;
   };
 
-  const createNewTask = (formKeyValues) => {
+  const createNewTask = (formDataEntries) => {
     const taskObj = Task();
-    const task = assignTaskValues(taskObj, formKeyValues);
+    const task = assignTaskValues(taskObj, formDataEntries);
     return task;
   };
 

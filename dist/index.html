@@ -57,6 +57,7 @@
               <form
                 action="#"
                 data-id-project-name=""
+                name="project-name"
                 class="new-task-form"
                 method="get"
               >
@@ -73,16 +74,12 @@
                     required="required"
                     name="description"
                   />
+                  <input type="hidden" name="project-name" />
 
                   <div class="due-date-btn">
                     <p class="due-date-btn-text">Due date</p>
                     <div class="due-date-picker-container">
-                      <input
-                        type="date"
-                        name="duedate"
-                        id="due-date"
-                        class="date-picker"
-                      />
+                      <input type="date" name="due-date" class="date-picker" />
                     </div>
                   </div>
                 </div>
