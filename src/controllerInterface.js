@@ -33,7 +33,6 @@ const controllerInterface = (() => {
   //  pubSub.publish("newProjectSaved", project);
   //};
 
-
   //const delTask = (task) => {
   //  const projName = task.getProjectName();
   //  const project = storage.loadProject(projName);
@@ -69,19 +68,25 @@ const controllerInterface = (() => {
     const name = container.name;
     projectController.createNewProject(name);
 
-    pubSub.publish("newProjectContainer", container);
+    pubSub.publish("projectSaved", container);
   };
 
   const removeProject = (name) => {
     if (projectController.deleteProject(name)) {
-
-        pubSub.publish('projectDeleted');
+      pubSub.publish("projectDeleted");
     }
-
   };
 
-  pubSub.subscribe("newProject", addProject);
+  const addTaskToProject = (container) => {
+    const values = container.getValues();
+
+    projectController.addTaskToProject(values);
+  };
+
+  pubSub.subscribe("newProjectAdded", addProject);
   pubSub.subscribe("projectRemoved", removeProject);
+
+  pubSub.subscribe("newTaskAdded", addTaskToProject);
 
   //pubSub.subscribe("newProjectSubmitted", addNewProject);
   // Subcriptions
@@ -94,7 +99,7 @@ const controllerInterface = (() => {
 
   return {
     addProject,
-      removeProject,
+    removeProject,
   };
 })();
 
