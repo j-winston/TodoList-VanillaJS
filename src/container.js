@@ -1,3 +1,5 @@
+import pubSub from "./pubsub";
+
 const Container = (() => {
   const _createProjectElement = (_formData) => {
     const name = _formData.get("name");
@@ -10,14 +12,13 @@ const Container = (() => {
     projectTitleEl.textContent = name;
     projectTitleEl.addEventListener("click", () => {
       updateTaskViewerTitle(name);
-      // pubSub.publish("projectClicked", project);
     });
 
     const deleteBtn = document.createElement("div");
     deleteBtn.className = "project-delete-btn";
     deleteBtn.textContent = "X";
     deleteBtn.addEventListener("click", () => {
-      removeProject(projectEl);
+        projectEl.remove(); 
 
       pubSub.publish("projectRemoved", name);
     });

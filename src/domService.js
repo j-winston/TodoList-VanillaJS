@@ -2,9 +2,7 @@ import controllerInterface from "./controllerInterface";
 import projectController from "./projectController";
 import pubSub from "./pubsub";
 import Container from "./container";
-
 const domService = (() => {
-  //consider moving this later
 
   const hideElement = (el) => {
     el.style.visibility = "hidden";
@@ -143,8 +141,7 @@ const domService = (() => {
 
     const saveProjBtn = document.querySelector(".confirm-project-btn");
     saveProjBtn.addEventListener("click", () => {
-      const container = Container(form);
-      const projContainer = container.getNewProjectContainer();
+      const projContainer = Container.getNewProjectContainer(form);
 
       pubSub.publish("newProjectAdded", projContainer);
 
@@ -217,8 +214,7 @@ const domService = (() => {
 
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
-      const container = Container(form);
-      const taskContainer = Container.getNewTaskContainer();
+      const taskContainer = Container.getNewTaskContainer(form);
       alert(taskContainer.name);
 
       //pubSub.publish("newTaskAdded", taskContainer);
@@ -258,6 +254,7 @@ const domService = (() => {
 
   const showInbox = () => {
     updateTaskViewerTitle("Inbox");
+      clearTaskViewer(); 
   };
 
   const getTaskContainer = (taskId) => {
@@ -314,6 +311,7 @@ const domService = (() => {
 
   pubSub.subscribe("projectSaved", showNewProject);
   pubSub.subscribe("taskSaved", showTask);
+    pubSub.subscribe('projectDeleted', showInbox)
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
   // pubSub.subscribe("projectDeleted", showInbox);
   // pubSub.subscribe("projectRetrieved", showProject);
