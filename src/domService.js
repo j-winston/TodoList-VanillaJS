@@ -189,9 +189,7 @@ const domService = (() => {
     const form = createForm("new-task-template");
     appendFormToViewer(form, ".project-viewer");
 
-      form.elements['project-name'].value = getCurrentProjectName();
-
-
+    form.elements["project-name"].value = getCurrentProjectName();
 
     // Event handlers
     const dueDateBtn = form.querySelector(".due-date-btn-text");
@@ -213,10 +211,9 @@ const domService = (() => {
 
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
-      const taskContainer = Container.getNewTaskContainer(form);
+      const taskFormContainer = Container.getNewTaskContainer(form);
 
-
-      pubSub.publish("newTaskAdded", taskContainer);
+      pubSub.publish("newTaskAdded", taskFormContainer);
 
       showElement(".add-task-btn");
       removeElement(form);

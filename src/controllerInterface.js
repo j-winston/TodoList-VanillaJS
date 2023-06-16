@@ -77,10 +77,8 @@ const controllerInterface = (() => {
     }
   };
 
-  const addTaskToProject = (taskContainer) => {
-    const formEntries = taskContainer.getEntries();
-
-    projectController.addTaskToProject(formEntries);
+  const addTaskToProject = (formContainer) => {
+    projectController.addTaskToProject(formContainer);
   };
 
   pubSub.subscribe("newProjectAdded", addProject);

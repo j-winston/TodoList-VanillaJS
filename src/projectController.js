@@ -89,16 +89,12 @@ const projectController = (() => {
   //  storage.deleteAllProjects();
   //};
 
-  const getNewTask = (formKeyValues) => {
-    return taskController.createNewTask(formKeyValues);
-  };
-
   //const getLastTask = () => {
   //  return storage.getLastTaskAdded();
   //};
 
-  const addTaskToProject = (formDataEntries) => {
-    const task = getNewTask(formDataEntries);
+  const addTaskToProject = (frmContainer) => {
+    const task = taskController.createNewTask(frmContainer);
   };
 
   //  //START HERE--> get tasks to work :)

@@ -1,4 +1,4 @@
-// Module: taskController.js
+// Module:
 // Role: Information provider
 // Responsibilities:
 
@@ -7,49 +7,35 @@ import pubSub from "./pubsub";
 import uid from "./uid";
 
 const taskController = (() => {
-  const Task = () => {
-    let id;
-    let name;
-    let description;
-    let projectName;
-    let dueDate;
+  const Task = (entries) => {
+    let _frmEntries = entries;
+    let _values = {};
 
-    const setId = (taskId) => (id = taskId);
-    const setTitle = (taskTitle) => (name = taskTitle);
-    const setDescription = (descr) => (description = descr);
-    const setDueDate = (date) => (dueDate = date);
-    const setProjectName = (name) => (projectName = name);
-
-    const getProjectName = () => projectName;
-    const getId = () => id;
-    const getTitle = () => title;
-    const getDueDate = () => dueDate;
-    const getDescription = () => description;
-
-    const keys = () => {
-      const props = {
-        id: "",
-        name: "",
-        description: "",
-        projectName: "",
-        dueDate: "",
-      };
-      return props;
+    const setId = () => {
+      _values.id = uid.create();
     };
 
-    return {
-      keys,
-      setId,
-      setTitle,
-      setDescription,
-      setDueDate,
-      setProjectName,
+    const setValues = (frmEntries) => {
+      for (const pair of frmEntries) {
+        const key = pair[0];
+        const value = pair[1];
 
-      getProjectName,
-      getId,
-      getTitle,
-      getDueDate,
-      getDescription,
+        _values[key] = value;
+      }
+
+      setId();
+    };
+
+    const getValue = (key) => {
+      const values = _values;
+      return values[key];
+    };
+
+    setValues(entries);
+
+    return {
+      setValues,
+      getValue,
     };
   };
 
@@ -57,36 +43,13 @@ const taskController = (() => {
     return uid.create();
   };
 
-  const assignTaskValues = (task, formDataArray) => {
-    const uid = getUid();
+  const createNewTask = (formContainer) => {
+    const entries = formContainer.getEntries();
 
-    const taskValues = {};
+    const task = Task(entries);
 
-    for (const pair of formDataArray) {
-      const key = pair[0];
-      const value = pair[1];
-      alert(pair);
+    alert(task.getValue("id"));
 
-      if (key in task.keys()) {
-        taskValues[key] = value;
-      } else {
-        taskValues[key] = "field not found";
-      }
-    }
-
-    task.setId(uid);
-    task.setTitle(taskValues.name);
-    task.setDescription(taskValues.description);
-    task.setDueDate(taskValues.duedate);
-    task.setProjectName(taskValues.projectName);
-
-
-    return task;
-  };
-
-  const createNewTask = (formDataEntries) => {
-    const taskObj = Task();
-    const task = assignTaskValues(taskObj, formDataEntries);
     return task;
   };
 
