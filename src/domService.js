@@ -211,9 +211,9 @@ const domService = (() => {
 
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
-      const taskFormContainer = Container.getNewTaskContainer(form);
+      const taskContainer = Container.getNewTaskContainer(form);
 
-      pubSub.publish("newTaskAdded", taskFormContainer);
+      pubSub.publish("newTaskAdded", taskContainer);
 
       showElement(".add-task-btn");
       removeElement(form);
@@ -251,6 +251,8 @@ const domService = (() => {
   const showInbox = () => {
     updateTaskViewerTitle("Inbox");
     clearTaskViewer();
+
+    pubSub.publish("inboxAdded");
   };
 
   const getTaskContainer = (taskId) => {
@@ -299,6 +301,7 @@ const domService = (() => {
 
   const initializeUi = () => {
     startTaskEvents();
+    showInbox();
   };
 
   window.onload = (event) => {
@@ -308,6 +311,7 @@ const domService = (() => {
   pubSub.subscribe("projectSaved", showNewProject);
   pubSub.subscribe("taskSaved", showTask);
   pubSub.subscribe("projectDeleted", showInbox);
+
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
   // pubSub.subscribe("projectDeleted", showInbox);
   // pubSub.subscribe("projectRetrieved", showProject);

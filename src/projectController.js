@@ -93,8 +93,12 @@ const projectController = (() => {
   //  return storage.getLastTaskAdded();
   //};
 
-  const addTaskToProject = (frmContainer) => {
-    const task = taskController.createNewTask(frmContainer);
+  const addTaskToProject = (task, projName) => {
+    // project never created.
+    const proj = findProject(projName);
+
+    proj.tasks.push(task);
+
   };
 
   //  //START HERE--> get tasks to work :)
@@ -109,12 +113,13 @@ const projectController = (() => {
   //  _store(project);
   //  return project;
   //};
-  //const findProject = (projectName) => {
-  //  const proj = storage.loadProject(projectName);
-  //  pubSub.publish("projectRetrieved", proj);
-  //  return proj;
-  //};
-  //
+  const findProject = (projectName) => {
+    const proj = storage.loadProject(projectName);
+    alert(proj);
+
+
+    return proj;
+  };
 
   const createNewProject = (name) => {
     const project = newProject(name);
@@ -131,7 +136,7 @@ const projectController = (() => {
     //loadAllProjects,
     //remove,
     //removeAll,
-    //findProject,
+    findProject,
   };
 })();
 

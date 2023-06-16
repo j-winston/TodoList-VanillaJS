@@ -28,7 +28,11 @@ const taskController = (() => {
 
     const getValue = (key) => {
       const values = _values;
-      return values[key];
+      if (key in values) {
+        return values[key];
+      } else {
+        return `key: [${key}] not found`;
+      }
     };
 
     setValues(entries);
@@ -47,8 +51,6 @@ const taskController = (() => {
     const entries = formContainer.getEntries();
 
     const task = Task(entries);
-
-    alert(task.getValue("id"));
 
     return task;
   };

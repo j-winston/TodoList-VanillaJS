@@ -71,6 +71,13 @@ const controllerInterface = (() => {
     pubSub.publish("projectSaved", container);
   };
 
+  const createInbox = () => {
+      // START HERE
+    if(projectController.createNewProject("Inbox")){
+    }
+    pubSub.publish("inboxCreated");
+  };
+
   const removeProject = (name) => {
     if (projectController.deleteProject(name)) {
       pubSub.publish("projectDeleted");
@@ -78,10 +85,14 @@ const controllerInterface = (() => {
   };
 
   const addTaskToProject = (formContainer) => {
-    projectController.addTaskToProject(formContainer);
+    const task = taskController.createNewTask(formContainer);
+    const projName = task.getValue("project-name");
+
+    projectController.addTaskToProject(task, projName);
   };
 
   pubSub.subscribe("newProjectAdded", addProject);
+  pubSub.subscribe("inboxAdded", createInbox);
   pubSub.subscribe("projectRemoved", removeProject);
 
   pubSub.subscribe("newTaskAdded", addTaskToProject);
