@@ -33,7 +33,6 @@ const storage = (() => {
   };
 
   const loadProject = (projectName) => {
-
     const jsnData = localStorage.getItem(`${projectName}`);
     if (jsnData) {
       const project = toString(jsnData);

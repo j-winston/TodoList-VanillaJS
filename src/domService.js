@@ -124,7 +124,7 @@ const domService = (() => {
 
   const showTask = (taskContainer) => {
     const taskViewer = document.querySelector(".project-tasks");
-    const taskEl = taskContainer.getEl();
+    const taskEl = taskContainer.getElement(); 
 
     taskViewer.appendChild(taskEl);
   };

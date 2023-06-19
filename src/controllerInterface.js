@@ -72,8 +72,8 @@ const controllerInterface = (() => {
   };
 
   const createInbox = () => {
-      // START HERE
-    if(projectController.createNewProject("Inbox")){
+    // START HERE
+    if (projectController.createNewProject("Inbox")) {
     }
     pubSub.publish("inboxCreated");
   };
@@ -88,7 +88,9 @@ const controllerInterface = (() => {
     const task = taskController.createNewTask(formContainer);
     const projName = task.getValue("project-name");
 
-    projectController.addTaskToProject(task, projName);
+    projectController.addTask(task, projName);
+      
+    pubSub.publish("taskSaved", formContainer);
   };
 
   pubSub.subscribe("newProjectAdded", addProject);
