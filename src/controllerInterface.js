@@ -1,5 +1,4 @@
 //Module: controllerInterface.js
-//
 //Role: Bridge
 //Responsibilities: Subscribe to events pubblished from the DOM and pass on to appropriate controller.
 //
@@ -27,16 +26,6 @@ const controllerInterface = (() => {
   //  }
   //  projectController.findProject(name);
   //};
-
-    const getProject = (taskListContainer) => {
-        const proj = projectController.findProject(taskListContainer.name); 
-
-        taskListContainer.tasks = proj.tasks; 
-
-        pubSub.publish('projectLoaded', taskListContainer); 
-
-
-    }
 
   //const addNewProject = (form) => {
   //  const project = projectController.createNewProject(form);
@@ -96,11 +85,11 @@ const controllerInterface = (() => {
   };
 
   const addTaskToProject = (formContainer) => {
-    const projName = formContainer.projectName;
     const task = taskController.createNewTask(formContainer);
+    const projName = task.getValue("project-name");
 
     projectController.addTask(task, projName);
-
+      
     pubSub.publish("taskSaved", formContainer);
   };
 
@@ -113,7 +102,7 @@ const controllerInterface = (() => {
   //pubSub.subscribe("newProjectSubmitted", addNewProject);
   // Subcriptions
   // pubSub.subscribe("addProjectFormSubmitted", addNewProject);
-  pubSub.subscribe("projectClicked", getProject);
+  //pubSub.subscribe("projectClicked", getProject);
 
   //pubSub.subscribe("taskSubmitted", addTask);
   //pubSub.subscribe("taskEditSubmitted", updateTask);
