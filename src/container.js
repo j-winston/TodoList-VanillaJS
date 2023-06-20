@@ -11,7 +11,7 @@ const Container = (() => {
     projectTitleEl.className = "project-title";
     projectTitleEl.textContent = name;
     projectTitleEl.addEventListener("click", () => {
-      updateTaskViewerTitle(name);
+        pubSub.publish('projectClicked', name); 
     });
 
     const deleteBtn = document.createElement("div");
@@ -151,9 +151,29 @@ const Container = (() => {
     };
   };
 
+    const getNewTaskListContainer = () => {
+      return{
+
+       set tasks(arr){
+           for(let task of arr){
+               // for each task 
+               // create a task element 
+               // and append that element
+
+           }
+
+
+
+       } 
+
+
+
+    }
+
   return {
     getNewProjectContainer,
     getNewTaskContainer,
+      getNewTaskListContainer, 
   };
 })();
 

@@ -124,7 +124,7 @@ const domService = (() => {
 
   const showTask = (taskContainer) => {
     const taskViewer = document.querySelector(".project-tasks");
-    const taskEl = taskContainer.getElement(); 
+    const taskEl = taskContainer.getElement();
 
     taskViewer.appendChild(taskEl);
   };
@@ -264,13 +264,12 @@ const domService = (() => {
     return container;
   };
 
-  const showProject = (project) => {
-    updateTaskViewerTitle(project.name);
-    clearTaskViewer();
+  const showProject = (container) => {
 
-    for (let task of project.tasks) {
-      showTask(task);
-    }
+    clearTaskViewer();
+    updateTaskViewerTitle(container.projectName);
+      appendWhatever(container.getElement); 
+
   };
 
   const showAllProjects = (projectsArr) => {
@@ -296,6 +295,7 @@ const domService = (() => {
   };
 
   const loadFromLocalStorage = () => {
+    
     //controllerInterface.getAllProjects();
   };
 
@@ -314,7 +314,7 @@ const domService = (() => {
 
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
   // pubSub.subscribe("projectDeleted", showInbox);
-  // pubSub.subscribe("projectRetrieved", showProject);
+   pubSub.subscribe("projectLoaded", showProject);
 
   //pubSub.subscribe("newProjectSaved", showNewProject);
   // pubSub.subscribe('projectDeleted', showInbox);

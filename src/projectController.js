@@ -100,7 +100,6 @@ const projectController = (() => {
       proj = createNewProject(projName);
     }
 
-
     proj.tasks.push(task);
   };
 
