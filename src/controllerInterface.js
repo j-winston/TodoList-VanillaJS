@@ -16,16 +16,12 @@ const controllerInterface = (() => {
 
   //};
 
-  //const getProject = (project) => {
-  //  let name = "";
+  const getProject = (projContainer) => {
+    const name = projContainer.name;
+    projectController.findProject(name);
 
-  //  if (project === "Inbox") {
-  //    name = "Inbox";
-  //  } else {
-  //    name = project.name;
-  //  }
-  //  projectController.findProject(name);
-  //};
+    pubSub.publish("projectFound", projContainer);
+  };
 
   //const addNewProject = (form) => {
   //  const project = projectController.createNewProject(form);
@@ -33,14 +29,11 @@ const controllerInterface = (() => {
   //  pubSub.publish("newProjectSaved", project);
   //};
 
-  //const delTask = (task) => {
-  //  const projName = task.getProjectName();
-  //  const project = storage.loadProject(projName);
-  //  const taskIndex = project.tasks.indexOf(task);
+  const delTask = (taskId) => {
+    projectController.deleteTask(taskId);
 
-  //  project.tasks.splice(taskIndex, 1);
-  //  storage.saveProject(project);
-  //};
+    pubSub.publish("taskRemoved", taskId);
+  };
 
   //const updateTask = (formValues) => {
   //  taskController.update(formValues);
@@ -64,18 +57,12 @@ const controllerInterface = (() => {
   //  const inputValues = document.querySelectorAll("input");
   //};
 
-  const addProject = (container) => {
-    const name = container.name;
+  const addProject = (projContainer) => {
+    const name = projContainer.name;
+
     projectController.createNewProject(name);
 
-    pubSub.publish("projectSaved", container);
-  };
-
-  const createInbox = () => {
-    // START HERE
-    if (projectController.createNewProject("Inbox")) {
-    }
-    pubSub.publish("inboxCreated");
+    pubSub.publish("newProjectSaved", projContainer);
   };
 
   const removeProject = (name) => {
@@ -84,17 +71,18 @@ const controllerInterface = (() => {
     }
   };
 
-  const addTaskToProject = (formContainer) => {
-    const task = taskController.createNewTask(formContainer);
-    const projName = task.getValue("project-name");
+  const addTaskToProject = (projContainer) => {
+    const projName = projContainer.name;
+    const taskEntries = projContainer.lastTaskValues;
 
-    projectController.addTask(task, projName);
-      
-    pubSub.publish("taskSaved", formContainer);
+    const taskEl = projContainer.lastTaskEl;
+    projectController.addTask(projName, taskEntries);
+
+    pubSub.publish("taskSaved", taskEl);
   };
 
   pubSub.subscribe("newProjectAdded", addProject);
-  pubSub.subscribe("inboxAdded", createInbox);
+  pubSub.subscribe("projectClicked", getProject);
   pubSub.subscribe("projectRemoved", removeProject);
 
   pubSub.subscribe("newTaskAdded", addTaskToProject);
@@ -106,7 +94,7 @@ const controllerInterface = (() => {
 
   //pubSub.subscribe("taskSubmitted", addTask);
   //pubSub.subscribe("taskEditSubmitted", updateTask);
-  // pubSub.subscribe("taskDeleted", delTask);
+  pubSub.subscribe("taskDeleted", delTask);
 
   return {
     addProject,

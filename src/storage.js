@@ -78,6 +78,20 @@ const storage = (() => {
     }
   };
 
+  const deleteTask = (id) => {
+    const projects = loadAllProjects();
+
+    for (let proj of projects) {
+      for (let t of proj.tasks) {
+        if (t.getId === id) {
+          const idx = proj.tasks.indexOf(t);
+          tasks.splice(idx, 1);
+
+          saveProject(proj);
+        }
+      }
+    }
+  };
   return {
     saveProject,
     loadProject,
@@ -85,6 +99,7 @@ const storage = (() => {
     deleteAllProjects,
     deleteProject,
     loadTask,
+    deleteTask,
     getLastTaskAdded,
   };
 })();

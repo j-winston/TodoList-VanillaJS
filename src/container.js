@@ -1,7 +1,8 @@
 import pubSub from "./pubsub";
+import uid from "./uid";
 
 const Container = (() => {
-  const _createProjectElement = (_formData) => {
+  const _createProjectNavEl = (_formData) => {
     const name = _formData.get("name");
 
     const projectEl = document.createElement("div");
@@ -12,6 +13,7 @@ const Container = (() => {
     projectTitleEl.textContent = name;
     projectTitleEl.addEventListener("click", () => {
       updateTaskViewerTitle(name);
+      pubSub.publish("projectClicked", name);
     });
 
     const deleteBtn = document.createElement("div");
@@ -38,7 +40,7 @@ const Container = (() => {
     taskCompleteBtn.setAttribute("type", "checkbox");
 
     taskCompleteBtn.addEventListener("click", () => {
-      removeElement(taskEl);
+      taskEl.remove();
     });
 
     const nameEl = document.createElement("p");
@@ -53,6 +55,9 @@ const Container = (() => {
     dueDateEl.classList.add("task-due-date");
     dueDateEl.textContent = _formData.get("due-date");
 
+    const tId = uid.create();
+    taskEl.setAttribute("data-id-task-id", tId);
+
     const taskBtnContainer = document.createElement("div");
     taskBtnContainer.classList.add("task-btn-container");
 
@@ -61,9 +66,7 @@ const Container = (() => {
     deleteBtnEl.textContent = "Del";
 
     deleteBtnEl.addEventListener("click", () => {
-      removeElement(taskEl);
-
-      pubSub.publish("taskDeleted", task);
+      pubSub.publish("taskDeleted", tId);
     });
 
     const editBtnEL = document.createElement("div");
@@ -83,77 +86,67 @@ const Container = (() => {
     return taskEl;
   };
 
-  const getNewProjectContainer = (form) => {
+  const _getTaskDisplayEl = () => {
+    const viewer = document.createElement("div");
+    viewer.classList.add("project-tasks");
+
+    return viewer;
+  };
+
+  const Project = (form) => {
     let _formData = new FormData(form);
-    let el = _createProjectElement(_formData);
-    let _projName = _formData.get("name");
+    let _name = _formData.get("name");
+    let _lastTaskValues;
+    let _lastTaskEl;
+      let _navEl; 
+
+    const _getTaskEl = (form) => {
+      let formData = new FormData(form);
+      let taskEl = _createTaskElement(formData);
+      return taskEl;
+    };
+
+    const _saveValues = (form) => {
+      const formData = new FormData(form);
+      _lastTaskValues = formData.entries();
+    };
+
+    const newTaskEl = (form) => {
+      const taskCardEl = _getTaskEl(form);
+      _saveValues(form);
+      _lastTaskEl = taskCardEl;
+
+      return taskCardEl;
+    };
 
     return {
-      getElement() {
-        return el;
+      get navEl() {
+        return _navEl;
       },
 
       set name(name) {
         _formData.set("name", name);
-        el = _createProjectElement(_formData);
-      },
-
-      get name() {
-        return _projName;
-      },
-    };
-  };
-
-  const getNewTaskContainer = (form) => {
-    let _formData = new FormData(form);
-    let _taskEl = _createTaskElement(_formData);
-
-    let _name = _formData.get("name");
-    let _description = _formData.get("description");
-    let _dueDate = _formData.get("due-date");
-    let _projectName = _formData.get("project-name");
-
-    return {
-      getElement() {
-        return _taskEl;
-      },
-
-      getEntries() {
-        return _formData.entries();
-      },
-
-      get projectName() {
-        return _projectName;
+        _navEl = _createProjectNavEl(_formData);
       },
 
       get name() {
         return _name;
       },
 
-      set name(name) {
-        _name = name;
+      get lastTaskEl() {
+        return _lastTaskEl;
       },
 
-      get description() {
-        return _description;
+      get lastTaskValues() {
+        return _lastTaskValues;
       },
 
-      set description(description) {
-        _description = description;
-
-        _formData.set("description", _description);
-        _el = _createTaskElement(_formData);
-      },
-
-      get dueDate() {
-        return _dueDate;
-      },
+      newTaskEl,
     };
   };
 
   return {
-    getNewProjectContainer,
-    getNewTaskContainer,
+    Project,
   };
 })();
 

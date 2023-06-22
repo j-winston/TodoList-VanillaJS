@@ -8,12 +8,7 @@ import uid from "./uid";
 
 const taskController = (() => {
   const Task = (entries) => {
-    let _frmEntries = entries;
     let _values = {};
-
-    const setId = () => {
-      _values.id = uid.create();
-    };
 
     const setValues = (frmEntries) => {
       for (const pair of frmEntries) {
@@ -22,8 +17,6 @@ const taskController = (() => {
 
         _values[key] = value;
       }
-
-      setId();
     };
 
     const getValue = (key) => {
@@ -43,14 +36,8 @@ const taskController = (() => {
     };
   };
 
-  const getUid = () => {
-    return uid.create();
-  };
-
-  const createNewTask = (formContainer) => {
-    const entries = formContainer.getEntries();
-
-    const task = Task(entries);
+  const createNewTask = (formEntries) => {
+    const task = Task(formEntries);
 
     return task;
   };

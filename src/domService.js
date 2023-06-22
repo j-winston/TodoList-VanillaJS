@@ -3,6 +3,8 @@ import projectController from "./projectController";
 import pubSub from "./pubsub";
 import Container from "./container";
 const domService = (() => {
+  const projectContainers = {};
+
   const hideElement = (el) => {
     el.style.visibility = "hidden";
   };
@@ -30,12 +32,6 @@ const domService = (() => {
     );
 
     return projEl;
-  };
-
-  const removeProject = (el) => {
-    removeElement(el);
-    clearTaskViewer();
-    showInbox();
   };
 
   const getFormValues = (form) => {
@@ -122,16 +118,22 @@ const domService = (() => {
     taskContainer.appendChild(form);
   };
 
-  const showTask = (taskContainer) => {
+  const showTask = (taskEl) => {
     const taskViewer = document.querySelector(".project-tasks");
-    const taskEl = taskContainer.getElement(); 
-
     taskViewer.appendChild(taskEl);
   };
 
-  const addProjectToViewer = (projectEl) => {
+  const updateProjNavViewer = (projectEl) => {
     const projectListContainer = document.querySelector(".project-container");
     projectListContainer.appendChild(projectEl);
+  };
+
+  const publishProject = (projContainer) => {
+    pubSub.publish("newProjectAdded", projContainer);
+  };
+
+  const newProjectContainer = (form) => {
+    return Container.Project(form);
   };
 
   const showAddProjectDialog = () => {
@@ -140,9 +142,10 @@ const domService = (() => {
 
     const saveProjBtn = document.querySelector(".confirm-project-btn");
     saveProjBtn.addEventListener("click", () => {
-      const projContainer = Container.getNewProjectContainer(form);
+      const projContainer = newProjectContainer(form);
 
-      pubSub.publish("newProjectAdded", projContainer);
+      publishProject(projContainer);
+      saveContainer(projContainer);
 
       removeElement(form);
     });
@@ -153,12 +156,18 @@ const domService = (() => {
     });
   };
 
-  const showNewProject = (container) => {
-    const projEl = container.getElement();
-    const title = container.name;
+  const showNewProject = (projContainer) => {
+    const name = projContainer.name;
+    updateTaskViewerTitle(name);
 
-    addProjectToViewer(projEl);
-    updateTaskViewerTitle(title);
+    if (name !== "Inbox") {
+      appendProjectNavList(projContainer);
+    }
+  };
+
+  const appendProjectNavList = (projContainer) => {
+    const navEl = projContainer.navEl;
+    document.querySelector(".project-list-container").append(navEl);
   };
 
   const parseDate = (dateVal) => {
@@ -176,20 +185,23 @@ const domService = (() => {
   };
 
   const appendFormToViewer = (form, el) => {
+    appendFormToViewer;
     const viewer = document.querySelector(el);
 
     viewer.appendChild(form);
   };
 
-  const submitTask = (formKeyValues) => {
-    controllerInterface.addTask(formKeyValues);
-  };
+  const getCurrentContainer = () => {
+    const name = getCurrentProjectName();
+    const container = projectContainers[name];
 
+    if (container) {
+      return container;
+    }
+  };
   const showAddTaskDialog = () => {
     const form = createForm("new-task-template");
     appendFormToViewer(form, ".project-viewer");
-
-    form.elements["project-name"].value = getCurrentProjectName();
 
     // Event handlers
     const dueDateBtn = form.querySelector(".due-date-btn-text");
@@ -211,19 +223,25 @@ const domService = (() => {
 
     const saveBtn = document.querySelector(".save-task-btn");
     saveBtn.addEventListener("click", () => {
-      const taskContainer = Container.getNewTaskContainer(form);
+      const projContainer = getCurrentContainer();
+      projContainer.newTaskEl(form);
 
-      pubSub.publish("newTaskAdded", taskContainer);
+      pubSub.publish("newTaskAdded", projContainer);
 
       showElement(".add-task-btn");
+
       removeElement(form);
     });
   };
 
-  const addNewTask = () => {
-    hideElement(document.querySelector(".add-task-btn"));
-    showAddTask();
+  const publishTask = (projContainer) => {
+    pubSub.publish("newTaskAdded", projContainer);
   };
+
+  //const addNewTask = () => {
+  //  hideElement(document.querySelector(".add-task-btn"));
+  //  showAddTask();
+  //};
 
   const startTaskEvents = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
@@ -233,26 +251,33 @@ const domService = (() => {
     addTaskBtn.addEventListener("click", showAddTaskDialog);
   };
 
-  const submitProject = (name) => {
-    controllerInterface.addNewProject(name);
-  };
+  //const submitProject = (name) => {
+  //  controllerInterface.addNewProject(name);
+  //};
 
   const createInbox = () => {
-    updateTaskViewerTitle("Inbox");
+    const form = createForm("new-project-template");
 
-    const inboxBtn = document.querySelector(".inbox-nav-link");
-    inboxBtn.textContent = "Inbox";
-    submitProject("Inbox");
-    inboxBtn.addEventListener("click", () => {
-      updateTaskViewerTitle("Inbox");
-    });
+    form.elements["name"].value = getCurrentProjectName();
+    const projContainer = Container.Project(form);
+
+    saveContainer(projContainer);
+
+    publishProject(projContainer);
+  };
+
+  const saveContainer = (projContainer) => {
+    const name = projContainer.name;
+    projectContainers[name] = projContainer;
+  };
+
+  const getContainer = (name) => {
+    return projectContainers[name];
   };
 
   const showInbox = () => {
     updateTaskViewerTitle("Inbox");
     clearTaskViewer();
-
-    pubSub.publish("inboxAdded");
   };
 
   const getTaskContainer = (taskId) => {
@@ -264,56 +289,62 @@ const domService = (() => {
     return container;
   };
 
-  const showProject = (project) => {
-    updateTaskViewerTitle(project.name);
+  const showProject = (container) => {
     clearTaskViewer();
+    updateTaskViewerTitle(container.name);
+  };
 
-    for (let task of project.tasks) {
-      showTask(task);
+  //const showAllProjects = (projectsArr) => {
+  //  for (const proj of projectsArr) {
+  //    if (projectExists(proj) || proj.name === "Inbox") {
+  //      showProject(proj);
+  //    } else {
+  //      showNewProject(proj);
+  //    }
+  //  }
+  //};
+
+  //const showUpdatedTask = (task) => {
+  //  const name = task.getProjectName();
+  //  const description = task.getDescription();
+  //  const dueDate = task.getDueDate();
+  //  const container = getTaskContainer(task.getId());
+
+  //  container.querySelector(".task-title").textContent = name;
+  //  container.querySelector(".task-description").textContent = description;
+
+  //  container.querySelector(".task-due-date").textContent = dueDate;
+  //};
+
+    const removeTask = (id) => {
+        const taskEl = document.querySelector('[data-id-task-id =' + CSS.escape(id) + ']'); 
+
+        taskEl.remove()
     }
-  };
-
-  const showAllProjects = (projectsArr) => {
-    for (const proj of projectsArr) {
-      if (projectExists(proj) || proj.name === "Inbox") {
-        showProject(proj);
-      } else {
-        showNewProject(proj);
-      }
-    }
-  };
-
-  const showUpdatedTask = (task) => {
-    const name = task.getProjectName();
-    const description = task.getDescription();
-    const dueDate = task.getDueDate();
-    const container = getTaskContainer(task.getId());
-
-    container.querySelector(".task-title").textContent = name;
-    container.querySelector(".task-description").textContent = description;
-
-    container.querySelector(".task-due-date").textContent = dueDate;
-  };
 
   const loadFromLocalStorage = () => {
     //controllerInterface.getAllProjects();
   };
 
   const initializeUi = () => {
+    updateTaskViewerTitle("Inbox");
+
     startTaskEvents();
-    showInbox();
   };
 
   window.onload = (event) => {
+    createInbox();
     loadFromLocalStorage();
   };
 
-  pubSub.subscribe("projectSaved", showNewProject);
+  pubSub.subscribe("newProjectSaved", showNewProject);
   pubSub.subscribe("taskSaved", showTask);
+
+  pubSub.subscribe("projectFound", showProject);
   pubSub.subscribe("projectDeleted", showInbox);
 
+    pubSub.subscribe('taskRemoved', removeTask);
   //pubSub.subscribe("allProjectsRetrieved", showAllProjects);
-  // pubSub.subscribe("projectDeleted", showInbox);
   // pubSub.subscribe("projectRetrieved", showProject);
 
   //pubSub.subscribe("newProjectSaved", showNewProject);

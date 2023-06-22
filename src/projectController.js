@@ -100,7 +100,6 @@ const projectController = (() => {
       proj = createNewProject(projName);
     }
 
-
     proj.tasks.push(task);
   };
 
@@ -121,6 +120,11 @@ const projectController = (() => {
     return proj;
   };
 
+  const deleteTask = (id) => {
+    storage.deleteTask(id);
+
+    return true;
+  };
   const createNewProject = (name) => {
     const project = newProject(name);
 
@@ -133,7 +137,7 @@ const projectController = (() => {
     createNewProject,
     deleteProject,
     addTask,
-    //loadAllProjects,
+    deleteTask,
     //remove,
     //removeAll,
     findProject,
