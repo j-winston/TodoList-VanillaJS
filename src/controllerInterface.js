@@ -8,151 +8,136 @@ import projectController from "./projectController";
 import taskController from "./taskController";
 
 const controllerInterface = (() => {
-  const findProject = (name) => {
-    const project = storage.loadProject(`${name}`);
+  //const findProject = (name) => {
+  //  const project = storage.loadProject(`${name}`);
 
-    return project;
-  };
+  //  return project;
+  //};
 
-  // TODO processor does this
-  const getKeyValues = (formInputValues) => {
-    const taskData = {};
-    for (let key in formInputValues) {
-      taskData[key] = formInputValues[key];
-    }
-    return taskData;
-  };
+  //const addTaskToProject = (formDataObj, projName) => {
+  //  const task = projectController.addTask(formDataObj, projName);
 
-  const requestNewTaskObj = (formKeyValues) => {
-    const task = taskController.createNewTask(formKeyValues);
-    return task;
-  };
+  //  const newTaskValues = {
+  //    id: task.getValue("id"),
+  //    name: task.getValue("name"),
+  //    description: task.getValue("description"),
+  //    projectName: task.getValue("projectName"),
+  //    dueDate: task.getValue("dueDate"),
+  //  };
 
-  const addTaskToProject = (keyValues) => {
-    const task = requestNewTaskObj(keyValues);
-    projectController.addTask(task);
+  //  return {
+  //    get id() {
+  //      return newTaskValues.id;
+  //    },
 
-    pubSub.publish("taskAdded", task);
-  };
+  //    get name() {
+  //      return newTaskValues.name;
+  //    },
 
-  const getAllTasks = () => {
-    pubSub.publish("tasksRetrieved", tasks);
-  };
+  //    get description() {
+  //      return newTaskValues.description;
+  //    },
 
-  const errorHandler = (() => {
-    const undefinedValues = [];
+  //    get projectName() {
+  //      return newTaskValues.projectName;
+  //    },
+  //    get dueDate() {
+  //      return newTaskValues.dueDate;
+  //    },
+  //  };
+  //};
 
-    const logUndefinedKeys = (key) => {
-      undefinedValues.push(key);
+  //const getAllTasks = () => {
+  //  pubSub.publish("tasksRetrieved", tasks);
+  //};
+
+  //// this should retrieve the entire project
+
+  //const removeProject = (project) => {
+  //  projectController.remove(project.name);
+
+  //  pubSub.publish("projectDeleted", project);
+  //};
+
+  const addNewProject = (projName) => {
+    const project = projectController.createNewProject(projName);
+
+    let newProject = {
+      name: project.name,
+      tasks: project.tasks,
+      id: project.id,
     };
 
-    const getUndefinedValues = () => {
-      return undefinedValues;
-    };
-
-    const isEmpty = (arr) => {
-      arr.length === 0 ? true : false;
-    };
-
-    const undefinedExists = () => {
-      undefinedValues.length === 0 ? false : true;
-    };
-
-    const hasUndefinedValues = (project) => {
-      for (let key in project) {
-        if (project[key] === undefined) {
-          logUndefinedKeys(key);
-        }
-      }
-      if (undefinedExists()) {
-        return true;
-      }
-    };
-
-    return {
-      hasUndefinedValues,
-      getUndefinedValues,
-    };
-  })();
-
-  // this should retrieve the entire project
-  const getProject = (project) => {
-    let name = "";
-
-    if (project === "Inbox") {
-      name = "Inbox";
-    } else {
-      name = project.name;
-    }
-    const proj = findProject(name);
-
-    pubSub.publish("projectRetrieved", proj);
+    return newProject;
   };
 
-  const removeProject = (project) => {
-    projectController.remove(project.name);
+  //const newEmptyProject = (name) => {
+  //  return projectController.newEmptyProject(name);
+  //};
 
-    pubSub.publish("projectDeleted", project);
+  //const delTask = (id, projName) => {
+  //  projectController.removeTask(id, projName);
+  //};
+
+  //const loadTask = (taskId, projName) => {
+  //  const proj = storage.loadProject(projName);
+  //  for (const task of proj.tasks) {
+  //    if (task.id === taskId) {
+  //      return task;
+  //    }
+  //  }
+  //};
+
+  //const saveTask = (task) => {
+  //  const proj = storage.loadProject(task.projName);
+  //  proj.tasks.push(task);
+
+  //  storage.saveProject(proj);
+  //};
+
+  //const updateTask = (formValues) => {
+  //  taskController.update(formValues);
+  //};
+
+  //const getAllSavedProjects = () => {
+  //  const projArr = projectController.loadAllProjects();
+  //  pubSub.publish("allSavedProjectsRetrieved", projArr);
+  //};
+
+  //// Subcriptions
+
+  ////pubSub.subscribe("pageLoaded", getAllSavedProjects);
+  ////pubSub.subscribe("inboxClicked", getAllTasks);
+
+  ////pubSub.subscribe("addProjectFormSubmitted", addNewProject);
+  ////pubSub.subscribe("projectClicked", getProject);
+  ////pubSub.subscribe("projectRemoved", removeProject);
+
+  ////pubSub.subscribe("taskSubmitted", addTaskToProject);
+  ////pubSub.subscribe("taskEditSubmitted", updateTask);
+  ////pubSub.subscribe("taskDeleted", delTask);
+
+  //return {
+  //  addTaskToProject,
+  //  getProject,
+  //  newEmptyProject,
+  //  delTask,
+  //  addNewProject,
+  //};
+
+  const getProject = (name) => {
+    const proj = projectController.getProject(name);
+
+    return proj;
   };
-
-  const addNewProject = (formValues) => {
-    const project = projectController.createNewProject(formValues);
-
-    if (errorHandler.hasUndefinedValues(project)) {
-      console.log(error.getUndefinedValues);
-    } else {
-      pubSub.publish("newProjectAdded", project);
-    }
+  const getAllProjects = () => {
+    return storage.loadAllProjects();
   };
-
-  const delTask = (task) => {
-    const projName = task.projName;
-    const project = storage.loadProject(projName);
-    const taskIndex = project.tasks.indexOf(task);
-
-    project.tasks.splice(taskIndex, 1);
-    storage.saveProject(project);
+  return {
+    getAllProjects,
+    addNewProject,
+      getProject,
   };
-
-  const loadTask = (taskId, projName) => {
-    const proj = storage.loadProject(projName);
-    for (const task of proj.tasks) {
-      if (task.id === taskId) {
-        return task;
-      }
-    }
-  };
-
-  const saveTask = (task) => {
-    const proj = storage.loadProject(task.projName);
-    proj.tasks.push(task);
-
-    storage.saveProject(proj);
-  };
-
-  const updateTask = (formValues) => {
-    taskController.update(formValues);
-  };
-
-  const getAllSavedProjects = () => {
-    const projArr = projectController.loadAllProjects();
-    pubSub.publish("allSavedProjectsRetrieved", projArr);
-  };
-
-  // Subcriptions
-
-  pubSub.subscribe("pageLoaded", getAllSavedProjects);
-  pubSub.subscribe("inboxClicked", getAllTasks);
-
-  pubSub.subscribe("addProjectFormSubmitted", addNewProject);
-  pubSub.subscribe("projectClicked", getProject);
-  pubSub.subscribe("projectRemoved", removeProject);
-
-  pubSub.subscribe("taskSubmitted", addTaskToProject);
-  pubSub.subscribe("taskEditSubmitted", updateTask);
-  pubSub.subscribe("taskDeleted", delTask);
-
-  return {};
 })();
 
 export default controllerInterface;

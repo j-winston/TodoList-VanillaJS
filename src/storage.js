@@ -4,16 +4,20 @@
 const storage = (() => {
   const saveProject = (project) => {
     localStorage.setItem(`${project.name}`, JSON.stringify(project));
+
     if (localStorage.getItem(`${project.name}`)) {
       return true;
     }
   };
 
-  const loadProject = (name) => {
-    const jsnData = localStorage.getItem(`${name}`);
-    const project = JSON.parse(jsnData);
-    return project;
-  };
+
+  //
+  //  if (project) {
+  //    return project;
+  //  }
+
+  //  return false;
+  //};
 
   const loadAllProjects = () => {
     const projects = [];
@@ -27,35 +31,61 @@ const storage = (() => {
     return projects;
   };
 
-  const deleteProject = (name) => {
-    localStorage.removeItem(`${name}`);
-    if (!localStorage.getItem(`${name}`)) {
-      return true;
-    }
-  };
-  const deleteAllProjects = () => {
-    localStorage.clear();
-  };
+  //const deleteProject = (name) => {
+  //  localStorage.removeItem(`${name}`);
+  //  if (!localStorage.getItem(`${name}`)) {
+  //    return true;
+  //  }
+  //};
+  //const deleteAllProjects = () => {
+  //  localStorage.clear();
+  //};
 
-  const loadTask = (projName, id) => {
-    const proj = loadProject(projName);
-    const tasks = proj.tasks;
+  //const loadTask = (projName, id) => {
+  //  const proj = loadProject(projName);
+  //  const tasks = proj.tasks;
 
-    for (const task of tasks) {
-      if (task.id === id) {
-        return task;
-      }
-    }
+  //  for (const task of tasks) {
+  //    if (task.id === id) {
+  //      return task;
+  //    }
+  //  }
+  //};
+
+  //const deleteTask = (id, projName) => {
+  //  const proj = loadProject(projName);
+
+  //  //for (let task of tasks) {
+  //  //    alert(task.getValue('id'))
+  //  //  const taskId = task.getValue("id");
+  //  //  if (taskId === id) {
+  //  //    const idx = tasks.indexOf(task);
+
+  //  //    tasks.splice(idx, 1);
+  //  //    alert("deleted");
+  //  //  }
+  //  //}
+
+  //  //saveProject(proj);
+  //};
+
+  const loadProject = (name) => {
+    const jsnData = localStorage.getItem(`${name}`);
+    const project = JSON.parse(jsnData);
+    return project;
   };
 
   return {
-    saveProject,
-    loadProject,
     loadAllProjects,
-    deleteAllProjects,
-    deleteProject,
-    loadTask,
+    saveProject,
+        loadProject,
   };
 })();
+//  loadProject,
+//  deleteAllProjects,
+//  deleteProject,
+//  loadTask,
+//  deleteTask,
+//};
 
 export default storage;

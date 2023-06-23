@@ -35,6 +35,7 @@
                       placeholder="Project Name"
                       required="required"
                       id="name"
+                      name="title"
                     />
                   </div>
                   <div class="form-confirm">
@@ -66,18 +67,26 @@
                     placeholder="Task Name"
                     required="required"
                     id="name"
+                    name="name"
                   />
                   <input
                     type="text"
                     placeholder="Description"
                     required="required"
                     id="description"
+                    name="description"
                   />
+                  <input type="hidden" name="projectName" />
 
                   <div class="due-date-btn">
                     <p class="due-date-btn-text">Due date</p>
                     <div class="due-date-picker-container">
-                      <input type="date" id="duedate" class="date-picker" />
+                      <input
+                        type="date"
+                        id="duedate"
+                        name="dueDate"
+                        class="date-picker"
+                      />
                     </div>
                   </div>
                 </div>
