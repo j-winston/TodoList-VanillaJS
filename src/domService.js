@@ -299,7 +299,7 @@ const domService = (() => {
     }
   };
 
-  const showProject = (project) => {
+  const showProjectTasks = (project) => {
     clearTaskViewer();
     updateTaskViewerTitle(project.name);
 
@@ -309,7 +309,8 @@ const domService = (() => {
   const showAllLoadedProjects = (projArr) => {
     for (let i = 0; i < projArr.length; i++) {
       const proj = projArr[i];
-      showNewAddedProject(proj);
+      addProjectToNavBar(proj);
+        showProjectTasks(proj);
     }
   };
 
@@ -383,14 +384,13 @@ const domService = (() => {
     
   };
   //
-  const showNewAddedProject = (project) => {
+  const addProjectToNavBar = (project) => {
     const projectEl = createProjectElement(project);
 
     updateTaskViewerTitle(project.name);
     addProjectToViewer(projectEl);
 
     clearTaskViewer();
-    showAllTasks(project);
   };
 
   const showAddProjectDialog = () => {
@@ -406,7 +406,8 @@ const domService = (() => {
         newProjectForm.elements["name"].value
       );
 
-      showNewAddedProject(proj);
+      addProjectToNavBar(proj);
+        showAllTasks(proj); 
     });
 
     const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
