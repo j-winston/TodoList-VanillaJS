@@ -299,7 +299,7 @@ const domService = (() => {
     }
   };
 
-  const showProjectTasks = (project) => {
+  const showProject = (project) => {
     clearTaskViewer();
     updateTaskViewerTitle(project.name);
 
@@ -310,7 +310,7 @@ const domService = (() => {
     for (let i = 0; i < projArr.length; i++) {
       const proj = projArr[i];
       addProjectToNavBar(proj);
-      showProjectTasks(proj);
+      showProject(proj);
     }
   };
 
@@ -362,7 +362,7 @@ const domService = (() => {
   };
 
   const createInboxElement = () => {
-    const project = controllerInterface.getProject('Inbox');
+    const project = controllerInterface.getProject("Inbox");
 
     const projectContainerElement = document.createElement("div");
 
@@ -372,7 +372,7 @@ const domService = (() => {
       showAllTasks(project);
     });
 
-    projectTitleElement.textContent = 'Inbox' 
+    projectTitleElement.textContent = "Inbox";
     projectContainerElement.appendChild(projectTitleElement);
 
     return projectContainerElement;
@@ -410,10 +410,11 @@ const domService = (() => {
   };
   //
   const addProjectToNavBar = (project) => {
+    if (project.name != "Inbox") {
       updateTaskViewerTitle(project.name);
       const projectEl = createProjectElement(project);
       addProjectToViewer(projectEl);
-    
+    }
   };
 
   const showAddProjectDialog = () => {
@@ -439,23 +440,23 @@ const domService = (() => {
     });
   };
 
-  const projectExist = (name) => {
-    if (controllerInterface.getProject(name)) {
-      return true;
-    }
-    return false;
-  };
-
-  const createInbox = () => {
-    if (!projectExist("Inbox")) {
-      controllerInterface.addNewProject("Inbox");
-      const inboxEl = createInboxElement();
-        const navBarEl = document.querySelector('.left-nav')
-        navBarEl.appendChild(inboxEl); 
-
+  const showInboxTasks = () => {
+    if (controllerInterface.projectExists("Inbox")) {
+      alert("inbox exists");
+      const inboxPrj = controllerInterface.getProject("Inbox");
+      showProject(inboxPrj);
+    } else {
+      const newInbox = controllerInterface.addNewProject("Inbox");
+      showProject(newInbox);
     }
   };
+
   const startTaskEvents = () => {
+    const inboxBtn = document.querySelector(".inbox-title");
+    inboxBtn.addEventListener("click", () => {
+      showInboxTasks();
+    });
+
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", showAddProjectDialog);
 

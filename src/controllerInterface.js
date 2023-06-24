@@ -128,9 +128,18 @@ const controllerInterface = (() => {
 
   const getProject = (name) => {
     const proj = projectController.getProject(name);
-
-    return proj;
+    if (proj) {
+      return proj;
+    }
+    return false;
   };
+
+  const projectExists = (name) => {
+    if (storage.loadProject(name)) {
+      return true;
+    } else return false;
+  };
+
   const getAllProjects = () => {
     return storage.loadAllProjects();
   };
@@ -139,6 +148,7 @@ const controllerInterface = (() => {
     addNewProject,
     getProject,
     delProject,
+    projectExists,
   };
 })();
 
