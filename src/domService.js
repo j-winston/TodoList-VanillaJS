@@ -54,16 +54,26 @@ const domService = (() => {
   //
   //
   const showTaskEditMenu = (taskContainer, task) => {
-    // We can use the current task info to autofill the edit fields
+      hideElement(document.querySelector('.add-task-btn'))
+      
+      const tskContainer = document.querySelector('[data-id-task-id= '+CSS.escape(task.id)+']')
+      
     const titleEl = taskContainer.querySelector(".task-title");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
     const descriptionEl = taskContainer.querySelector(".task-description");
 
     const template = document.getElementById("editTaskTemplate");
     const formClone = template.content.cloneNode(true);
-    taskContainer.appendChild(formClone);
 
+    taskContainer.appendChild(formClone);
     const editTaskForm = document.querySelector(".edit-task-form");
+
+      while(tskContainer.hasChildNodes()){
+          tskContainer.removeChild(tskContainer.firstChild)
+      }
+
+      taskContainer.appendChild(editTaskForm);
+
 
     // Populate the form inputs initially with current values
     editTaskForm.elements["name"].value = titleEl.textContent;
@@ -233,8 +243,10 @@ const domService = (() => {
     });
 
     const taskInfoContainer = document.createElement("div");
+      taskInfoContainer.classList.add('task-info-container')
     taskBtnContainer.append(deleteBtnEl, editBtnEL);
     taskInfoContainer.append(nameEl, descriptionEl, dueDateEl);
+
 
     newTaskContainer.append(
       taskCompleteBtn,
