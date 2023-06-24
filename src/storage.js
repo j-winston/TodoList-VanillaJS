@@ -61,7 +61,7 @@ const storage = (() => {
       for (let task of tasks) {
         if (task.id === id) {
           const idx = tasks.indexOf(task);
-            alert(task.name);
+          alert(task.name);
           tasks.splice(idx, 1);
         }
       }

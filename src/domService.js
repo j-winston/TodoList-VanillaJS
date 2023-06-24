@@ -339,12 +339,12 @@ const domService = (() => {
 
     const projectTitleElement = document.createElement("div");
     projectTitleElement.addEventListener("click", () => {
-        if(getCurrentProjectName() != project.name){
-            clearTaskViewer();
-      updateTaskViewerTitle(project.name);
+      if (getCurrentProjectName() != project.name) {
+        clearTaskViewer();
+        updateTaskViewerTitle(project.name);
         const prj = controllerInterface.getProject(project.name);
-        showAllTasks(prj.tasks)
-        }
+        showAllTasks(prj.tasks);
+      }
     });
 
     projectTitleElement.textContent = project.name;
@@ -419,7 +419,7 @@ const domService = (() => {
 
       const task = controllerInterface.addTaskToProject(formDataObj);
 
-        clearTaskViewer();
+      clearTaskViewer();
       showTask(task);
       removeElement(form);
     });
@@ -479,7 +479,7 @@ const domService = (() => {
   const initializeUi = () => {
     startTaskEvents();
     loadProjects();
-      showInboxTasks();
+    showInboxTasks();
   };
 
   return {

@@ -105,7 +105,7 @@ const projectController = (() => {
     getProject,
     removeTask,
     saveTask,
-      removeProject,
+    removeProject,
   };
 })();
 

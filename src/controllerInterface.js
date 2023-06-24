@@ -66,7 +66,7 @@ const controllerInterface = (() => {
 
     projectController.saveTask(task);
 
-      return task; 
+    return task;
   };
 
   const delProject = (name) => {
