@@ -42,16 +42,16 @@ const storage = (() => {
   //  localStorage.clear();
   //};
 
-  //const loadTask = (projName, id) => {
-  //  const proj = loadProject(projName);
-  //  const tasks = proj.tasks;
+  const loadTask = (projName, id) => {
+    const proj = loadProject(projName);
+    const tasks = proj.tasks;
 
-  //  for (const task of tasks) {
-  //    if (task.id === id) {
-  //      return task;
-  //    }
-  //  }
-  //};
+    for (const task of tasks) {
+      if (task.id === id) {
+        return task;
+      }
+    }
+  };
 
   const deleteTask = (id, projName) => {
     const proj = loadProject(projName);
@@ -61,7 +61,6 @@ const storage = (() => {
       for (let task of tasks) {
         if (task.id === id) {
           const idx = tasks.indexOf(task);
-          alert(task.name);
           tasks.splice(idx, 1);
         }
       }

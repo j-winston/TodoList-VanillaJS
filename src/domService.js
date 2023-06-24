@@ -53,57 +53,67 @@ const domService = (() => {
   //  };
   //
   //
-  //  const showTaskEditMenu = (taskContainer) => {
-  //    // We can use the current task info to autofill the edit fields
-  //    const titleEl = taskContainer.querySelector(".task-title");
-  //    const dueDateEl = taskContainer.querySelector(".task-due-date");
-  //    const descriptionEl = taskContainer.querySelector(".task-description");
-  //
-  //    // When user clicks edit, show the edit form
-  //    const template = document.getElementById("editTaskTemplate");
-  //    const form = template.content.cloneNode(true);
-  //
-  //    const cancelBtn = form.querySelector(".cancel-btn");
-  //    const saveBtn = form.querySelector(".save-btn");
-  //
-  //    // Populate the form inputs initially with current values
-  //    form.getElementById("title").value = titleEl.textContent;
-  //    form.getElementById("duedate").value = dueDateEl.textContent;
-  //    form.getElementById("description").value = descriptionEl.textContent;
-  //
-  //    cancelBtn.addEventListener("click", () => {
-  //      const formEl = document.querySelector(".edit-task-form");
-  //      removeElement(formEl);
-  //    });
-  //
-  //    saveBtn.addEventListener("click", () => {
-  //      // We grab all the input values once they click save
-  //      const editTaskForm = document.querySelector(".edit-task-form .inputs");
-  //      const titleEl = editTaskForm.querySelector('input[class="title"]');
-  //      const dueDateEl = editTaskForm.querySelector('input[type="date"]');
-  //      const descriptionEl = editTaskForm.querySelector(
-  //        'input[class="description"]'
-  //      );
-  //
-  //      // Finally, broadcast all the stored edits along unique
-  //      // task id
-  //      const taskEditFormValues = {};
-  //      const taskId = taskContainer.getAttribute("data-id");
-  //
-  //      taskEditFormValues.id = taskId;
-  //      taskEditFormValues.projName = getCurrentProjectName();
-  //      taskEditFormValues.name = titleEl.value;
-  //      taskEditFormValues.duedate = dueDateEl.value;
-  //      taskEditFormValues.description = descriptionEl.value;
-  //
-  //      pubSub.publish("taskEditSubmitted", taskEditFormValues);
-  //
-  //      // Once saved, remove the edit form
-  //      editTaskForm.remove();
-  //    });
-  //
-  //    taskContainer.appendChild(form);
-  //  };
+  const showTaskEditMenu = (taskContainer, task) => {
+    // We can use the current task info to autofill the edit fields
+    const titleEl = taskContainer.querySelector(".task-title");
+    const dueDateEl = taskContainer.querySelector(".task-due-date");
+    const descriptionEl = taskContainer.querySelector(".task-description");
+
+    const template = document.getElementById("editTaskTemplate");
+    const formClone = template.content.cloneNode(true);
+    taskContainer.appendChild(formClone);
+
+    const editTaskForm = document.querySelector(".edit-task-form");
+
+    // Populate the form inputs initially with current values
+    editTaskForm.elements["name"].value = titleEl.textContent;
+    editTaskForm.elements["description"].value = descriptionEl.textContent;
+    editTaskForm.elements["dueDate"].value = dueDateEl.textContent;
+
+    const cancelBtn = editTaskForm.querySelector(".cancel-btn");
+    cancelBtn.addEventListener("click", () => {
+      removeElement(editTaskForm);
+    });
+
+    const saveBtn = editTaskForm.querySelector(".save-btn");
+    saveBtn.addEventListener("click", () => {
+      const formData = new FormData(editTaskForm);
+      formData.set("projectName", task.projectName);
+
+      const updatedTask = controllerInterface.getUpdatedTask(formData, task);
+
+      editTaskForm.remove();
+
+      removeElement(taskContainer);
+      showTask(updatedTask);
+    });
+
+    //saveBtn.addEventListener("click", () => {
+    //    const formData = new FormData(taskEditForm);
+
+    //  // We grab all the input values once they click save
+    //  const editTaskForm = document.querySelector(".edit-task-form .inputs");
+    //  const titleEl = editTaskForm.querySelector('input[class="title"]');
+    //  const dueDateEl = editTaskForm.querySelector('input[type="date"]');
+    //  const descriptionEl = editTaskForm.querySelector(
+    //    'input[class="description"]'
+    //  );
+
+    //  // Finally, broadcast all the stored edits along unique
+    //  // task id
+    //  const taskEditFormValues = {};
+    //  const taskId = taskContainer.getAttribute("data-id");
+
+    //  taskEditFormValues.id = taskId;
+    //  taskEditFormValues.projName = getCurrentProjectName();
+    //  taskEditFormValues.name = titleEl.value;
+    //  taskEditFormValues.duedate = dueDateEl.value;
+    //  taskEditFormValues.description = descriptionEl.value;
+
+    //  // Once saved, remove the edit form
+    //  editTaskForm.remove();
+    //});
+  };
   //
 
   //
@@ -219,7 +229,7 @@ const domService = (() => {
     editBtnEL.textContent = "Edit";
 
     editBtnEL.addEventListener("click", () => {
-      showTaskEditMenu(newTaskContainer);
+      showTaskEditMenu(newTaskContainer, task);
     });
 
     const taskInfoContainer = document.createElement("div");

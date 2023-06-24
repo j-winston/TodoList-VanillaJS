@@ -110,6 +110,7 @@
                   required="required"
                   class="title"
                   id="title"
+                  name="name"
                 />
                 <input
                   type="text"
@@ -117,8 +118,16 @@
                   required="required"
                   id="description"
                   class="description"
+                  name="description"
                 />
-                <input type="date" id="duedate" class="edit-date-picker" />
+                <input
+                  type="date"
+                  name="dueDate"
+                  id="duedate"
+                  class="edit-date-picker"
+                />
+
+                <input type="hidden" name="projectName" />
 
                 <button class="cancel-btn">Cancel</button>
                 <button class="save-btn" type="submit">Save</button>

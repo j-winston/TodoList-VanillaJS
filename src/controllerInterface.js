@@ -44,6 +44,10 @@ const controllerInterface = (() => {
         return newTaskValues.id;
       },
 
+      set id(newId) {
+        newTaskValues.id = newId;
+      },
+
       get name() {
         return newTaskValues.name;
       },
@@ -142,6 +146,16 @@ const controllerInterface = (() => {
   //  addNewProject,
   //};
 
+  const getUpdatedTask = (formDatObj, oldTask) => {
+    let newTask = newTaskObj(formDatObj);
+    newTask.id = oldTask.id;
+
+    projectController.removeTask(oldTask);
+    projectController.saveTask(newTask);
+
+    return newTask;
+  };
+
   const getProject = (name) => {
     const proj = projectController.getProject(name);
     if (proj) {
@@ -167,6 +181,7 @@ const controllerInterface = (() => {
     projectExists,
     addTaskToProject,
     delTask,
+    getUpdatedTask,
   };
 })();
 

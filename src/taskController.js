@@ -47,27 +47,27 @@ const taskController = (() => {
   //    return task;
   //  };
 
-  const update = (taskUpdate) => {
-    // 'taskify' data goes here
-    // TODO fix delete bug and move on
-    const projName = taskUpdate.projName;
-    const id = taskUpdate.id;
+  //const update = (task) => {
+  //  // 'taskify' data goes here
+  //  // TODO fix delete bug and move on
+  //  const projName = taskUpdate.projName;
+  //  const id = taskUpdate.id;
 
-    const task = storage.loadTask(projName, id);
+  //  const task = storage.loadTask(projName, id);
 
-    for (const key in taskUpdate) {
-      if (key in task) {
-        task[key] = taskUpdate[key];
-      }
-    }
-    // task data now needs to be saved
-    // storage.saveTask(task);
-    pubSub.publish("taskUpdated", task);
-  };
+  //  for (const key in taskUpdate) {
+  //    if (key in task) {
+  //      task[key] = taskUpdate[key];
+  //    }
+  //  }
 
-  return {
-    update,
-  };
+  //    storage.saveProject()
+  //  // task data now needs to be saved
+  //  // storage.saveTask(task);
+  //  pubSub.publish("taskUpdated", task);
+  //};
+
+  return {};
 })();
 
 export default taskController;
