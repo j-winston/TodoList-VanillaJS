@@ -5,19 +5,19 @@ import projectController from "./projectController";
 import storage from "./storage";
 
 const domService = (() => {
-  //  const hideElement = (el) => {
-  //    el.style.visibility = "hidden";
-  //  };
-  //
-  //  const showElement = (hiddenElement) => {
-  //    const element = document.querySelector(hiddenElement);
-  //
-  //    element.style.visibility = "visible";
-  //  };
-  //
-  //  window.onload = () => {
-  //    pubSub.publish("pageLoaded");
-  //  };
+  const hideElement = (el) => {
+    el.style.visibility = "hidden";
+  };
+  
+    const showElement = (hiddenElement) => {
+      const element = document.querySelector(hiddenElement);
+  
+      element.style.visibility = "visible";
+    };
+  
+    window.onload = () => {
+      pubSub.publish("pageLoaded");
+    };
   const removeElement = (el) => {
     el.remove();
   };
@@ -110,64 +110,15 @@ const domService = (() => {
   //
   //
   //
-  //  const parseDate = (dateVal) => {
-  //    const strDate = dateVal.split("-");
-  //    const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
-  //
-  //    return date;
-  //  };
-  //
-  //
-  //  const appendFormToViewer = (form, el) => {
-  //    const viewer = document.querySelector(el);
-  //
-  //    viewer.appendChild(form);
-  //  };
-  //  const showAddTask = () => {
-  //    const form = createForm("new-task-template");
-  //    appendFormToViewer(form, ".project-viewer");
+  const parseDate = (dateVal) => {
+    const strDate = dateVal.split("-");
+    const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
+
+    return date;
+  };
   //
   //
-  //    // Event handlers
-  //    const dueDateBtn = form.querySelector(".due-date-btn-text");
-  //    dueDateBtn.addEventListener("click", () => {
-  //      const datePicker = document.getElementById("duedate");
-  //      datePicker.addEventListener("change", () => {
-  //        const date = parseDate(datePicker.value);
   //
-  //        dueDateBtn.textContent = date;
-  //      });
-  //
-  //      datePicker.showPicker();
-  //    });
-  //
-  //    const cancelBtn = document.querySelector(".cancel-task-btn");
-  //    cancelBtn.addEventListener("click", () => {
-  //      form.remove();
-  //    });
-  //
-  //    const saveBtn = document.querySelector(".save-task-btn");
-  //    saveBtn.addEventListener("click", () => {
-  //      const formDataObj = new FormData(form);
-  //      formDataObj.set("projectName", getCurrentProjectName());
-  //
-  //      const task = getTask(formDataObj);
-  //      showTask(task);
-  //      removeElement(form);
-  //    });
-  //  };
-  //
-  //  const getTask = (formDataObj) => {
-  //    const projName = getCurrentProjectName();
-  //    const task = controllerInterface.addTaskToProject(formDataObj, projName);
-  //
-  //    return task;
-  //  };
-  //
-  //  const addNewTask = () => {
-  //    hideElement(document.querySelector(".add-task-btn"));
-  //    showAddTask();
-  //  };
   //
   //
   //
@@ -292,6 +243,7 @@ const domService = (() => {
   };
 
   const showAllTasks = (tasks) => {
+      clearTaskViewer();
     if (tasks.length >= 1) {
       for (const task of tasks) {
         showTask(task);
@@ -400,6 +352,7 @@ const domService = (() => {
     deleteBtn.addEventListener("click", () => {
       if (removeProject(project.name)) {
         removeElement(projectContainerElement);
+        showInboxTasks();
       }
     });
 
@@ -412,9 +365,64 @@ const domService = (() => {
   const addProjectToNavBar = (project) => {
     if (project.name != "Inbox") {
       updateTaskViewerTitle(project.name);
+
       const projectEl = createProjectElement(project);
       addProjectToViewer(projectEl);
     }
+  };
+
+  //const getNewTask = (formDataObj) => {
+  //  const projName = getCurrentProjectName();
+  //  const task = controllerInterface.addTaskToProject(formDataObj, projName);
+
+  //  return task;
+  //};
+
+  const appendFormToViewer = (form, el) => {
+    const viewer = document.querySelector(el);
+
+    viewer.appendChild(form);
+  };
+
+  const showAddTask = () => {
+    const form = createForm("new-task-template");
+    appendFormToViewer(form, ".project-viewer");
+
+    // Event handlers
+    const dueDateBtn = form.querySelector(".due-date-btn-text");
+    dueDateBtn.addEventListener("click", () => {
+      const datePicker = document.getElementById("duedate");
+      datePicker.addEventListener("change", () => {
+        const date = parseDate(datePicker.value);
+
+        dueDateBtn.textContent = date;
+      });
+
+      datePicker.showPicker();
+    });
+
+    const cancelBtn = document.querySelector(".cancel-task-btn");
+    cancelBtn.addEventListener("click", () => {
+      form.remove();
+    });
+
+    const saveBtn = document.querySelector(".save-task-btn");
+    saveBtn.addEventListener("click", () => {
+      const prjName = getCurrentProjectName();
+      const formDataObj = new FormData(form);
+
+      formDataObj.set("projectName", prjName);
+
+      const task = controllerInterface.addTaskToProject(formDataObj);
+
+      showTask(task);
+      removeElement(form);
+    });
+  };
+
+  const addNewTask = () => {
+    hideElement(document.querySelector(".add-task-btn"));
+    showAddTask();
   };
 
   const showAddProjectDialog = () => {
@@ -460,8 +468,8 @@ const domService = (() => {
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", showAddProjectDialog);
 
-    //  const addTaskBtn = document.querySelector(".add-task-btn");
-    // addTaskBtn.addEventListener("click", addNewTask);
+    const addTaskBtn = document.querySelector(".add-task-btn");
+    addTaskBtn.addEventListener("click", addNewTask);
   };
 
   const initializeUi = () => {

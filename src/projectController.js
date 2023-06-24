@@ -8,7 +8,7 @@ import taskController from "./taskController";
 import uid from "./uid";
 
 const projectController = (() => {
-  const _store = (project) => {
+  const store = (project) => {
     if (storage.saveProject(project)) {
       return true;
     }
@@ -46,14 +46,6 @@ const projectController = (() => {
   //    storage.deleteAllProjects();
   //  };
   //
-  //  const addTask = (formDataObj, projName) => {
-  //    const task = taskController.createNewTask(formDataObj);
-  //    const proj = storage.loadProject(projName);
-  //
-  //    proj.tasks.push(task);
-  //    _store(proj);
-  //      return task;
-  //  };
   //
   //  const removeTask = (id, projName) => {
   //    const proj = projectController.getProject(projName);
@@ -64,7 +56,7 @@ const projectController = (() => {
   //  const newEmptyProject = (name) => {
   //    const project = Project(name);
   //
-  //    _store(project);
+  //    store(project);
   //
   //    return project;
   //  };
@@ -85,10 +77,24 @@ const projectController = (() => {
     };
   };
 
+  //const newTask = (formDataObj) => {
+  //  const task = taskController.createNewTask(formDataObj);
+
+  //  saveTask(task);
+  //};
+
+  const saveTask = (task) => {
+    const projName = task.projectName;
+    const proj = storage.loadProject(projName);
+    proj.tasks.push(task);
+
+    store(proj);
+  };
+
   const createNewProject = (name) => {
     const project = Project(name);
 
-    _store(project);
+    store(project);
 
     return project;
   };
@@ -97,6 +103,7 @@ const projectController = (() => {
     createNewProject,
     getProject,
     remove,
+    saveTask,
   };
 })();
 

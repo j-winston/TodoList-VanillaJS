@@ -3,6 +3,7 @@
 //Responsibilities: Subscribe to events pubblished from the DOM and pass on to appropriate controller.
 //
 import pubSub from "./pubsub";
+import uid from "./uid";
 import storage from "./storage";
 import projectController from "./projectController";
 import taskController from "./taskController";
@@ -14,45 +15,57 @@ const controllerInterface = (() => {
   //  return project;
   //};
 
-  //const addTaskToProject = (formDataObj, projName) => {
-  //  const task = projectController.addTask(formDataObj, projName);
-
-  //  const newTaskValues = {
-  //    id: task.getValue("id"),
-  //    name: task.getValue("name"),
-  //    description: task.getValue("description"),
-  //    projectName: task.getValue("projectName"),
-  //    dueDate: task.getValue("dueDate"),
-  //  };
-
-  //  return {
-  //    get id() {
-  //      return newTaskValues.id;
-  //    },
-
-  //    get name() {
-  //      return newTaskValues.name;
-  //    },
-
-  //    get description() {
-  //      return newTaskValues.description;
-  //    },
-
-  //    get projectName() {
-  //      return newTaskValues.projectName;
-  //    },
-  //    get dueDate() {
-  //      return newTaskValues.dueDate;
-  //    },
-  //  };
-  //};
-
   //const getAllTasks = () => {
   //  pubSub.publish("tasksRetrieved", tasks);
   //};
 
   //// this should retrieve the entire project
 
+  const newTaskObj = (formDataObj) => {
+    let taskData = {};
+    const entries = formDataObj.entries();
+
+    for (let pair of entries) {
+      const key = pair[0];
+      const value = pair[1];
+      taskData[key] = value;
+    }
+
+    const newTaskValues = {
+      id: uid.create(),
+      name: taskData["name"],
+      description: taskData["description"],
+      projectName: taskData["projectName"],
+      dueDate: taskData["dueDate"],
+    };
+
+    return {
+      get id() {
+        return newTaskValues.id;
+      },
+
+      get name() {
+        return newTaskValues.name;
+      },
+
+      get description() {
+        return newTaskValues.description;
+      },
+
+      get projectName() {
+        return newTaskValues.projectName;
+      },
+      get dueDate() {
+        return newTaskValues.dueDate;
+      },
+    };
+  };
+
+  const addTaskToProject = (formDataObj) => {
+    let task = newTaskObj(formDataObj);
+
+    projectController.saveTask(task);
+  };
   const delProject = (name) => {
     if (projectController.remove(name)) {
       return true;
@@ -149,6 +162,7 @@ const controllerInterface = (() => {
     getProject,
     delProject,
     projectExists,
+    addTaskToProject,
   };
 })();
 

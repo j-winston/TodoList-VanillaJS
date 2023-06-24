@@ -7,46 +7,45 @@ import pubSub from "./pubsub";
 import uid from "./uid";
 
 const taskController = (() => {
-  const Task = (formDataObj) => {
-    const _entries = formDataObj.entries();
-
-    let _taskData = {};
-
-    const setInitialValues = (_entries) => {
-      for (let pair of _entries) {
-        const key = pair[0];
-        const value = pair[1];
-        _taskData[key] = value;
-      }
-
-      _taskData["id"] = uid.create();
-    };
-
-    const getValue = (key) => {
-      if (_taskData[key]) {
-        return _taskData[key];
-      } else return false;
-    };
-
-    const setValue = (key, value) => {
-      if (key in _taskData) {
-        _taskData[key] = value;
-      } else return false;
-    };
-
-    setInitialValues(_entries);
-
-    return {
-      getValue,
-      setValue,
-    };
-  };
-
-  const createNewTask = (formDataObj) => {
-    const task = Task(formDataObj);
-
-    return task;
-  };
+  //  const Task = (formDataObj) => {
+  //    const _entries = formDataObj.entries();
+  //
+  //    let _taskData = {};
+  //
+  //    const setInitialValues = (_entries) => {
+  //      for (let pair of _entries) {
+  //        const key = pair[0];
+  //        const value = pair[1];
+  //        _taskData[key] = value;
+  //      }
+  //
+  //      _taskData["id"] = uid.create();
+  //    };
+  //
+  //    const getValue = (key) => {
+  //      if (_taskData[key]) {
+  //        return _taskData[key];
+  //      } else return false;
+  //    };
+  //
+  //    const setValue = (key, value) => {
+  //      if (key in _taskData) {
+  //        _taskData[key] = value;
+  //      } else return false;
+  //    };
+  //
+  //    setInitialValues(_entries);
+  //
+  //    return {
+  //      getValue,
+  //      setValue,
+  //    };
+  //  };
+  //
+  //  const createNewTask = (formDataObj) => {
+  //    const task = Task(formDataObj);
+  //    return task;
+  //  };
 
   const update = (taskUpdate) => {
     // 'taskify' data goes here
@@ -67,7 +66,6 @@ const taskController = (() => {
   };
 
   return {
-    createNewTask,
     update,
   };
 })();
