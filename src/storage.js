@@ -10,7 +10,6 @@ const storage = (() => {
     }
   };
 
-
   //
   //  if (project) {
   //    return project;
@@ -31,12 +30,14 @@ const storage = (() => {
     return projects;
   };
 
-  //const deleteProject = (name) => {
-  //  localStorage.removeItem(`${name}`);
-  //  if (!localStorage.getItem(`${name}`)) {
-  //    return true;
-  //  }
-  //};
+  const deleteProject = (name) => {
+    localStorage.removeItem(`${name}`);
+    if (!localStorage.getItem(`${name}`)) {
+      return true;
+    }
+    return false;
+  };
+
   //const deleteAllProjects = () => {
   //  localStorage.clear();
   //};
@@ -78,7 +79,8 @@ const storage = (() => {
   return {
     loadAllProjects,
     saveProject,
-        loadProject,
+    loadProject,
+    deleteProject,
   };
 })();
 //  loadProject,

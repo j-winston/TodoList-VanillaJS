@@ -34,11 +34,13 @@ const projectController = (() => {
   //  };
   //
   //
-  //  const remove = (name) => {
-  //    if (storage.deleteProject(name)) {
-  //      pubSub.publish("projectDeleted", name);
-  //    }
-  //  };
+  const remove = (name) => {
+    if (storage.deleteProject(name)) {
+      return true;
+    }
+    return false;
+  };
+
   //
   //  const removeAll = () => {
   //    storage.deleteAllProjects();
@@ -67,10 +69,9 @@ const projectController = (() => {
   //    return project;
   //  };
   //
-    const getProject = (name) => {
-
-      return storage.loadProject(name);
-    };
+  const getProject = (name) => {
+    return storage.loadProject(name);
+  };
 
   const Project = (projName) => {
     let name = projName;
@@ -94,7 +95,8 @@ const projectController = (() => {
 
   return {
     createNewProject,
-      getProject,
+    getProject,
+    remove,
   };
 })();
 

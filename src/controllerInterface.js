@@ -53,11 +53,12 @@ const controllerInterface = (() => {
 
   //// this should retrieve the entire project
 
-  //const removeProject = (project) => {
-  //  projectController.remove(project.name);
-
-  //  pubSub.publish("projectDeleted", project);
-  //};
+  const delProject = (name) => {
+    if (projectController.remove(name)) {
+      return true;
+    }
+    return false;
+  };
 
   const addNewProject = (projName) => {
     const project = projectController.createNewProject(projName);
@@ -136,7 +137,8 @@ const controllerInterface = (() => {
   return {
     getAllProjects,
     addNewProject,
-      getProject,
+    getProject,
+    delProject,
   };
 })();
 

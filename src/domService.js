@@ -18,9 +18,9 @@ const domService = (() => {
   //  window.onload = () => {
   //    pubSub.publish("pageLoaded");
   //  };
-    const removeElement = (el) => {
-      el.remove();
-    };
+  const removeElement = (el) => {
+    el.remove();
+  };
   //
   //
   //  const removeProject = (project) => {
@@ -218,13 +218,13 @@ const domService = (() => {
   //    container.querySelector(".task-due-date").textContent = dueDate;
   //  };
   //
-    const getProject = () => {
-      const proj = controllerInterface.getProject(getCurrentProjectName());
-      if (proj) {
-        return proj;
-      }
-      return false;
-    };
+  const getProject = () => {
+    const proj = controllerInterface.getProject(getCurrentProjectName());
+    if (proj) {
+      return proj;
+    }
+    return false;
+  };
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
     newTaskContainer.setAttribute("data-id-task-id", task.id);
@@ -310,7 +310,7 @@ const domService = (() => {
     for (let i = 0; i < projArr.length; i++) {
       const proj = projArr[i];
       addProjectToNavBar(proj);
-        showProjectTasks(proj);
+      showProjectTasks(proj);
     }
   };
 
@@ -343,7 +343,7 @@ const domService = (() => {
       .querySelectorAll(".task-container")
       .forEach((task) => removeElement(task));
   };
-    
+
   const addProjectToViewer = (projectEl) => {
     const projectListContainer = document.querySelector(".project-container");
     projectListContainer.appendChild(projectEl);
@@ -354,43 +354,66 @@ const domService = (() => {
     title.textContent = projName;
   };
 
-  const createProjectElement = (p) => {
-      const project = projectController.getProject(getCurrentProjectName()); 
+  const removeProject = (name) => {
+    if (controllerInterface.delProject(name)) {
+      return true;
+    }
+    return false;
+  };
 
-      const projectContainerElement = document.createElement("div");
-      projectContainerElement.className = "project";
-      projectContainerElement.setAttribute("data-id", project.id);
+  const createInboxElement = () => {
+    const project = controllerInterface.getProject('Inbox');
 
-      const projectTitleElement = document.createElement("div");
-      projectTitleElement.addEventListener("click", () => {
-        updateTaskViewerTitle(project.name);
-        showAllTasks(project);
-      });
+    const projectContainerElement = document.createElement("div");
 
-      projectTitleElement.textContent = project.name;
-      projectTitleElement.className = "project-title";
+    const projectTitleElement = document.createElement("div");
+    projectTitleElement.addEventListener("click", () => {
+      updateTaskViewerTitle(project.name);
+      showAllTasks(project);
+    });
 
-      const deleteBtn = document.createElement("div");
-      deleteBtn.className = "project-delete-btn";
-      deleteBtn.textContent = "X";
-      deleteBtn.addEventListener("click", () => {
-        removeProject(project);
-      });
+    projectTitleElement.textContent = 'Inbox' 
+    projectContainerElement.appendChild(projectTitleElement);
 
-      projectContainerElement.appendChild(projectTitleElement);
-      projectContainerElement.appendChild(deleteBtn);
+    return projectContainerElement;
+  };
 
-      return projectContainerElement;
-    
+  const createProjectElement = () => {
+    const project = projectController.getProject(getCurrentProjectName());
+
+    const projectContainerElement = document.createElement("div");
+    projectContainerElement.className = "project";
+    projectContainerElement.setAttribute("data-id", project.id);
+
+    const projectTitleElement = document.createElement("div");
+    projectTitleElement.addEventListener("click", () => {
+      updateTaskViewerTitle(project.name);
+      showAllTasks(project);
+    });
+
+    projectTitleElement.textContent = project.name;
+    projectTitleElement.className = "project-title";
+
+    const deleteBtn = document.createElement("div");
+    deleteBtn.className = "project-delete-btn";
+    deleteBtn.textContent = "X";
+    deleteBtn.addEventListener("click", () => {
+      if (removeProject(project.name)) {
+        removeElement(projectContainerElement);
+      }
+    });
+
+    projectContainerElement.appendChild(projectTitleElement);
+    projectContainerElement.appendChild(deleteBtn);
+
+    return projectContainerElement;
   };
   //
   const addProjectToNavBar = (project) => {
-    const projectEl = createProjectElement(project);
-
-    updateTaskViewerTitle(project.name);
-    addProjectToViewer(projectEl);
-
-    clearTaskViewer();
+      updateTaskViewerTitle(project.name);
+      const projectEl = createProjectElement(project);
+      addProjectToViewer(projectEl);
+    
   };
 
   const showAddProjectDialog = () => {
@@ -401,13 +424,13 @@ const domService = (() => {
 
     const confirmNewProjectBtn = document.querySelector(".confirm-project-btn");
     confirmNewProjectBtn.addEventListener("click", () => {
-      newProjectForm.remove();
       const proj = controllerInterface.addNewProject(
         newProjectForm.elements["name"].value
       );
 
       addProjectToNavBar(proj);
-        showAllTasks(proj); 
+      showAllTasks(proj);
+      newProjectForm.remove();
     });
 
     const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
@@ -416,6 +439,22 @@ const domService = (() => {
     });
   };
 
+  const projectExist = (name) => {
+    if (controllerInterface.getProject(name)) {
+      return true;
+    }
+    return false;
+  };
+
+  const createInbox = () => {
+    if (!projectExist("Inbox")) {
+      controllerInterface.addNewProject("Inbox");
+      const inboxEl = createInboxElement();
+        const navBarEl = document.querySelector('.left-nav')
+        navBarEl.appendChild(inboxEl); 
+
+    }
+  };
   const startTaskEvents = () => {
     const addProjectBtn = document.querySelector(".add-project-btn");
     addProjectBtn.addEventListener("click", showAddProjectDialog);
