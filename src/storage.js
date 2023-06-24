@@ -53,22 +53,22 @@ const storage = (() => {
   //  }
   //};
 
-  //const deleteTask = (id, projName) => {
-  //  const proj = loadProject(projName);
+  const deleteTask = (id, projName) => {
+    const proj = loadProject(projName);
+    const tasks = proj.tasks;
 
-  //  //for (let task of tasks) {
-  //  //    alert(task.getValue('id'))
-  //  //  const taskId = task.getValue("id");
-  //  //  if (taskId === id) {
-  //  //    const idx = tasks.indexOf(task);
+    if (tasks.length > 0) {
+      for (let task of tasks) {
+        if (task.id === id) {
+          const idx = tasks.indexOf(task);
+            alert(task.name);
+          tasks.splice(idx, 1);
+        }
+      }
+    }
 
-  //  //    tasks.splice(idx, 1);
-  //  //    alert("deleted");
-  //  //  }
-  //  //}
-
-  //  //saveProject(proj);
-  //};
+    saveProject(proj);
+  };
 
   const loadProject = (name) => {
     const jsnData = localStorage.getItem(`${name}`);
@@ -81,13 +81,14 @@ const storage = (() => {
     saveProject,
     loadProject,
     deleteProject,
+    deleteTask,
   };
 })();
 //  loadProject,
 //  deleteAllProjects,
 //  deleteProject,
 //  loadTask,
-//  deleteTask,
+//  deleteTask
 //};
 
 export default storage;

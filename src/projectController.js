@@ -34,7 +34,7 @@ const projectController = (() => {
   //  };
   //
   //
-  const remove = (name) => {
+  const removeProject = (name) => {
     if (storage.deleteProject(name)) {
       return true;
     }
@@ -47,19 +47,6 @@ const projectController = (() => {
   //  };
   //
   //
-  //  const removeTask = (id, projName) => {
-  //    const proj = projectController.getProject(projName);
-  //
-  //    storage.deleteTask(id, projName);
-  //  };
-  //
-  //  const newEmptyProject = (name) => {
-  //    const project = Project(name);
-  //
-  //    store(project);
-  //
-  //    return project;
-  //  };
   //
   const getProject = (name) => {
     return storage.loadProject(name);
@@ -83,6 +70,20 @@ const projectController = (() => {
   //  saveTask(task);
   //};
 
+  const removeTask = (task) => {
+    const id = task.id;
+    const name = task.projectName;
+
+    storage.deleteTask(id, name);
+  };
+
+  //const newEmptyProject = (name) => {
+  //  const project = Project(name);
+
+  //  store(project);
+
+  //  return project;
+  //};
   const saveTask = (task) => {
     const projName = task.projectName;
     const proj = storage.loadProject(projName);
@@ -102,8 +103,9 @@ const projectController = (() => {
   return {
     createNewProject,
     getProject,
-    remove,
+    removeTask,
     saveTask,
+      removeProject,
   };
 })();
 

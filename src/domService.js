@@ -8,16 +8,16 @@ const domService = (() => {
   const hideElement = (el) => {
     el.style.visibility = "hidden";
   };
-  
-    const showElement = (hiddenElement) => {
-      const element = document.querySelector(hiddenElement);
-  
-      element.style.visibility = "visible";
-    };
-  
-    window.onload = () => {
-      pubSub.publish("pageLoaded");
-    };
+
+  const showElement = (hiddenElement) => {
+    const element = document.querySelector(hiddenElement);
+
+    element.style.visibility = "visible";
+  };
+
+  window.onload = () => {
+    pubSub.publish("pageLoaded");
+  };
   const removeElement = (el) => {
     el.remove();
   };
@@ -210,7 +210,8 @@ const domService = (() => {
 
     deleteBtnEl.addEventListener("click", () => {
       removeElement(newTaskContainer);
-      controllerInterface.delTask(task.id, task.projectName);
+
+      controllerInterface.delTask(task);
     });
 
     const editBtnEL = document.createElement("div");
@@ -243,8 +244,7 @@ const domService = (() => {
   };
 
   const showAllTasks = (tasks) => {
-      clearTaskViewer();
-    if (tasks.length >= 1) {
+    if (tasks.length > 0) {
       for (const task of tasks) {
         showTask(task);
       }
@@ -331,7 +331,7 @@ const domService = (() => {
   };
 
   const createProjectElement = () => {
-    const project = projectController.getProject(getCurrentProjectName());
+    const project = controllerInterface.getProject(getCurrentProjectName());
 
     const projectContainerElement = document.createElement("div");
     projectContainerElement.className = "project";
@@ -339,8 +339,12 @@ const domService = (() => {
 
     const projectTitleElement = document.createElement("div");
     projectTitleElement.addEventListener("click", () => {
+        if(getCurrentProjectName() != project.name){
+            clearTaskViewer();
       updateTaskViewerTitle(project.name);
-      showAllTasks(project);
+        const prj = controllerInterface.getProject(project.name);
+        showAllTasks(prj.tasks)
+        }
     });
 
     projectTitleElement.textContent = project.name;
@@ -415,6 +419,7 @@ const domService = (() => {
 
       const task = controllerInterface.addTaskToProject(formDataObj);
 
+        clearTaskViewer();
       showTask(task);
       removeElement(form);
     });
@@ -450,7 +455,6 @@ const domService = (() => {
 
   const showInboxTasks = () => {
     if (controllerInterface.projectExists("Inbox")) {
-      alert("inbox exists");
       const inboxPrj = controllerInterface.getProject("Inbox");
       showProject(inboxPrj);
     } else {
@@ -475,6 +479,7 @@ const domService = (() => {
   const initializeUi = () => {
     startTaskEvents();
     loadProjects();
+      showInboxTasks();
   };
 
   return {

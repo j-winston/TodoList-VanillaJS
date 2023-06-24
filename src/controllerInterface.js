@@ -65,9 +65,12 @@ const controllerInterface = (() => {
     let task = newTaskObj(formDataObj);
 
     projectController.saveTask(task);
+
+      return task; 
   };
+
   const delProject = (name) => {
-    if (projectController.remove(name)) {
+    if (projectController.removeProject(name)) {
       return true;
     }
     return false;
@@ -89,18 +92,18 @@ const controllerInterface = (() => {
   //  return projectController.newEmptyProject(name);
   //};
 
-  //const delTask = (id, projName) => {
-  //  projectController.removeTask(id, projName);
-  //};
+  const delTask = (task) => {
+    projectController.removeTask(task);
+  };
 
-  //const loadTask = (taskId, projName) => {
-  //  const proj = storage.loadProject(projName);
-  //  for (const task of proj.tasks) {
-  //    if (task.id === taskId) {
-  //      return task;
-  //    }
-  //  }
-  //};
+  const loadTask = (taskId, projName) => {
+    const proj = storage.loadProject(projName);
+    for (const task of proj.tasks) {
+      if (task.id === taskId) {
+        return task;
+      }
+    }
+  };
 
   //const saveTask = (task) => {
   //  const proj = storage.loadProject(task.projName);
@@ -163,6 +166,7 @@ const controllerInterface = (() => {
     delProject,
     projectExists,
     addTaskToProject,
+    delTask,
   };
 })();
 
