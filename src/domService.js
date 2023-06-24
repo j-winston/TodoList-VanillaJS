@@ -429,7 +429,6 @@ const domService = (() => {
 
       const task = controllerInterface.addTaskToProject(formDataObj);
 
-      clearTaskViewer();
       showTask(task);
       removeElement(form);
     });
