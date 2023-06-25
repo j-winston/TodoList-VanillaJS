@@ -81,6 +81,30 @@ const domService = (() => {
     editTaskForm.elements["description"].value = descriptionEl.textContent;
     editTaskForm.elements["dueDate"].value = dueDateEl.textContent;
 
+    //const dueDateBtn = editTaskForm.querySelector(".edit-date-container");
+    //dueDateBtn.addEventListener("click", () => {
+    //  const datePicker = document.getElementById("duedate");
+    //  datePicker.addEventListener("change", () => {
+    //    const date = parseDate(datePicker.value);
+
+    //      const txt = document.querySelector('.edit-date-container input');
+
+    //      txt.setAttribute('placeholder', date); 
+
+    //      hideElement(txt);
+    //      const ddText = document.createElement('p');
+    //      ddText.textContent = date;
+    //      ddText.classList.add('edit-date-placeholder-text')
+    //      document.querySelector('.edit-date-container').appendChild(ddText)
+
+    //      
+
+    //      editTaskForm.elements['dueDate'].value = '2.2.';
+    //  });
+    //  datePicker.showPicker();
+
+    //});
+
     const cancelBtn = editTaskForm.querySelector(".cancel-btn");
     cancelBtn.addEventListener("click", () => {
       removeElement(editTaskForm);

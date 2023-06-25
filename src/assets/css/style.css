@@ -104,9 +104,6 @@ body {
   margin-top: 1.5rem;
 }
 
-.add-task-btn {
-  color: red;
-}
 
 input[type="text"] {
   margin: 0px;
@@ -208,8 +205,29 @@ input[type="text"] {
   gap: 4px;
 }
 
-.confirm-task-btn,
-.cancel-task-btn {
+.edit-form-btns button{
+  border: 1px solid transparent;
+  border-radius: 6px;
+
+  color: white;
+  font-weight: bold;
+
+  height: 1.8rem;
+  width: 6rem;
+
+}
+
+.edit-form-btns button.cancel-btn{
+    background-color: #333333; 
+    color: white;
+    
+}
+
+.edit-form-btns button.save-btn{
+    background-color: darkred;
+    color: white;
+}
+.confirm-task-btn {
   background-color: darkred;
 
   border: 1px solid transparent;
@@ -221,6 +239,9 @@ input[type="text"] {
   height: 1.8rem;
   width: 6rem;
 }
+
+
+
 
 /* Task container */
 .task-container {
@@ -298,7 +319,9 @@ input[type="checkbox"] {
   border: 1px solid gray;
   border-radius: 5px;
 
-  padding: 20px 10px;
+  padding: 2% 3%;
+
+
 }
 
 .edit-form-inputs {
@@ -308,19 +331,18 @@ input[type="checkbox"] {
 }
 
 .edit-form-inputs .title {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   padding-bottom: 4%;
 }
 
 .edit-form-inputs .description {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: normal;
 
-  padding-bottom: 2%;
 }
 
 .edit-form-inputs .edit-date-picker {
-  font-size: 1.1rem;
+  font-size: .9rem;
   font-weight: normal;
 
   cursor: pointer;
@@ -337,10 +359,15 @@ input[type="checkbox"] {
 }
 
 .edit-form-inputs input {
+
   background: none;
   border: none;
   outline: none;
 
   color: gray;
   font-weight: bold;
+}
+
+.edit-date-placeholder-text {
+    padding: 0px;
 }
