@@ -54,10 +54,12 @@ const domService = (() => {
   //
   //
   const showTaskEditMenu = (taskContainer, task) => {
-      hideElement(document.querySelector('.add-task-btn'))
-      
-      const tskContainer = document.querySelector('[data-id-task-id= '+CSS.escape(task.id)+']')
-      
+    hideElement(document.querySelector(".add-task-btn"));
+
+    const tskContainer = document.querySelector(
+      "[data-id-task-id= " + CSS.escape(task.id) + "]"
+    );
+
     const titleEl = taskContainer.querySelector(".task-title");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
     const descriptionEl = taskContainer.querySelector(".task-description");
@@ -68,12 +70,11 @@ const domService = (() => {
     taskContainer.appendChild(formClone);
     const editTaskForm = document.querySelector(".edit-task-form");
 
-      while(tskContainer.hasChildNodes()){
-          tskContainer.removeChild(tskContainer.firstChild)
-      }
+    while (tskContainer.hasChildNodes()) {
+      tskContainer.removeChild(tskContainer.firstChild);
+    }
 
-      taskContainer.appendChild(editTaskForm);
-
+    taskContainer.appendChild(editTaskForm);
 
     // Populate the form inputs initially with current values
     editTaskForm.elements["name"].value = titleEl.textContent;
@@ -243,10 +244,9 @@ const domService = (() => {
     });
 
     const taskInfoContainer = document.createElement("div");
-      taskInfoContainer.classList.add('task-info-container')
+    taskInfoContainer.classList.add("task-info-container");
     taskBtnContainer.append(deleteBtnEl, editBtnEL);
     taskInfoContainer.append(nameEl, descriptionEl, dueDateEl);
-
 
     newTaskContainer.append(
       taskCompleteBtn,

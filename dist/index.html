@@ -81,14 +81,12 @@
 
                   <div class="due-date-btn">
                     <p class="due-date-btn-text">Due date</p>
-                    <div class="due-date-picker-container">
-                      <input
-                        type="date"
-                        id="duedate"
-                        name="dueDate"
-                        class="date-picker"
-                      />
-                    </div>
+                    <input
+                      type="date"
+                      id="duedate"
+                      name="dueDate"
+                      class="date-picker"
+                    />
                   </div>
                 </div>
                 <div class="new-task-btn-container">
@@ -103,34 +101,40 @@
           <h1 class="project-viewer-title">Inbox</h1>
           <template id="editTaskTemplate">
             <form action="#" class="edit-task-form" method="get">
-              <div class="inputs">
-                <input
-                  type="text"
-                  placeholder="title"
-                  required="required"
-                  class="title"
-                  id="title"
-                  name="name"
-                />
-                <input
-                  type="text"
-                  placeholder="description"
-                  required="required"
-                  id="description"
-                  class="description"
-                  name="description"
-                />
-                <input
-                  type="date"
-                  name="dueDate"
-                  id="duedate"
-                  class="edit-date-picker"
-                />
+              <div class="edit-form-container">
+                <div class="inputs edit-form-inputs">
+                  <input
+                    type="text"
+                    placeholder="title"
+                    required="required"
+                    class="title"
+                    id="title"
+                    name="name"
+                  />
+                  <input
+                    type="text"
+                    placeholder="description"
+                    required="required"
+                    id="description"
+                    class="description"
+                    name="description"
+                  />
 
-                <input type="hidden" name="projectName" />
+                  <div class="edit-date-container">
+                    <input
+                      type="date"
+                      name="dueDate"
+                      id="duedate"
+                      class="edit-date-picker"
+                    />
+                  </div>
+                  <input type="hidden" name="projectName" />
+                </div>
 
-                <button class="cancel-btn">Cancel</button>
-                <button class="save-btn" type="submit">Save</button>
+                <div class="edit-form-btns">
+                  <button class="cancel-btn">Cancel</button>
+                  <button class="save-btn" type="submit">Save</button>
+                </div>
               </div>
             </form>
           </template>

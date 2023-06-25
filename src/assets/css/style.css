@@ -128,8 +128,7 @@ input[type="text"] {
   padding: 6px;
 }
 
-.new-task-form input,
-.edit-task-form {
+.new-task-form input {
   background-color: transparent;
 
   font-size: 1.2rem;
@@ -291,3 +290,57 @@ input[type="checkbox"] {
 }
 
 /* 'Edit task' styling */
+
+.edit-form-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+
+  border: 1px solid gray;
+  border-radius: 5px;
+
+  padding: 20px 10px;
+}
+
+.edit-form-inputs {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.edit-form-inputs .title {
+  font-size: 1.5rem;
+  padding-bottom: 4%;
+}
+
+.edit-form-inputs .description {
+  font-size: 1.2rem;
+  font-weight: normal;
+
+  padding-bottom: 2%;
+}
+
+.edit-form-inputs .edit-date-picker {
+  font-size: 1.1rem;
+  font-weight: normal;
+
+  cursor: pointer;
+}
+
+.edit-form-btns {
+  display: flex;
+  height: 100%;
+
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  gap: 3%;
+}
+
+.edit-form-inputs input {
+  background: none;
+  border: none;
+  outline: none;
+
+  color: gray;
+  font-weight: bold;
+}
