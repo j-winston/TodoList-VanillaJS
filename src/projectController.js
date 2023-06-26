@@ -93,11 +93,15 @@ const projectController = (() => {
   };
 
   const createNewProject = (name) => {
-    const project = Project(name);
+    if (storage.loadProject(name)) {
+      return false;
+    } else {
+      const project = Project(name);
 
-    store(project);
+      store(project);
 
-    return project;
+      return project;
+    }
   };
 
   return {

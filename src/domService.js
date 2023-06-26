@@ -5,41 +5,23 @@ import projectController from "./projectController";
 import storage from "./storage";
 
 const domService = (() => {
-    const hideElement = (el) => {
-        el.style.visibility = 'hidden';
-    }
-    
-    const showElement = (el) => {
-        el.style.visibility = 'visible'; 
-    }
+  const hideElement = (el) => {
+    el.style.visibility = "hidden";
+  };
 
-    const addProjBtn = (() => {
-        const el = document.querySelector('.add-project-btn');
+  const showElement = (el) => {
+    el.style.visibility = "visible";
+  };
 
-        const hide = () => {
-            hideElement(el); 
-        }
-        
-        const show = () => {
-            showElement(el); 
-        }
-
-        return {
-            hide, 
-            show
-        }
-
-    })(); 
-    
-  const addTaskBtn = (() => {
-    const el = document.querySelector(".add-task-btn");
+  const addProjBtn = (() => {
+    const el = document.querySelector(".add-project-btn");
 
     const hide = () => {
       hideElement(el);
     };
 
     const show = () => {
-        showElement(el);
+      showElement(el);
     };
 
     return {
@@ -48,6 +30,22 @@ const domService = (() => {
     };
   })();
 
+  const addTaskBtn = (() => {
+    const el = document.querySelector(".add-task-btn");
+
+    const hide = () => {
+      hideElement(el);
+    };
+
+    const show = () => {
+      showElement(el);
+    };
+
+    return {
+      hide,
+      show,
+    };
+  })();
 
   window.onload = () => {
     pubSub.publish("pageLoaded");
@@ -141,7 +139,6 @@ const domService = (() => {
       removeElement(editTaskForm);
 
       addTaskBtn.show();
-
     });
 
     const saveBtn = editTaskForm.querySelector(".save-btn");
@@ -316,7 +313,6 @@ const domService = (() => {
     return newTaskContainer;
   };
 
-
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
     const taskEl = _createNewTaskNode(task);
@@ -434,9 +430,9 @@ const domService = (() => {
 
     const deleteBtn = document.createElement("div");
     deleteBtn.className = "project-delete-btn";
-      const deleteIcon = document.createElement('p')
-      deleteIcon.textContent = 'X'
-      deleteBtn.appendChild(deleteIcon);
+    const deleteIcon = document.createElement("p");
+    deleteIcon.textContent = "X";
+    deleteBtn.appendChild(deleteIcon);
     deleteBtn.addEventListener("click", () => {
       if (removeProject(project.name)) {
         removeElement(projectContainerElement);
@@ -515,7 +511,7 @@ const domService = (() => {
   };
 
   const showAddProjectDialog = () => {
-      addProjBtn.hide();
+    addProjBtn.hide();
 
     const newProjectForm = createForm("new-project-template");
 
@@ -528,21 +524,28 @@ const domService = (() => {
         newProjectForm.elements["name"].value
       );
 
-        
-      addProjectToNavBar(proj);
-      showAllTasks(proj);
-    addProjBtn.show();
-        
+      if (proj) {
+        addProjectToNavBar(proj);
+        showAllTasks(proj);
+        addProjBtn.show();
+      } else {
+        showProjNameError();
+        addProjBtn.show();
+      }
+
       newProjectForm.remove();
     });
 
     const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
     cancelNewProjectBtn.addEventListener("click", () => {
       removeElement(newProjectForm);
-        addProjBtn.show(); 
+      addProjBtn.show();
     });
   };
 
+  const showProjNameError = () => {
+    console.log("Error: project name already exists");
+  };
   const showInboxTasks = () => {
     if (controllerInterface.projectExists("Inbox")) {
       const inboxPrj = controllerInterface.getProject("Inbox");

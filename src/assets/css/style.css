@@ -36,6 +36,10 @@ body {
   background-color: #262626;
 }
 
+button {
+  cursor: pointer;
+}
+
 .mytodo-app {
   display: flex;
   flex-direction: column;
@@ -45,7 +49,7 @@ body {
 .header {
   display: flex;
   height: 5%;
-  background-color: #303030;
+  background-color: #323232;
 }
 
 .header .icon-container {
@@ -63,9 +67,17 @@ body {
   height: 100%;
 }
 
+.inbox-title {
+  font-size: 1.4rem;
+  margin-bottom: 20%;
+
+  cursor: pointer;
+}
+
 .left-nav {
-  background-color: #575757;
-  min-width: 30%;
+  background-color: #454545;
+  width: 30%;
+  max-width: 40%;
   padding: 20px;
 
   color: white;
@@ -80,28 +92,19 @@ body {
   display: flex;
   flex-direction: column;
 
-  margin: 5% 0 5%; 
-
-
+  margin: 5% 0 5%;
 }
-
-
-
 
 .project-list-container {
   display: flex;
   flex-direction: column;
-
-
 }
 
 /* Main content window */
 
-
 .project .project-delete-btn {
-    display: flex;
-    justify-content: flex-end;
-
+  display: flex;
+  justify-content: flex-end;
 }
 
 .project-viewer {
@@ -110,7 +113,6 @@ body {
 
   width: min(700px, 80%);
   margin-left: 4%;
-
 }
 
 .project-viewer-title {
@@ -125,62 +127,47 @@ input[type="text"] {
   padding: 0px;
 }
 
-
-
-
-
-
 .project {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 
-    cursor: pointer;
-    border-radius: 2px;
-
-
+  cursor: pointer;
+  border-radius: 2px;
 }
 
 .project:nth-child(1) {
-    display: none;
+  display: none;
 }
-
 
 .project-title {
-    padding: 2%;
-
+  padding: 2%;
 }
 
-
-
 .project:hover {
-    background-color: darkgrey;
+  background-color: darkgrey;
 }
 
 .project:hover .project-delete-btn {
-    visibility: visible;
+  visibility: visible;
 }
 
 .project-delete-btn {
+  color: white;
 
+  font-weight: bold;
+  visibility: hidden;
 
-    color: white;
-
-    font-weight: bold;
-    visibility: hidden;
-
-    padding: 2%;
+  padding: 2%;
 }
 
 .add-project-btn {
-    border-top: 1px solid gray;
-    cursor: pointer;
-
+  border-top: 1px solid gray;
+  cursor: pointer;
 }
 
 .add-project-btn p {
-    margin-top: 5%;
-    
+  margin-top: 5%;
 }
 /* 'Add task styling' */
 
@@ -198,11 +185,10 @@ input[type="text"] {
 }
 
 .form-inputs input {
-    color: white;
+  color: white;
 }
 
-.new-task-form input 
-{
+.new-task-form input {
   background-color: transparent;
 
   font-size: 1.2rem;
@@ -283,7 +269,9 @@ input[type="text"] {
 }
 
 .edit-form-btns button,
-.new-project-form button{
+.new-project-form button,
+.save-task-btn,
+.cancel-task-btn {
   border: 1px solid transparent;
   border-radius: 6px;
 
@@ -445,7 +433,7 @@ input[type="checkbox"]:hover {
   gap: 3%;
 }
 
-.edit-form-inputs  input {
+.edit-form-inputs input {
   background: none;
   border: none;
   outline: none;
@@ -459,53 +447,56 @@ input[type="checkbox"]:hover {
 }
 
 .new-project-form {
-    border-radius: 4px;
+  border-radius: 4px;
 
-    padding: 5%;
-    margin-top: 3%;
+  padding: 5%;
+  margin-top: 3%;
 }
 
 .new-project-form .form-confirm {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
 
-    align-items: center;
-    
-    height: 100%;
-    gap: 4%;
+  align-items: center;
 
+  height: 100%;
+  gap: 4%;
 }
 
-.new-project-form input[type='text'] {
-    border: none;
-    outline: none; 
+.new-project-form input[type="text"] {
+  border: none;
+  outline: none;
 
-    caret-color: white;
+  caret-color: white;
 
-    background-color: transparent;
-
+  background-color: transparent;
 }
-
-
 
 .new-project-form .confirm-project-btn {
-    background-color:darkred;
+  background-color: darkred;
 
-    width: 30%;
+  width: 30%;
 }
 
 .new-project-form .cancel-project-btn {
-    background-color: gray;
-    width: 30%;
+  background-color: gray;
+  width: 30%;
 }
 
-
 .add-project-btn {
-    cursor: pointer;
-    font-weight: 600;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .add-project-btn:hover {
-    color:darkgrey 
+  color: darkgrey;
+}
+
+.cancel-task-btn {
+  background-color: darkgrey;
+}
+
+.save-task-btn {
+  background-color: darkred;
 }

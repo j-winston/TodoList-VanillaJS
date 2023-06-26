@@ -1,25 +1,10 @@
 //Module: controllerInterface.js
 //Role: Bridge
-//Responsibilities: Subscribe to events pubblished from the DOM and pass on to appropriate controller.
-//
-import pubSub from "./pubsub";
 import uid from "./uid";
 import storage from "./storage";
 import projectController from "./projectController";
-import taskController from "./taskController";
 
 const controllerInterface = (() => {
-  //const findProject = (name) => {
-  //  const project = storage.loadProject(`${name}`);
-
-  //  return project;
-  //};
-
-  //const getAllTasks = () => {
-  //  pubSub.publish("tasksRetrieved", tasks);
-  //};
-
-  //// this should retrieve the entire project
 
   const newTaskObj = (formDataObj) => {
     let taskData = {};
@@ -80,21 +65,31 @@ const controllerInterface = (() => {
     return false;
   };
 
-  const addNewProject = (projName) => {
-    const project = projectController.createNewProject(projName);
-
-    let newProject = {
-      name: project.name,
-      tasks: project.tasks,
-      id: project.id,
-    };
-
-    return newProject;
+  const errorCheck = (projName) => {
+    if (projName.length <= 0) {
+      return true;
+    }
   };
 
-  //const newEmptyProject = (name) => {
-  //  return projectController.newEmptyProject(name);
-  //};
+  const addNewProject = (projName) => {
+    if (errorCheck(projName)) {
+      return false;
+    }
+
+    const project = projectController.createNewProject(projName);
+
+    if (!project) {
+      return false;
+    } else {
+      let newProject = {
+        name: project.name,
+        tasks: project.tasks,
+        id: project.id,
+      };
+
+      return newProject;
+    }
+  };
 
   const delTask = (task) => {
     projectController.removeTask(task);
@@ -109,42 +104,6 @@ const controllerInterface = (() => {
     }
   };
 
-  //const saveTask = (task) => {
-  //  const proj = storage.loadProject(task.projName);
-  //  proj.tasks.push(task);
-
-  //  storage.saveProject(proj);
-  //};
-
-  //const updateTask = (formValues) => {
-  //  taskController.update(formValues);
-  //};
-
-  //const getAllSavedProjects = () => {
-  //  const projArr = projectController.loadAllProjects();
-  //  pubSub.publish("allSavedProjectsRetrieved", projArr);
-  //};
-
-  //// Subcriptions
-
-  ////pubSub.subscribe("pageLoaded", getAllSavedProjects);
-  ////pubSub.subscribe("inboxClicked", getAllTasks);
-
-  ////pubSub.subscribe("addProjectFormSubmitted", addNewProject);
-  ////pubSub.subscribe("projectClicked", getProject);
-  ////pubSub.subscribe("projectRemoved", removeProject);
-
-  ////pubSub.subscribe("taskSubmitted", addTaskToProject);
-  ////pubSub.subscribe("taskEditSubmitted", updateTask);
-  ////pubSub.subscribe("taskDeleted", delTask);
-
-  //return {
-  //  addTaskToProject,
-  //  getProject,
-  //  newEmptyProject,
-  //  delTask,
-  //  addNewProject,
-  //};
 
   const getUpdatedTask = (formDatObj, oldTask) => {
     let newTask = newTaskObj(formDatObj);
