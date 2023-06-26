@@ -5,6 +5,23 @@ import projectController from "./projectController";
 import storage from "./storage";
 
 const domService = (() => {
+  const addTaskBtn = (() => {
+    const el = document.querySelector(".add-task-btn");
+
+    const hide = () => {
+      el.style.visibility = "hidden";
+    };
+
+    const show = () => {
+      el.style.visibility = "visible";
+    };
+
+    return {
+      hide,
+      show,
+    };
+  })();
+
   const hideElement = (el) => {
     el.style.visibility = "hidden";
   };
@@ -53,13 +70,36 @@ const domService = (() => {
   //  };
   //
   //
-  const showTaskEditMenu = (taskContainer, task) => {
-    hideElement(document.querySelector(".add-task-btn"));
-
+  const selTaskContainerEl = (id) => {
     const tskContainer = document.querySelector(
-      "[data-id-task-id= " + CSS.escape(task.id) + "]"
+      "[data-id-task-id= " + CSS.escape(id) + "]"
     );
 
+    return tskContainer;
+  };
+
+  const hideTaskCard = (taskId) => {
+    const container = selTaskContainerEl(taskId);
+
+    container.querySelector(".task-info-container").style.display = "none";
+    container.querySelector(".task-btn-container").style.display = "none";
+    container.querySelector(".task-complete-btn").style.display = "none";
+  };
+
+  const showTaskCard = (taskId) => {
+    const container = selTaskContainerEl(taskId);
+
+    container.querySelector(".task-info-container").style.display = "";
+    container.querySelector(".task-btn-container").style.display = "";
+    container.querySelector(".task-complete-btn").style.display = "";
+  };
+
+  const showTaskEditMenu = (task) => {
+    addTaskBtn.hide();
+
+    hideTaskCard(task.id);
+
+    const taskContainer = selTaskContainerEl(task.id);
     const titleEl = taskContainer.querySelector(".task-title");
     const dueDateEl = taskContainer.querySelector(".task-due-date");
     const descriptionEl = taskContainer.querySelector(".task-description");
@@ -70,10 +110,6 @@ const domService = (() => {
     taskContainer.appendChild(formClone);
     const editTaskForm = document.querySelector(".edit-task-form");
 
-    while (tskContainer.hasChildNodes()) {
-      tskContainer.removeChild(tskContainer.firstChild);
-    }
-
     taskContainer.appendChild(editTaskForm);
 
     // Populate the form inputs initially with current values
@@ -81,33 +117,14 @@ const domService = (() => {
     editTaskForm.elements["description"].value = descriptionEl.textContent;
     editTaskForm.elements["dueDate"].value = dueDateEl.textContent;
 
-    //const dueDateBtn = editTaskForm.querySelector(".edit-date-container");
-    //dueDateBtn.addEventListener("click", () => {
-    //  const datePicker = document.getElementById("duedate");
-    //  datePicker.addEventListener("change", () => {
-    //    const date = parseDate(datePicker.value);
-
-    //      const txt = document.querySelector('.edit-date-container input');
-
-    //      txt.setAttribute('placeholder', date); 
-
-    //      hideElement(txt);
-    //      const ddText = document.createElement('p');
-    //      ddText.textContent = date;
-    //      ddText.classList.add('edit-date-placeholder-text')
-    //      document.querySelector('.edit-date-container').appendChild(ddText)
-
-    //      
-
-    //      editTaskForm.elements['dueDate'].value = '2.2.';
-    //  });
-    //  datePicker.showPicker();
-
-    //});
-
     const cancelBtn = editTaskForm.querySelector(".cancel-btn");
     cancelBtn.addEventListener("click", () => {
+      showTaskCard(task.id);
+
       removeElement(editTaskForm);
+
+      addTaskBtn.show();
+
     });
 
     const saveBtn = editTaskForm.querySelector(".save-btn");
@@ -245,7 +262,7 @@ const domService = (() => {
     const dueDateEl = document.createElement("p");
     dueDateEl.classList.add("task-due-date");
     dueDateEl.textContent = task.dueDate;
-      dueDateEl.style.display ='none'
+    dueDateEl.style.display = "none";
 
     const taskBtnContainer = document.createElement("div");
     taskBtnContainer.classList.add("task-btn-container");
@@ -265,7 +282,7 @@ const domService = (() => {
     editBtnEL.textContent = "Edit";
 
     editBtnEL.addEventListener("click", () => {
-      showTaskEditMenu(newTaskContainer, task);
+      showTaskEditMenu(task);
     });
 
     const taskInfoContainer = document.createElement("div");
@@ -281,13 +298,14 @@ const domService = (() => {
 
     return newTaskContainer;
   };
+
+
   const showTask = (task) => {
     const taskViewer = document.querySelector(".project-tasks");
     const taskEl = _createNewTaskNode(task);
 
     taskViewer.appendChild(taskEl);
-
-    showElement(".add-task-btn");
+    addTaskBtn.show();
   };
 
   const showAllTasks = (tasks) => {
@@ -439,7 +457,6 @@ const domService = (() => {
     const form = createForm("new-task-template");
     appendFormToViewer(form, ".project-viewer");
 
-    // Event handlers
     const dueDateBtn = form.querySelector(".due-date-btn-text");
     dueDateBtn.addEventListener("click", () => {
       const datePicker = document.getElementById("duedate");
@@ -454,6 +471,8 @@ const domService = (() => {
 
     const cancelBtn = document.querySelector(".cancel-task-btn");
     cancelBtn.addEventListener("click", () => {
+      addTaskBtn.show();
+
       form.remove();
     });
 
@@ -472,7 +491,7 @@ const domService = (() => {
   };
 
   const addNewTask = () => {
-    hideElement(document.querySelector(".add-task-btn"));
+    addTaskBtn.hide();
     showAddTask();
   };
 

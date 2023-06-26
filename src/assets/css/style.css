@@ -104,7 +104,6 @@ body {
   margin-top: 1.5rem;
 }
 
-
 input[type="text"] {
   margin: 0px;
   padding: 0px;
@@ -187,7 +186,6 @@ input[type="text"] {
   color: gray;
   font-weight: 700;
   text-align: left;
-
 }
 
 .due-date-picker-container {
@@ -206,27 +204,25 @@ input[type="text"] {
   gap: 4px;
 }
 
-.edit-form-btns button{
+.edit-form-btns button {
   border: 1px solid transparent;
   border-radius: 6px;
 
   color: white;
   font-weight: bold;
 
- height: 1.8rem;
+  height: 1.8rem;
   width: 6rem;
-
 }
 
-.edit-form-btns button.cancel-btn{
-    background-color: #333333; 
-    color: white;
-    
+.edit-form-btns button.cancel-btn {
+  background-color: #333333;
+  color: white;
 }
 
-.edit-form-btns button.save-btn{
-    background-color: darkred;
-    color: white;
+.edit-form-btns button.save-btn {
+  background-color: darkred;
+  color: white;
 }
 .confirm-task-btn {
   background-color: darkred;
@@ -241,48 +237,35 @@ input[type="text"] {
   width: 6rem;
 }
 
-
-
-
 /* Task container */
 .task-container {
-  display: flex; 
+  display: flex;
 
   margin-top: 20px;
   padding: 2% 0%;
   gap: 10px;
 }
 
-
 .task-info-container {
-    flex: 1 0 50%;
+  flex: 1 0 50%;
 
-    padding: 0px;
-    margin: -4px;
+  padding: 0px;
+  margin: -4px;
 
-    cursor: pointer;
-
-    
-
+  cursor: pointer;
 }
-
-
 
 .task-title {
   color: white;
   font-weight: 400;
   font-size: 1.2rem;
-
-
 }
 .task-description {
-    color: gray;
+  color: gray;
 }
 
-
-
 input[type="checkbox"] {
-    flex: 1 0 auto; 
+  flex: 1 0 auto;
   appearance: none;
 
   margin: 0px;
@@ -296,31 +279,24 @@ input[type="checkbox"] {
   border-radius: 2rem;
 }
 
-
 input[type="checkbox"]:hover {
-
-    background-color: darkgrey;
+  background-color: darkgrey;
 }
-
 
 .add-task-btn {
-    color: gray;
+  color: gray;
 
-    margin-top: 1%;
-    font-size: 1.1em;
-
-
+  margin-top: 1%;
+  font-size: 1.1em;
 }
 
-
 .task-btn-container {
-    visibility: hidden;
+  visibility: hidden;
   flex-basis: 100%;
 
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-
 
   margin-right: 20px;
   gap: 20px;
@@ -331,10 +307,9 @@ input[type="checkbox"]:hover {
   cursor: pointer;
 }
 
-.task-container:hover  .task-btn-container {
+.task-container:hover .task-btn-container {
   visibility: visible;
 }
-
 
 .task-btn-container div:hover {
   color: darkgray;
@@ -356,8 +331,6 @@ input[type="checkbox"]:hover {
   border-radius: 5px;
 
   padding: 2% 3%;
-
-
 }
 
 .edit-form-inputs {
@@ -374,11 +347,10 @@ input[type="checkbox"]:hover {
 .edit-form-inputs .description {
   font-size: 1rem;
   font-weight: normal;
-
 }
 
 .edit-form-inputs .edit-date-picker {
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: normal;
 
   cursor: pointer;
@@ -395,7 +367,6 @@ input[type="checkbox"]:hover {
 }
 
 .edit-form-inputs input {
-
   background: none;
   border: none;
   outline: none;
@@ -405,7 +376,5 @@ input[type="checkbox"]:hover {
 }
 
 .edit-date-placeholder-text {
-    padding: 0px;
+  padding: 0px;
 }
-
-
