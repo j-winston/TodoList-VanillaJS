@@ -245,6 +245,7 @@ const domService = (() => {
     const dueDateEl = document.createElement("p");
     dueDateEl.classList.add("task-due-date");
     dueDateEl.textContent = task.dueDate;
+      dueDateEl.style.display ='none'
 
     const taskBtnContainer = document.createElement("div");
     taskBtnContainer.classList.add("task-btn-container");
