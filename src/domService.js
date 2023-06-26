@@ -5,15 +5,41 @@ import projectController from "./projectController";
 import storage from "./storage";
 
 const domService = (() => {
+    const hideElement = (el) => {
+        el.style.visibility = 'hidden';
+    }
+    
+    const showElement = (el) => {
+        el.style.visibility = 'visible'; 
+    }
+
+    const addProjBtn = (() => {
+        const el = document.querySelector('.add-project-btn');
+
+        const hide = () => {
+            hideElement(el); 
+        }
+        
+        const show = () => {
+            showElement(el); 
+        }
+
+        return {
+            hide, 
+            show
+        }
+
+    })(); 
+    
   const addTaskBtn = (() => {
     const el = document.querySelector(".add-task-btn");
 
     const hide = () => {
-      el.style.visibility = "hidden";
+      hideElement(el);
     };
 
     const show = () => {
-      el.style.visibility = "visible";
+        showElement(el);
     };
 
     return {
@@ -22,15 +48,6 @@ const domService = (() => {
     };
   })();
 
-  const hideElement = (el) => {
-    el.style.visibility = "hidden";
-  };
-
-  const showElement = (hiddenElement) => {
-    const element = document.querySelector(hiddenElement);
-
-    element.style.visibility = "visible";
-  };
 
   window.onload = () => {
     pubSub.publish("pageLoaded");
@@ -496,6 +513,8 @@ const domService = (() => {
   };
 
   const showAddProjectDialog = () => {
+      addProjBtn.hide();
+
     const newProjectForm = createForm("new-project-template");
 
     const projectContainer = document.querySelector(".project-container");
@@ -515,6 +534,7 @@ const domService = (() => {
     const cancelNewProjectBtn = document.querySelector(".cancel-project-btn");
     cancelNewProjectBtn.addEventListener("click", () => {
       removeElement(newProjectForm);
+        addProjBtn.show(); 
     });
   };
 
