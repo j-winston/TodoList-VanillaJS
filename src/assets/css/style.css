@@ -80,21 +80,37 @@ body {
   display: flex;
   flex-direction: column;
 
-  margin-top: 20px;
+  margin: 5% 0 5%; 
+
+
 }
+
+
+
 
 .project-list-container {
   display: flex;
   flex-direction: column;
+
+
 }
 
 /* Main content window */
 
+
+.project .project-delete-btn {
+    display: flex;
+    justify-content: flex-end;
+
+}
+
 .project-viewer {
   display: flex;
   flex-direction: column;
+
   width: min(700px, 80%);
   margin-left: 4%;
+
 }
 
 .project-viewer-title {
@@ -109,6 +125,63 @@ input[type="text"] {
   padding: 0px;
 }
 
+
+
+
+
+
+.project {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    cursor: pointer;
+    border-radius: 2px;
+
+
+}
+
+.project:nth-child(1) {
+    display: none;
+}
+
+
+.project-title {
+    padding: 2%;
+
+}
+
+
+
+.project:hover {
+    background-color: darkgrey;
+}
+
+.project:hover .project-delete-btn {
+    visibility: visible;
+}
+
+.project-delete-btn {
+
+
+    color: white;
+
+    font-weight: bold;
+    visibility: hidden;
+
+    padding: 2%;
+}
+
+.add-project-btn {
+    border-top: 1px solid gray;
+    cursor: pointer;
+
+}
+
+.add-project-btn p {
+    margin-top: 5%;
+    
+}
 /* 'Add task styling' */
 
 .form-inputs {
@@ -122,6 +195,10 @@ input[type="text"] {
   border-radius: 5px;
 
   padding: 6px;
+}
+
+.form-inputs input {
+    color: white;
 }
 
 .new-task-form input 

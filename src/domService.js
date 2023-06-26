@@ -434,7 +434,9 @@ const domService = (() => {
 
     const deleteBtn = document.createElement("div");
     deleteBtn.className = "project-delete-btn";
-    deleteBtn.textContent = "X";
+      const deleteIcon = document.createElement('p')
+      deleteIcon.textContent = 'X'
+      deleteBtn.appendChild(deleteIcon);
     deleteBtn.addEventListener("click", () => {
       if (removeProject(project.name)) {
         removeElement(projectContainerElement);
@@ -526,8 +528,11 @@ const domService = (() => {
         newProjectForm.elements["name"].value
       );
 
+        
       addProjectToNavBar(proj);
       showAllTasks(proj);
+    addProjBtn.show();
+        
       newProjectForm.remove();
     });
 
