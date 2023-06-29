@@ -34,6 +34,7 @@ picture {
 
 body {
   background-color: #262626;
+  font-family: sans-serif;
 }
 
 button {
@@ -61,29 +62,48 @@ button {
   align-items: center;
 }
 
+.fa-inbox {
+  margin: 0;
+  padding: 0;
+}
+.nav-link-container {
+  display: flex;
+  align-items: center;
+  gap: 4%;
+
+  width: 100%;
+
+  margin-bottom: 10%;
+  padding-left: 4%;
+
+  border-radius: 4px;
+}
+
+.inbox-title {
+  font-size: 1.4rem;
+
+  line-height: 1.5;
+
+  cursor: pointer;
+}
+
 .content-container {
   display: flex;
 
   height: 100%;
 }
 
-.inbox-title {
-  font-size: 1.4rem;
-  margin-bottom: 20%;
-
-  cursor: pointer;
-}
-
 .left-nav {
-  background-color: #454545;
-  width: 30%;
-  max-width: 40%;
-  padding: 20px;
-
-  color: white;
-
   display: flex;
   flex-direction: column;
+
+  background-color: #454545;
+  color: white;
+
+  width: 20%;
+  max-width: 35%;
+
+  padding: 1% 1%;
 }
 
 /* Project sidebar */
@@ -93,6 +113,7 @@ button {
   flex-direction: column;
 
   margin: 5% 0 5%;
+  padding-left: 4%;
 }
 
 .project-list-container {
@@ -144,7 +165,8 @@ input[type="text"] {
   padding: 2%;
 }
 
-.project:hover {
+.project:hover,
+.nav-link-container:hover {
   background-color: darkgrey;
 }
 
@@ -164,8 +186,15 @@ input[type="text"] {
 .add-project-btn {
   border-top: 1px solid gray;
   cursor: pointer;
+
+  padding-left: 4%;
 }
 
+.project-container-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: gray;
+}
 .add-project-btn p {
   margin-top: 5%;
 }

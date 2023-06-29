@@ -5,7 +5,6 @@ import storage from "./storage";
 import projectController from "./projectController";
 
 const controllerInterface = (() => {
-
   const newTaskObj = (formDataObj) => {
     let taskData = {};
     const entries = formDataObj.entries();
@@ -103,7 +102,6 @@ const controllerInterface = (() => {
       }
     }
   };
-
 
   const getUpdatedTask = (formDatObj, oldTask) => {
     let newTask = newTaskObj(formDatObj);
