@@ -33,8 +33,10 @@ picture {
 }
 
 body {
-  background-color: #262626;
+  background-color: #212121;
   font-family: sans-serif;
+
+
 }
 
 button {
@@ -50,7 +52,7 @@ button {
 .header {
   display: flex;
   height: 5%;
-  background-color: #323232;
+  background-color: #2b2b2b;
 }
 
 .header .icon-container {
@@ -62,29 +64,42 @@ button {
   align-items: center;
 }
 
-.fa-inbox {
+.fa-inbox,
+.fa-today {
   margin: 0;
   padding: 0;
-}
-.nav-link-container {
-  display: flex;
-  align-items: center;
-  gap: 4%;
 
+}
+
+
+.default-project-container {
   width: 100%;
 
-  margin-bottom: 10%;
+  margin-bottom: 20%;
   padding-left: 4%;
 
   border-radius: 4px;
 }
 
-.inbox-title {
-  font-size: 1.4rem;
+.default-task-list-container {
+    display: flex;
+    align-items: center;
+    gap: 5%;
+
+    padding-bottom: 4%;
+    
+  font-size: 1.2rem;
 
   line-height: 1.5;
 
   cursor: pointer;
+}
+
+.default-task-list-container:active, 
+.default-task-list-container:focus ,
+    .default-task-list-container:hover {
+    background-color: gray;
+
 }
 
 .content-container {
@@ -97,7 +112,7 @@ button {
   display: flex;
   flex-direction: column;
 
-  background-color: #454545;
+  background-color: #242424;
   color: white;
 
   width: 20%;
@@ -165,9 +180,10 @@ input[type="text"] {
   padding: 2%;
 }
 
-.project:hover,
-.nav-link-container:hover {
+.project:hover
+{ 
   background-color: darkgrey;
+  border-radius: 4px;
 }
 
 .project:hover .project-delete-btn {

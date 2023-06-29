@@ -64,30 +64,39 @@ const controllerInterface = (() => {
     return false;
   };
 
-  const errorCheck = (projName) => {
+  const emptyProjName = (projName) => {
     if (projName.length <= 0) {
       return true;
     }
   };
 
   const addNewProject = (projName) => {
-    if (errorCheck(projName)) {
+    if (emptyProjName(projName)) {
       return false;
     }
 
+      const getNewProjObj = (project) => {
+        return{
+            name: project.name,
+            tasks: project.tasks,
+            id: project.id,
+        };
+
+      }
     const project = projectController.createNewProject(projName);
 
     if (!project) {
       return false;
     } else {
-      let newProject = {
-        name: project.name,
-        tasks: project.tasks,
-        id: project.id,
-      };
+        const newProject = getNewProjObj(project);
+      //let newProject = { name: project.name,
+      //  tasks: project.tasks,
+      //  id: project.id,
 
       return newProject;
-    }
+      };
+
+    
   };
 
   const delTask = (task) => {
@@ -130,6 +139,24 @@ const controllerInterface = (() => {
   const getAllProjects = () => {
     return storage.loadAllProjects();
   };
+
+    const getTasksByDate = (date) => {
+        const allTasks = projectController.getAllTasks(); 
+        const tasksByDate = [];
+
+        for(let task of allTasks) {
+            const dueDate = task.dueDate;
+            if(dueDate === date){
+                tasksByDate.push(task); 
+            }
+
+            
+        }
+
+        return tasksByDate; 
+
+    }
+
   return {
     getAllProjects,
     addNewProject,
@@ -139,6 +166,8 @@ const controllerInterface = (() => {
     addTaskToProject,
     delTask,
     getUpdatedTask,
+      getTasksByDate,
+
   };
 })();
 

@@ -5,6 +5,8 @@ import projectController from "./projectController";
 import storage from "./storage";
 
 const domService = (() => {
+  let defaultProjects = ["Inbox", "Today"];
+
   const hideElement = (el) => {
     el.style.visibility = "hidden";
   };
@@ -47,9 +49,9 @@ const domService = (() => {
     };
   })();
 
-  window.onload = () => {
-    pubSub.publish("pageLoaded");
-  };
+    const delTask = (task) => {
+        controllerInterface.delTask(task); 
+    }
   const removeElement = (el) => {
     el.remove();
   };
@@ -75,13 +77,6 @@ const domService = (() => {
   //    });
   //
   //    return formValues;
-  //  };
-  //
-  //  const projectExists = (projectId) => {
-  //    if (document.querySelector("[data-id=" + CSS.escape(projectId) + "]")) {
-  //      return true;
-  //    }
-  //    return false;
   //  };
   //
   //
@@ -245,13 +240,14 @@ const domService = (() => {
   //    container.querySelector(".task-due-date").textContent = dueDate;
   //  };
   //
-  const getProject = () => {
-    const proj = controllerInterface.getProject(getCurrentProjectName());
+  const getProject = (name) => {
+    const proj = controllerInterface.getProject(name);
     if (proj) {
       return proj;
     }
     return false;
   };
+
   const _createNewTaskNode = (task) => {
     const newTaskContainer = document.createElement("div");
     newTaskContainer.setAttribute("data-id-task-id", task.id);
@@ -263,6 +259,7 @@ const domService = (() => {
 
     taskCompleteBtn.addEventListener("click", () => {
       removeElement(newTaskContainer);
+        delTask(task); 
     });
 
     const nameEl = document.createElement("p");
@@ -446,8 +443,15 @@ const domService = (() => {
     return projectContainerElement;
   };
   //
+  const isDefaultProject = (prjName) => {
+    if (prjName in defaultProjects) {
+      return true;
+    }
+    return false;
+  };
+
   const addProjectToNavBar = (project) => {
-    if (project.name != "Inbox") {
+    if (!isDefaultProject(project.name)) {
       updateTaskViewerTitle(project.name);
 
       const projectEl = createProjectElement(project);
@@ -479,6 +483,7 @@ const domService = (() => {
         const date = parseDate(datePicker.value);
 
         dueDateBtn.textContent = date;
+          alert(date)
       });
 
       datePicker.showPicker();
@@ -510,6 +515,16 @@ const domService = (() => {
     showAddTask();
   };
 
+  const showNewProject = (proj) => {
+    if (proj) {
+      addProjectToNavBar(proj);
+      showAllTasks(proj);
+      addProjBtn.show();
+    } else {
+      showProjNameError();
+      addProjBtn.show();
+    }
+  };
   const showAddProjectDialog = () => {
     addProjBtn.hide();
 
@@ -524,14 +539,8 @@ const domService = (() => {
         newProjectForm.elements["name"].value
       );
 
-      if (proj) {
-        addProjectToNavBar(proj);
-        showAllTasks(proj);
-        addProjBtn.show();
-      } else {
-        showProjNameError();
-        addProjBtn.show();
-      }
+      showNewProject(proj);
+      clearTaskViewer();
 
       newProjectForm.remove();
     });
@@ -546,20 +555,61 @@ const domService = (() => {
   const showProjNameError = () => {
     console.log("Error: project name already exists");
   };
-  const showInboxTasks = () => {
-    if (controllerInterface.projectExists("Inbox")) {
-      const inboxPrj = controllerInterface.getProject("Inbox");
-      showProject(inboxPrj);
-    } else {
-      const newInbox = controllerInterface.addNewProject("Inbox");
-      showProject(newInbox);
+
+  const projectExists = (name) => {
+    if (controllerInterface.projectExists(name)) {
+      return true;
     }
   };
+
+  const createNewProject = (name) => {
+    return controllerInterface.addNewProject(name);
+  };
+
+  const loadDefaultProjects = () => {
+    for (let prjName of defaultProjects) {
+      if (projectExists(prjName)) {
+        const savedProject = getProject(prjName);
+        showProject(savedProject);
+      } else {
+        const newProject = createNewProject(prjName);
+        showProject(newProject);
+      }
+    }
+  };
+
+
+    const getToday = () => {
+
+       const date = new Date();  
+        const day = date.getDate();
+        const month = date.getMonth(); 
+        const year = date.getFullYear(); 
+        const dateStr = `${month}/${day}/${year}` 
+
+        return dateStr; 
+
+    }
+
+    const getTodaysTasks = () => {
+        const today= getToday(); 
+
+        const tasks = controllerInterface.getTasksByDate(today); 
+        
+        return tasks; 
+
+    }
 
   const startTaskEvents = () => {
     const inboxBtn = document.querySelector(".inbox-title");
     inboxBtn.addEventListener("click", () => {
-      showInboxTasks();
+      showProject(getProject("Inbox"));
+    });
+
+    const todayBtn = document.querySelector(".today-title");
+    todayBtn.addEventListener("click", () => {
+        const tasks = getTodaysTasks(); 
+      showProject(getProject("Today"));
     });
 
     const addProjectBtn = document.querySelector(".add-project-btn");
@@ -572,7 +622,10 @@ const domService = (() => {
   const initializeUi = () => {
     startTaskEvents();
     loadProjects();
-    showInboxTasks();
+  };
+
+  window.onload = () => {
+    loadDefaultProjects();
   };
 
   return {

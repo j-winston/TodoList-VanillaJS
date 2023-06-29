@@ -104,12 +104,25 @@ const projectController = (() => {
     }
   };
 
+    const getAllTasks = () => {
+        const projects = storage.loadAllProjects();
+        const taskArr = [];  
+
+        for(let prj of projects){
+            const tasks = prj.tasks;
+            taskArr.push(tasks.filter(t=>t))
+        }
+
+        return taskArr;
+    }
+
   return {
     createNewProject,
     getProject,
     removeTask,
     saveTask,
     removeProject,
+      getAllTasks, 
   };
 })();
 
