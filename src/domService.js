@@ -183,7 +183,7 @@ const domService = (() => {
   //
   const parseDate = (dateVal) => {
     const strDate = dateVal.split("-");
-    const date = strDate[1] + "/" + strDate[2] + "/" + strDate[0];
+    const date = strDate[1] + "-" + strDate[2] + "-" + strDate[0];
 
     return date;
   };
@@ -444,7 +444,7 @@ const domService = (() => {
   };
   //
   const isDefaultProject = (prjName) => {
-    if (prjName in defaultProjects) {
+    if (defaultProjects.includes(prjName)) {
       return true;
     }
     return false;
@@ -481,9 +481,7 @@ const domService = (() => {
       const datePicker = document.getElementById("duedate");
       datePicker.addEventListener("change", () => {
         const date = parseDate(datePicker.value);
-
         dueDateBtn.textContent = date;
-          alert(date)
       });
 
       datePicker.showPicker();
@@ -581,13 +579,17 @@ const domService = (() => {
 
     const getToday = () => {
 
-       const date = new Date();  
-        const day = date.getDate();
-        const month = date.getMonth(); 
-        const year = date.getFullYear(); 
-        const dateStr = `${month}/${day}/${year}` 
+       const today = new Date();  
+        let yyyy = today.getFullYear(); 
+        let mm = today.getMonth() + 1; 
+        let dd = today.getDate();
 
-        return dateStr; 
+        if(dd < 10) dd = '0' + dd;
+        if(mm < 10) mm = '0' + mm; 
+
+        const todayFormatted = yyyy + '-' + mm + '-' + dd; 
+
+        return todayFormatted; 
 
     }
 
@@ -609,7 +611,9 @@ const domService = (() => {
     const todayBtn = document.querySelector(".today-title");
     todayBtn.addEventListener("click", () => {
         const tasks = getTodaysTasks(); 
-      showProject(getProject("Today"));
+        clearTaskViewer();
+        updateTaskViewerTitle('Today')
+        showAllTasks(tasks); 
     });
 
     const addProjectBtn = document.querySelector(".add-project-btn");

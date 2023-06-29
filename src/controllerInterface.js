@@ -147,11 +147,12 @@ const controllerInterface = (() => {
         for(let task of allTasks) {
             const dueDate = task.dueDate;
             if(dueDate === date){
+                alert('found')
                 tasksByDate.push(task); 
             }
 
-            
         }
+
 
         return tasksByDate; 
 

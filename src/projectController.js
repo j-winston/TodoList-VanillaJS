@@ -110,7 +110,10 @@ const projectController = (() => {
 
         for(let prj of projects){
             const tasks = prj.tasks;
-            taskArr.push(tasks.filter(t=>t))
+            for(let tsk of tasks){
+                taskArr.push(tsk); 
+
+            }
         }
 
         return taskArr;
