@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>myTodo</title>
+    <script
+      src="https://kit.fontawesome.com/9e54a7e65f.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
@@ -14,8 +18,16 @@
       </header>
       <div class="content-container">
         <div class="left-nav">
-          <div class="nav-link-container">
-            <h3 class="inbox-title">Inbox</h3>
+          <div class="default-project-container">
+            <div class="default-task-list-container" tabindex ="0">
+              <i class="fa-solid fa-inbox"></i>
+              <h3 class="inbox-title">Inbox</h3>
+            </div>
+            <div class="default-task-list-container">
+              <i class="fa-solid fa-inbox"></i>
+              <h3 class="today-title">Today</h3>
+            </div>
+            <!----Not sure what this refers to..?!-->
             <div class="inbox-nav-link"></div>
           </div>
           <!------Project list-->
