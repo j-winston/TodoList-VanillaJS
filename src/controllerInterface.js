@@ -75,28 +75,25 @@ const controllerInterface = (() => {
       return false;
     }
 
-      const getNewProjObj = (project) => {
-        return{
-            name: project.name,
-            tasks: project.tasks,
-            id: project.id,
-        };
-
-      }
+    const getNewProjObj = (project) => {
+      return {
+        name: project.name,
+        tasks: project.tasks,
+        id: project.id,
+      };
+    };
     const project = projectController.createNewProject(projName);
 
     if (!project) {
       return false;
     } else {
-        const newProject = getNewProjObj(project);
+      const newProject = getNewProjObj(project);
       //let newProject = { name: project.name,
       //  tasks: project.tasks,
       //  id: project.id,
 
       return newProject;
-      };
-
-    
+    }
   };
 
   const delTask = (task) => {
@@ -140,22 +137,19 @@ const controllerInterface = (() => {
     return storage.loadAllProjects();
   };
 
-    const getTasksByDate = (date) => {
-        const allTasks = projectController.getAllTasks(); 
-        const tasksByDate = [];
+  const getTasksByDate = (date) => {
+    const allTasks = projectController.getAllTasks();
+    const tasksByDate = [];
 
-        for(let task of allTasks) {
-            const dueDate = task.dueDate;
-            if(dueDate === date){
-                tasksByDate.push(task); 
-            }
-
-        }
-
-
-        return tasksByDate; 
-
+    for (let task of allTasks) {
+      const dueDate = task.dueDate;
+      if (dueDate === date) {
+        tasksByDate.push(task);
+      }
     }
+
+    return tasksByDate;
+  };
 
   return {
     getAllProjects,
@@ -166,8 +160,7 @@ const controllerInterface = (() => {
     addTaskToProject,
     delTask,
     getUpdatedTask,
-      getTasksByDate,
-
+    getTasksByDate,
   };
 })();
 

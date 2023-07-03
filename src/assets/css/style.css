@@ -35,8 +35,6 @@ picture {
 body {
   background-color: #212121;
   font-family: sans-serif;
-
-
 }
 
 button {
@@ -68,9 +66,7 @@ button {
 .fa-today {
   margin: 0;
   padding: 0;
-
 }
-
 
 .default-project-container {
   width: 100%;
@@ -82,12 +78,13 @@ button {
 }
 
 .default-task-list-container {
-    display: flex;
-    align-items: center;
-    gap: 5%;
+  display: flex;
+  align-items: center;
+  gap: 5%;
 
-    padding-bottom: 4%;
-    
+  padding-bottom: 4%;
+  padding-left: 3%;
+
   font-size: 1.2rem;
 
   line-height: 1.5;
@@ -95,11 +92,11 @@ button {
   cursor: pointer;
 }
 
-.default-task-list-container:active, 
-.default-task-list-container:focus ,
-    .default-task-list-container:hover {
-    background-color: gray;
-
+.default-task-list-container:hover,
+.default-task-list-container:active,
+.default-task-list-container:focus {
+  background-color: gray;
+  border-radius: 4px;
 }
 
 .content-container {
@@ -180,8 +177,7 @@ input[type="text"] {
   padding: 2%;
 }
 
-.project:hover
-{ 
+.project:hover { 
   background-color: darkgrey;
   border-radius: 4px;
 }

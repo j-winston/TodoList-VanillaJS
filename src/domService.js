@@ -49,9 +49,9 @@ const domService = (() => {
     };
   })();
 
-    const delTask = (task) => {
-        controllerInterface.delTask(task); 
-    }
+  const delTask = (task) => {
+    controllerInterface.delTask(task);
+  };
   const removeElement = (el) => {
     el.remove();
   };
@@ -259,7 +259,7 @@ const domService = (() => {
 
     taskCompleteBtn.addEventListener("click", () => {
       removeElement(newTaskContainer);
-        delTask(task); 
+      delTask(task);
     });
 
     const nameEl = document.createElement("p");
@@ -280,7 +280,6 @@ const domService = (() => {
 
     const deleteBtnEl = document.createElement("div");
     deleteBtnEl.classList.add("delete-btn");
-    deleteBtnEl.textContent = "Del";
 
     deleteBtnEl.addEventListener("click", () => {
       removeElement(newTaskContainer);
@@ -424,16 +423,18 @@ const domService = (() => {
 
     projectTitleElement.textContent = project.name;
     projectTitleElement.className = "project-title";
+    projectTitleElement.setAttribute("tabindex", "0");
 
     const deleteBtn = document.createElement("div");
     deleteBtn.className = "project-delete-btn";
-    const deleteIcon = document.createElement("p");
-    deleteIcon.textContent = "X";
+    const deleteIcon = document.createElement("div");
+    deleteIcon.classList.add("fa-regular", "fa-trash-can");
     deleteBtn.appendChild(deleteIcon);
     deleteBtn.addEventListener("click", () => {
       if (removeProject(project.name)) {
         removeElement(projectContainerElement);
-        showInboxTasks();
+        const inbox = getProject("Inbox");
+        showProject(inbox);
       }
     });
 
@@ -451,8 +452,9 @@ const domService = (() => {
   };
 
   const addProjectToNavBar = (project) => {
-    if (!isDefaultProject(project.name)) {
-      updateTaskViewerTitle(project.name);
+    const prjName = project.name;
+    if (!isDefaultProject(prjName)) {
+      updateTaskViewerTitle(prjName);
 
       const projectEl = createProjectElement(project);
       addProjectToViewer(projectEl);
@@ -576,31 +578,27 @@ const domService = (() => {
     }
   };
 
+  const getToday = () => {
+    const today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
 
-    const getToday = () => {
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
 
-       const today = new Date();  
-        let yyyy = today.getFullYear(); 
-        let mm = today.getMonth() + 1; 
-        let dd = today.getDate();
+    const todayFormatted = yyyy + "-" + mm + "-" + dd;
 
-        if(dd < 10) dd = '0' + dd;
-        if(mm < 10) mm = '0' + mm; 
+    return todayFormatted;
+  };
 
-        const todayFormatted = yyyy + '-' + mm + '-' + dd; 
+  const getTodaysTasks = () => {
+    const today = getToday();
 
-        return todayFormatted; 
+    const tasks = controllerInterface.getTasksByDate(today);
 
-    }
-
-    const getTodaysTasks = () => {
-        const today= getToday(); 
-
-        const tasks = controllerInterface.getTasksByDate(today); 
-        
-        return tasks; 
-
-    }
+    return tasks;
+  };
 
   const startTaskEvents = () => {
     const inboxBtn = document.querySelector(".inbox-title");
@@ -610,10 +608,10 @@ const domService = (() => {
 
     const todayBtn = document.querySelector(".today-title");
     todayBtn.addEventListener("click", () => {
-        const tasks = getTodaysTasks(); 
-        clearTaskViewer();
-        updateTaskViewerTitle('Today')
-        showAllTasks(tasks); 
+      const tasks = getTodaysTasks();
+      clearTaskViewer();
+      updateTaskViewerTitle("Today");
+      showAllTasks(tasks);
     });
 
     const addProjectBtn = document.querySelector(".add-project-btn");
