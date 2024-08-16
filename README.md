@@ -1,5 +1,4 @@
-# myTodo
-# A web-based tool to help you organize your life.
+# myTodo - A Todoist clone to help you better organize life.
 ![Selection_008](https://github.com/j-winston/todo-list/assets/102254727/1c094669-6dba-4730-b82d-bc7eaadc983e)
 
 
