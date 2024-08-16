@@ -55,31 +55,7 @@ const domService = (() => {
   const removeElement = (el) => {
     el.remove();
   };
-  //
-  //
-  //  const removeProject = (project) => {
-  //    const projectElement = document.querySelector(
-  //      "[data-id=" + CSS.escape(project.id) + "]"
-  //    );
-  //    removeElement(projectElement);
-  //
-  //    clearTaskViewer();
-  //
-  //    pubSub.publish("projectRemoved", project);
-  //  };
-  //
-  //  const getFormValues = (form) => {
-  //    const inputElements = form.querySelectorAll("input");
-  //    const formValues = {};
-  //
-  //    inputElements.forEach((input) => {
-  //      formValues[input.id] = input.value;
-  //    });
-  //
-  //    return formValues;
-  //  };
-  //
-  //
+ 
   const selTaskContainerEl = (id) => {
     const tskContainer = document.querySelector(
       "[data-id-task-id= " + CSS.escape(id) + "]"
@@ -149,31 +125,7 @@ const domService = (() => {
       showTask(updatedTask);
     });
 
-    //saveBtn.addEventListener("click", () => {
-    //    const formData = new FormData(taskEditForm);
-
-    //  // We grab all the input values once they click save
-    //  const editTaskForm = document.querySelector(".edit-task-form .inputs");
-    //  const titleEl = editTaskForm.querySelector('input[class="title"]');
-    //  const dueDateEl = editTaskForm.querySelector('input[type="date"]');
-    //  const descriptionEl = editTaskForm.querySelector(
-    //    'input[class="description"]'
-    //  );
-
-    //  // Finally, broadcast all the stored edits along unique
-    //  // task id
-    //  const taskEditFormValues = {};
-    //  const taskId = taskContainer.getAttribute("data-id");
-
-    //  taskEditFormValues.id = taskId;
-    //  taskEditFormValues.projName = getCurrentProjectName();
-    //  taskEditFormValues.name = titleEl.value;
-    //  taskEditFormValues.duedate = dueDateEl.value;
-    //  taskEditFormValues.description = descriptionEl.value;
-
-    //  // Once saved, remove the edit form
-    //  editTaskForm.remove();
-    //});
+    
   };
   //
 
@@ -187,59 +139,7 @@ const domService = (() => {
 
     return date;
   };
-  //
-  //
-  //
-  //
-  //
-  //
-  //  const createInbox = () => {
-  //    updateTaskViewerTitle("Inbox");
-  //
-  //    const inboxBtn = document.querySelector(".inbox-nav-link");
-  //    inboxBtn.textContent = "Inbox";
-  //
-  //    let inbox = getProject();
-  //    if (!inbox) {
-  //      inbox = newEmptyProject("Inbox");
-  //    }
-  //
-  //    inboxBtn.addEventListener("click", () => {
-  //      showProject(inbox);
-  //    });
-  //  };
-  //
-  //  const newEmptyProject = (name) => {
-  //    return projectController.newEmptyProject(name);
-  //  };
-  //
-  //  const showInbox = () => {
-  //    updateTaskViewerTitle("Inbox");
-  //  };
-  //
-  //  const getTaskContainer = (taskId) => {
-  //    // Return the div container for the task
-  //    const container = document.querySelector(
-  //      "[data-id=" + CSS.escape(taskId) + "]"
-  //    );
-  //
-  //    return container;
-  //  };
-  //
-
-  //
-  //  const showUpdatedTask = (task) => {
-  //    const name = task.name;
-  //    const description = task.description;
-  //    const dueDate = task.duedate;
-  //    const container = getTaskContainer(task.id);
-  //
-  //    container.querySelector(".task-title").textContent = name;
-  //    container.querySelector(".task-description").textContent = description;
-  //
-  //    container.querySelector(".task-due-date").textContent = dueDate;
-  //  };
-  //
+ 
   const getProject = (name) => {
     const proj = controllerInterface.getProject(name);
     if (proj) {
@@ -461,12 +361,6 @@ const domService = (() => {
     }
   };
 
-  //const getNewTask = (formDataObj) => {
-  //  const projName = getCurrentProjectName();
-  //  const task = controllerInterface.addTaskToProject(formDataObj, projName);
-
-  //  return task;
-  //};
 
   const appendFormToViewer = (form, el) => {
     const viewer = document.querySelector(el);
