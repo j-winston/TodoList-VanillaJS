@@ -38,20 +38,15 @@ This is a simple, intuitive task management application designed to bring order 
 ![Selection_008](https://github.com/j-winston/todo-list/assets/102254727/1c094669-6dba-4730-b82d-bc7eaadc983e)
 
 ### Setup and Installation 
+
+```bash
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/j-winston/TodoList-VanillaJS.git
-3. Navigate to project directory:
+  
+   git clone https://github.com/j-winston/TodoList-VanillaJS.git```
+2. Navigate to project directory:
   ```bash
-    cd TodoList-VanillaJS
-5. Install Dependencies:
- ```bash
-   npm install
-6. Build the project using Webpack:
-  ```bash
-   npm run build
-7. Start the development server
-   ```npm start```
+  cd TodoList-VanillaJS
+3. 
 ### Inspiraton 
 This project was inspired by the clean user interface of **Todoist**. The goal was to replicate the design 
 while practiciing **Javascript DOM manipulation** and **local storage** techniques in a useful real-life application.
