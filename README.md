@@ -1,6 +1,7 @@
 # Vanilla JS ToDO List App  
 *A clean, minimalistic task manager built with Vanilla JavaScript, Webpack, HTML5, and CSS3*.
-![Selection_008](https://github.com/j-winston/todo-list/assets/102254727/1c094669-6dba-4730-b82d-bc7eaadc983e)
+
+
 
 ### Try It Out, Here
 ---
@@ -35,6 +36,10 @@ This is a simple, intuitive task management application designed to bring order 
 * **HTML5/CSS3**: Structure and styling.
 * **Webpack**: For bundling and module management. 
 * **Local Storage**: Persistent data storage across sessions.
+  
+### Screenshots
+
+![Selection_008](https://github.com/j-winston/todo-list/assets/102254727/1c094669-6dba-4730-b82d-bc7eaadc983e)
 
 ### Setup and Installation 
 1. Clone the repository:
