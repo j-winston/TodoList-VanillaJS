@@ -39,7 +39,7 @@ This is a simple, intuitive task management application designed to bring order 
 
 ### Setup and Installation 
 1. Clone the repository:
-   ```git clone https://github.com/j-winston/TodoList-VanillaJS.git```
+   ``git clone https://github.com/j-winston/TodoList-VanillaJS.git``
 2. Navigate to project directory:
    ```cd TodoList-VanillaJS```
 3. Install Dependencies:
