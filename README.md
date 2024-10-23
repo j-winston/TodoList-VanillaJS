@@ -39,14 +39,18 @@ This is a simple, intuitive task management application designed to bring order 
 
 ### Setup and Installation 
 1. Clone the repository:
-   ``git clone https://github.com/j-winston/TodoList-VanillaJS.git``
-2. Navigate to project directory:
-   ```cd TodoList-VanillaJS```
-3. Install Dependencies:
-   ```npm install```
-4. Build the project using Webpack:
-   ```npm run build```
-5. Start the development server
+   ```bash
+   git clone https://github.com/j-winston/TodoList-VanillaJS.git
+3. Navigate to project directory:
+  ```bash
+    cd TodoList-VanillaJS
+5. Install Dependencies:
+ ```bash
+   npm install
+6. Build the project using Webpack:
+  ```bash
+   npm run build
+7. Start the development server
    ```npm start```
 ### Inspiraton 
 This project was inspired by the clean user interface of **Todoist**. The goal was to replicate the design 
